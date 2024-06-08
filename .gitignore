@@ -1,0 +1,4 @@
+cmake-build-debug
+build
+CMakeLists.txt.user
+*.exe
