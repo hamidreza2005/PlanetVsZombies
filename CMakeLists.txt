@@ -14,7 +14,14 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 add_executable(PlanetVsZombies main.cpp
-    resources.qrc)
+    resources.qrc
+    playground.h playground.cpp
+        Card.cpp
+        Card.h
+        Zombie/Zombie.cpp
+        Zombie/Zombie.h
+        ground.h ground.cpp)
+
 target_link_libraries(PlanetVsZombies
         Qt::Core
         Qt::Gui

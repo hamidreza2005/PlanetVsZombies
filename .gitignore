@@ -3,3 +3,4 @@ build
 CMakeLists.txt.user
 *.exe
 .idea
+resources.qrc.autosave

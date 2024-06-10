@@ -1,1 +1,19 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/">
+        <file>resources/images/Brain.png</file>
+        <file>resources/images/field.png</file>
+        <file>resources/images/sun.png</file>
+        <file>resources/images/plants/boomrang.png</file>
+        <file>resources/images/plants/jalapino.png</file>
+        <file>resources/images/plants/peashooter.png</file>
+        <file>resources/images/plants/plum mine.png</file>
+        <file>resources/images/plants/two_peashooter.png</file>
+        <file>resources/images/plants/walnut.png</file>
+        <file>resources/images/zombies/astronaut zombie.png</file>
+        <file>resources/images/zombies/Bucket head zombie.png</file>
+        <file>resources/images/zombies/leaf hair zombie.png</file>
+        <file>resources/images/zombies/purple hair zombie.png</file>
+        <file>resources/images/zombies/regular zombie.png</file>
+        <file>resources/images/zombies/tall zombie.png</file>
+    </qresource>
+</RCC>
