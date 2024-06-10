@@ -13,7 +13,8 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(PlanetVsZombies main.cpp)
+add_executable(PlanetVsZombies main.cpp
+    resources.qrc)
 target_link_libraries(PlanetVsZombies
         Qt::Core
         Qt::Gui
