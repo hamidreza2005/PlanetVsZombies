@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    auto* playgroud = new PlayGround();
-    playgroud->show();
+    auto* playground = new PlayGround();
+    playground->show();
     return a.exec();
 }

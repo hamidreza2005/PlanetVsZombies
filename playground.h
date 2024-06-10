@@ -1,20 +1,30 @@
 #ifndef PLAYGROUND_H
 #define PLAYGROUND_H
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QVector>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QWidget>
 #include "Card.h"
 
-class PlayGround : public QGraphicsView
+class PlayGround : public QWidget
 {
     Q_OBJECT
 public:
-    PlayGround(QWidget *parent = nullptr);
+    explicit PlayGround(QWidget *parent = nullptr);
 private:
-    QGraphicsScene* display;
+    QGraphicsView* graphicsView;
+    QGraphicsScene* scene;
     QVector<Card*> cards;
+    QLabel* playerName;
+    QLabel* brainCount;
+    QLabel* remainingTime;
 
     void createCards();
+    void setupPlayerInfo();
+    void setupLayout();
 };
 
 #endif // PLAYGROUND_H
