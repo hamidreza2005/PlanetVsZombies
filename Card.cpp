@@ -2,9 +2,10 @@
 #include "QPixmap"
 #include <QCursor>
 #include <QPen>
+#include "QGraphicsScene"
 
-void Card::setImage(const QString& src) {
-    QPixmap image_ground(src);
+void Card::setImage() {
+    QPixmap image_ground(this->entity->getPicturePath());
     QPixmap Scaled_image_ground = image_ground.scaled(this->width,this->height,Qt::KeepAspectRatio,Qt::SmoothTransformation);
     setPixmap(Scaled_image_ground);
     this->setCursor(Qt::PointingHandCursor);
@@ -17,6 +18,19 @@ void Card::setBorders(){
     border->setZValue(-1);
 }
 
-Card::Card(int width,int height):width(width), height(height) {
+Card::Card(std::function<GameEntity*()> entityFactory,int width,int height):entityFactory(entityFactory),width(width), height(height) {
+    this->entity = entityFactory();
     this->setBorders();
+    this->setImage();
+}
+
+void Card::mousePressEvent(QGraphicsSceneMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        emit createEntity(this);
+    }
+    QGraphicsPixmapItem::mousePressEvent(event);
+}
+
+std::function<GameEntity *()> Card::getEntityFactory() {
+    return this->entityFactory;
 }

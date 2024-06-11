@@ -36,6 +36,9 @@ private:
     void setupPlayerPlantInfo();
     void setupGround();
     void setupLayout();
+
+public slots:
+    void onCreateEntity(Card* card);
 };
 
 #endif

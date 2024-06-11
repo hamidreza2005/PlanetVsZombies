@@ -8,7 +8,8 @@
 
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
     srand(static_cast<unsigned int>(time(0)));
-    isZombie = rand() % 2 == 0;
+   // isZombie = rand() % 2 == 0;
+    isZombie =true;
 
     this->setFixedSize(1000, 700);
 
@@ -106,37 +107,43 @@ void PlayGround::setupLayout() {
 }
 
 void PlayGround::createZombieCards() {
-    QVector<QString> zombiePathes = {
-        ":/resources/images/zombies/astronaut zombie.png",
-        ":/resources/images/zombies/tall zombie.png",
-        ":/resources/images/zombies/Bucket head zombie.png",
-        ":/resources/images/zombies/leaf hair zombie.png",
-        ":/resources/images/zombies/regular zombie.png",
-        ":/resources/images/zombies/purple hair zombie.png",
+    QVector<std::function<GameEntity*()>> zombies = {
+            [](){return new RegularZombie;},
+            [](){return new RegularZombie;},
+            [](){return new RegularZombie;},
+            [](){return new RegularZombie;},
+            [](){return new RegularZombie;},
+            [](){return new RegularZombie;},
     };
 
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card();
-        card->setImage(zombiePathes[i]);
+        auto* card = new Card(zombies[i]);
         card->setPos(i * 150, 0);
+        QObject::connect(card, &Card::createEntity, this, &PlayGround::onCreateEntity);
         zombieCards.push_back(card);
     }
 }
 
 void PlayGround::createPlantCards() {
-    QVector<QString> plantPathes = {
-        ":/resources/images/plants/boomrang.png",
-        ":/resources/images/plants/jalapino.png",
-        ":/resources/images/plants/peashooter.png",
-        ":/resources/images/plants/plum mine.png",
-        ":/resources/images/plants/two_peashooter.png",
-        ":/resources/images/plants/walnut.png",
+    QVector<std::function<GameEntity*()>> plants = {
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
     };
 
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card();
-        card->setImage(plantPathes[i]);
+        auto* card = new Card(plants[i]);
         card->setPos(i * 150, 0);
+        QObject::connect(card, &Card::createEntity, this, &PlayGround::onCreateEntity);
         plantCards.push_back(card);
     }
+}
+
+void PlayGround::onCreateEntity(Card *card) {
+    auto* newEntity = card->getEntityFactory()();
+    newEntity->setPos(300, 153);
+    scene->addItem(newEntity);
 }
