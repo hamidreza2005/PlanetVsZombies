@@ -5,7 +5,7 @@
 #include <ctime>
 #include "Zombie/RegularZombie.h"
 
-PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
+PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210), brainCount(0), sunCount(0) {
     srand(static_cast<unsigned int>(time(0)));
     isZombie = rand() % 2 == 0;
 
@@ -21,46 +21,66 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
     if (isZombie) {
         createZombieCards();
         setupPlayerZombieInfo();
+<<<<<<< Updated upstream
     } else {
+=======
+    }
+    else {
+        setupPlantGround();
+>>>>>>> Stashed changes
         createPlantCards();
         setupPlayerPlantInfo();
     }
 
     setupLayout();
 
+<<<<<<< Updated upstream
 //    auto* z1 = new RegularZombie();
 //    z1->setPos(200, 158);
 //    scene->addItem(z1);
+=======
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &PlayGround::updateTimer);
+    timer->start(1000);
+>>>>>>> Stashed changes
 }
 
 void PlayGround::setupPlayerZombieInfo() {
-    playerZombieName = new QLabel("Zombie Player: ", this);
-    brainCount = new QLabel("Brains: 0", this);
-    remainingZombieTime = new QLabel("Time: 00:00", this);
+    playerZombieName = new QLabel("Zombie Player", this);
+    //set name of the player instead of "Zombie Player"
+    remainingZombieTime = new QLabel("Time: 03:30", this);
+    brainBar = new QProgressBar(this);
+    brainBar->setRange(0, 100);
+    brainBar->setValue(0);
+    brainBar->setFormat("%v");
 
     QFont font("Arial", 10, QFont::Bold);
     playerZombieName->setFont(font);
-    brainCount->setFont(font);
     remainingZombieTime->setFont(font);
+    brainBar->setFont(font);
 
     playerZombieName->setStyleSheet("QLabel { color : blue; }");
-    brainCount->setStyleSheet("QLabel { color : green; }");
-    remainingZombieTime->setStyleSheet("QLabel { color : red; }");
+    remainingZombieTime->setStyleSheet("QLabel { color : green; }");
+    brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
 }
 
 void PlayGround::setupPlayerPlantInfo() {
-    playerPlantName = new QLabel("Plant Player: ", this);
-    sunCount = new QLabel("Sun: 0", this);
-    remainingPlantTime = new QLabel("Time: 00:00", this);
+    playerPlantName = new QLabel("Plant Player", this);
+    //set name of the player instead of "Plant Player"
+    remainingPlantTime = new QLabel("Time: 03:30", this);
+    sunBar = new QProgressBar(this);
+    sunBar->setRange(0, 100);
+    sunBar->setValue(0);
+    sunBar->setFormat("%v");
 
     QFont font("Arial", 10, QFont::Bold);
     playerPlantName->setFont(font);
-    sunCount->setFont(font);
     remainingPlantTime->setFont(font);
+    sunBar->setFont(font);
 
     playerPlantName->setStyleSheet("QLabel { color : blue; }");
-    sunCount->setStyleSheet("QLabel { color : green; }");
-    remainingPlantTime->setStyleSheet("QLabel { color : red; }");
+    remainingPlantTime->setStyleSheet("QLabel { color : green; }");
+    sunBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: yellow; }");
 }
 
 void PlayGround::setupGround() {
@@ -75,11 +95,12 @@ void PlayGround::setupLayout() {
     QHBoxLayout* infoLayout = new QHBoxLayout();
     if (isZombie) {
         infoLayout->addWidget(playerZombieName);
-        infoLayout->addWidget(brainCount);
+        infoLayout->addWidget(brainBar);
         infoLayout->addWidget(remainingZombieTime);
-    } else {
+    }
+    else {
         infoLayout->addWidget(playerPlantName);
-        infoLayout->addWidget(sunCount);
+        infoLayout->addWidget(sunBar);
         infoLayout->addWidget(remainingPlantTime);
     }
 
@@ -95,6 +116,7 @@ void PlayGround::setupLayout() {
     setLayout(mainLayout);
 
     QVector<Card*>& cards = isZombie ? zombieCards : plantCards;
+
     for (auto* card : cards) {
         cardScene->addItem(card);
     }
@@ -134,4 +156,36 @@ void PlayGround::createPlantCards() {
         card->setPos(i * 150, 0);
         plantCards.push_back(card);
     }
+}
+
+void PlayGround::updateTimer() {
+    if (remainingSeconds > 0) {
+        remainingSeconds--;
+        int minutes = remainingSeconds / 60;
+        int seconds = remainingSeconds % 60;
+        QString timeString = QString("Time: %1:%2")
+                                 .arg(minutes, 2, 10, QLatin1Char('0'))
+                                 .arg(seconds, 2, 10, QLatin1Char('0'));
+        if (isZombie) {
+            remainingZombieTime->setText(timeString);
+        }
+        else {
+            remainingPlantTime->setText(timeString);
+        }
+    }
+    else {
+        timer->stop();
+    }
+}
+
+void PlayGround::updateBrainCount(int amount) {
+    brainCount += amount;
+    brainBar->setValue(brainCount / 5);
+    brainBar->setFormat(QString("Brains: %1").arg(brainCount));
+}
+
+void PlayGround::updateSunCount(int amount) {
+    sunCount += amount;
+    sunBar->setValue(sunCount / 5);
+    sunBar->setFormat(QString("Sun: %1").arg(sunCount));
 }

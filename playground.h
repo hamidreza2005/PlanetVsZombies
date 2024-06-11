@@ -7,6 +7,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QWidget>
+#include <QProgressBar>
+#include <QTimer>
 #include <QVector>
 #include "Card.h"
 #include "ground.h"
@@ -16,6 +18,11 @@ class PlayGround : public QWidget
     Q_OBJECT
 public:
     explicit PlayGround(QWidget *parent = nullptr);
+private slots:
+    void updateTimer();
+    void updateBrainCount(int amount);
+    void updateSunCount(int amount);
+
 private:
     QGraphicsView* graphicsView;
     QGraphicsScene* scene;
@@ -23,12 +30,19 @@ private:
     QVector<Card*> plantCards;
     QLabel* playerZombieName;
     QLabel* playerPlantName;
-    QLabel* brainCount;
-    QLabel* sunCount;
     QLabel* remainingZombieTime;
     QLabel* remainingPlantTime;
+<<<<<<< Updated upstream
     Ground* ground;
+=======
+    QProgressBar* brainBar;
+    QProgressBar* sunBar;
+>>>>>>> Stashed changes
     bool isZombie;
+    QTimer* timer;
+    int remainingSeconds;
+    int brainCount;
+    int sunCount;
 
     void createZombieCards();
     void createPlantCards();
