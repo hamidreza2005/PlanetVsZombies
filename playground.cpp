@@ -3,6 +3,7 @@
 #include <QFont>
 #include <cstdlib>
 #include <ctime>
+#include "Zombie/RegularZombie.h"
 
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
     srand(static_cast<unsigned int>(time(0)));
@@ -16,17 +17,20 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
     graphicsView->setScene(scene);
     graphicsView->setSceneRect(0, 0, 650, 450);
 
+    setupGround();
     if (isZombie) {
-        setupZombieGround();
         createZombieCards();
         setupPlayerZombieInfo();
     } else {
-        setupPlantGround();
         createPlantCards();
         setupPlayerPlantInfo();
     }
 
     setupLayout();
+
+//    auto* z1 = new RegularZombie();
+//    z1->setPos(200, 158);
+//    scene->addItem(z1);
 }
 
 void PlayGround::setupPlayerZombieInfo() {
@@ -59,14 +63,8 @@ void PlayGround::setupPlayerPlantInfo() {
     remainingPlantTime->setStyleSheet("QLabel { color : red; }");
 }
 
-void PlayGround::setupZombieGround() {
-    auto* ground = new Ground();
-    ground->setPos(-260, -40);
-    scene->addItem(ground);
-}
-
-void PlayGround::setupPlantGround() {
-    auto* ground = new Ground();
+void PlayGround::setupGround() {
+    this->ground = new Ground();
     ground->setPos(-260, -40);
     scene->addItem(ground);
 }

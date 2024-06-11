@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QVector>
 #include "Card.h"
+#include "ground.h"
 
 class PlayGround : public QWidget
 {
@@ -26,14 +27,14 @@ private:
     QLabel* sunCount;
     QLabel* remainingZombieTime;
     QLabel* remainingPlantTime;
+    Ground* ground;
     bool isZombie;
 
     void createZombieCards();
     void createPlantCards();
     void setupPlayerZombieInfo();
     void setupPlayerPlantInfo();
-    void setupZombieGround();
-    void setupPlantGround();
+    void setupGround();
     void setupLayout();
 };
 
