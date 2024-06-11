@@ -7,6 +7,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QWidget>
+#include <QVector>
 #include "Card.h"
 
 class PlayGround : public QWidget
@@ -17,14 +18,23 @@ public:
 private:
     QGraphicsView* graphicsView;
     QGraphicsScene* scene;
-    QVector<Card*> cards;
-    QLabel* playerName;
+    QVector<Card*> zombieCards;
+    QVector<Card*> plantCards;
+    QLabel* playerZombieName;
+    QLabel* playerPlantName;
     QLabel* brainCount;
-    QLabel* remainingTime;
+    QLabel* sunCount;
+    QLabel* remainingZombieTime;
+    QLabel* remainingPlantTime;
+    bool isZombie;
 
-    void createCards();
-    void setupPlayerInfo();
+    void createZombieCards();
+    void createPlantCards();
+    void setupPlayerZombieInfo();
+    void setupPlayerPlantInfo();
+    void setupZombieGround();
+    void setupPlantGround();
     void setupLayout();
 };
 
-#endif // PLAYGROUND_H
+#endif

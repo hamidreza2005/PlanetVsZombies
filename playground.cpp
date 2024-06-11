@@ -1,8 +1,13 @@
 #include "playground.h"
 #include "ground.h"
 #include <QFont>
+#include <cstdlib>
+#include <ctime>
 
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
+    srand(static_cast<unsigned int>(time(0)));
+    isZombie = rand() % 2 == 0;
+
     this->setFixedSize(1000, 700);
 
     graphicsView = new QGraphicsView(this);
@@ -11,41 +16,76 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
     graphicsView->setScene(scene);
     graphicsView->setSceneRect(0, 0, 650, 450);
 
-    auto* ground = new Ground();
-    ground->setPos(-260, -40);
-    scene->addItem(ground);
+    if (isZombie) {
+        setupZombieGround();
+        createZombieCards();
+        setupPlayerZombieInfo();
+    } else {
+        setupPlantGround();
+        createPlantCards();
+        setupPlayerPlantInfo();
+    }
 
-    createCards();
-
-    setupPlayerInfo();
     setupLayout();
 }
 
-void PlayGround::setupPlayerInfo() {
-    playerName = new QLabel("Player Name: ", this);
-    brainCount = new QLabel("Brain: 0", this);
-    remainingTime = new QLabel("Time: 00:00", this);
+void PlayGround::setupPlayerZombieInfo() {
+    playerZombieName = new QLabel("Zombie Player: ", this);
+    brainCount = new QLabel("Brains: 0", this);
+    remainingZombieTime = new QLabel("Time: 00:00", this);
 
     QFont font("Arial", 10, QFont::Bold);
-    playerName->setFont(font);
+    playerZombieName->setFont(font);
     brainCount->setFont(font);
-    remainingTime->setFont(font);
+    remainingZombieTime->setFont(font);
 
-    playerName->setStyleSheet("QLabel { color : blue; }");
+    playerZombieName->setStyleSheet("QLabel { color : blue; }");
     brainCount->setStyleSheet("QLabel { color : green; }");
-    remainingTime->setStyleSheet("QLabel { color : red; }");
+    remainingZombieTime->setStyleSheet("QLabel { color : red; }");
+}
+
+void PlayGround::setupPlayerPlantInfo() {
+    playerPlantName = new QLabel("Plant Player: ", this);
+    sunCount = new QLabel("Sun: 0", this);
+    remainingPlantTime = new QLabel("Time: 00:00", this);
+
+    QFont font("Arial", 10, QFont::Bold);
+    playerPlantName->setFont(font);
+    sunCount->setFont(font);
+    remainingPlantTime->setFont(font);
+
+    playerPlantName->setStyleSheet("QLabel { color : blue; }");
+    sunCount->setStyleSheet("QLabel { color : green; }");
+    remainingPlantTime->setStyleSheet("QLabel { color : red; }");
+}
+
+void PlayGround::setupZombieGround() {
+    auto* ground = new Ground();
+    ground->setPos(-260, -40);
+    scene->addItem(ground);
+}
+
+void PlayGround::setupPlantGround() {
+    auto* ground = new Ground();
+    ground->setPos(-260, -40);
+    scene->addItem(ground);
 }
 
 void PlayGround::setupLayout() {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
     QHBoxLayout* infoLayout = new QHBoxLayout();
-    infoLayout->addWidget(playerName);
-    infoLayout->addWidget(brainCount);
-    infoLayout->addWidget(remainingTime);
+    if (isZombie) {
+        infoLayout->addWidget(playerZombieName);
+        infoLayout->addWidget(brainCount);
+        infoLayout->addWidget(remainingZombieTime);
+    } else {
+        infoLayout->addWidget(playerPlantName);
+        infoLayout->addWidget(sunCount);
+        infoLayout->addWidget(remainingPlantTime);
+    }
 
     mainLayout->addLayout(infoLayout, 1);
-
     mainLayout->addWidget(graphicsView, 4);
 
     QGraphicsView* cardView = new QGraphicsView(this);
@@ -54,15 +94,15 @@ void PlayGround::setupLayout() {
     cardView->setFixedHeight(150);
 
     mainLayout->addWidget(cardView, 1);
-
     setLayout(mainLayout);
 
+    QVector<Card*>& cards = isZombie ? zombieCards : plantCards;
     for (auto* card : cards) {
         cardScene->addItem(card);
     }
 }
 
-void PlayGround::createCards() {
+void PlayGround::createZombieCards() {
     QVector<QString> zombiePathes = {
         ":/resources/images/zombies/astronaut zombie.png",
         ":/resources/images/zombies/tall zombie.png",
@@ -76,15 +116,24 @@ void PlayGround::createCards() {
         auto* card = new Card();
         card->setImage(zombiePathes[i]);
         card->setPos(i * 150, 0);
-        cards.push_back(card);
+        zombieCards.push_back(card);
     }
 }
 
-// QVector<QString> plantPathes = {
-//     ":/resources/images/plants/boomrang.png",
-//     ":/resources/images/plants/jalapino.png",
-//     ":/resources/images/plants/peashooter.png",
-//     ":/resources/images/plants/plum mine.png",
-//     ":/resources/images/plants/two_peashooter.png",
-//     ":/resources/images/plants/walnut.png",
-// };
+void PlayGround::createPlantCards() {
+    QVector<QString> plantPathes = {
+        ":/resources/images/plants/boomrang.png",
+        ":/resources/images/plants/jalapino.png",
+        ":/resources/images/plants/peashooter.png",
+        ":/resources/images/plants/plum mine.png",
+        ":/resources/images/plants/two_peashooter.png",
+        ":/resources/images/plants/walnut.png",
+    };
+
+    for(int i = 0; i < 6; i++) {
+        auto* card = new Card();
+        card->setImage(plantPathes[i]);
+        card->setPos(i * 150, 0);
+        plantCards.push_back(card);
+    }
+}
