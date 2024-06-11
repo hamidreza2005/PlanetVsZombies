@@ -3,7 +3,7 @@
 #include <QFont>
 #include <cstdlib>
 #include <ctime>
-#include "Zombie/RegularZombie.h"
+#include "entities/zombie/RegularZombie.h"
 
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
     srand(static_cast<unsigned int>(time(0)));
@@ -34,7 +34,7 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
 }
 
 void PlayGround::setupPlayerZombieInfo() {
-    playerZombieName = new QLabel("Zombie Player: ", this);
+    playerZombieName = new QLabel("zombie Player: ", this);
     brainCount = new QLabel("Brains: 0", this);
     remainingZombieTime = new QLabel("Time: 00:00", this);
 

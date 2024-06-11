@@ -47,7 +47,7 @@ void Zombie::reduceHealth(int amount) {
 }
 
 void Zombie::attack(){
-//    qDebug() << "Zombie attacked";
+//    qDebug() << "zombie attacked";
 }
 
 Zombie::~Zombie() {

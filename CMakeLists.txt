@@ -18,11 +18,11 @@ add_executable(PlanetVsZombies main.cpp
     playground.h playground.cpp
         Card.cpp
         Card.h
-        Zombie/Zombie.cpp
-        Zombie/Zombie.h
+        entities/zombie/Zombie.cpp
+        entities/zombie/Zombie.h
         ground.h ground.cpp
-        Zombie/RegularZombie.cpp
-        Zombie/RegularZombie.h)
+        entities/zombie/RegularZombie.cpp
+        entities/zombie/RegularZombie.h)
 
 target_link_libraries(PlanetVsZombies
         Qt::Core
