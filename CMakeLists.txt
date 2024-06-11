@@ -22,7 +22,9 @@ add_executable(PlanetVsZombies main.cpp
         entities/zombie/Zombie.h
         ground.h ground.cpp
         entities/zombie/RegularZombie.cpp
-        entities/zombie/RegularZombie.h)
+        entities/zombie/RegularZombie.h
+        entities/GameEntity.cpp
+        entities/GameEntity.h)
 
 target_link_libraries(PlanetVsZombies
         Qt::Core

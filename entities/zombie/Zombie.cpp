@@ -1,7 +1,7 @@
 #include "Zombie.h"
 
 Zombie::Zombie(int health, float movementDelay, int attackPower,float firingRate):
-health(health),
+GameEntity(health),
 movementDelay(movementDelay),
 attackPower(attackPower),
 firingRate(firingRate)
@@ -9,14 +9,6 @@ firingRate(firingRate)
     this->setZValue(100);
     this->setUpTimers();
     this->setUpAnimations();
-}
-
-int Zombie::getHealth() const {
-    return health;
-}
-
-void Zombie::setHealth(int newHealth) {
-    health = newHealth;
 }
 
 float Zombie::getMovementDelay() const {
