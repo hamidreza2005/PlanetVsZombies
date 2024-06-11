@@ -6,6 +6,7 @@
 
 class GameEntity: public QObject,public QGraphicsPixmapItem{
     Q_OBJECT
+    Q_PROPERTY(qreal x READ x WRITE setX)
 public:
     explicit GameEntity(int health);
 
@@ -19,6 +20,8 @@ public:
 
 protected:
     int health;
+
+    void setImage();
 };
 
 

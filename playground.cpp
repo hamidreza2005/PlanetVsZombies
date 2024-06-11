@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "entities/zombie/RegularZombie.h"
+#include "entities/plant/PeaShooter.h"
 
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
     srand(static_cast<unsigned int>(time(0)));
@@ -28,9 +29,13 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
 
     setupLayout();
 
-//    auto* z1 = new RegularZombie();
-//    z1->setPos(200, 158);
-//    scene->addItem(z1);
+    auto* z1 = new RegularZombie();
+    z1->setPos(200, 153);
+    scene->addItem(z1);
+
+    auto* p1 = new PeaShooter();
+    p1->setPos(50,158);
+    scene->addItem(p1);
 }
 
 void PlayGround::setupPlayerZombieInfo() {

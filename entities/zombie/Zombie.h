@@ -6,9 +6,8 @@
 #include "../GameEntity.h"
 
 class Zombie : public GameEntity{
-    Q_PROPERTY(qreal x READ x WRITE setX)
 public:
-    explicit Zombie(int health, float movementDelay, int attackPower, float firingRate);
+    explicit Zombie(int health, float movementDelay, int attackPower, float firingRate,int brain);
 
     // Getters and Setters
 
@@ -21,7 +20,6 @@ public:
 
     void reduceHealth(int amount);
 
-    void setImage();
     virtual ~Zombie();
 protected slots:
     void attack();
@@ -32,6 +30,7 @@ private:
     float movementDelay;
     int attackPower;
     float firingRate;
+    int brain;
     QTimer *attackTimer;
     QTimer *movementTimer;
     QPropertyAnimation *movementAnimation;

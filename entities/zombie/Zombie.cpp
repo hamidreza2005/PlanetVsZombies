@@ -1,12 +1,13 @@
 #include "Zombie.h"
 
-Zombie::Zombie(int health, float movementDelay, int attackPower,float firingRate):
+Zombie::Zombie(int health, float movementDelay, int attackPower,float firingRate,int brain):
 GameEntity(health),
 movementDelay(movementDelay),
 attackPower(attackPower),
-firingRate(firingRate)
+firingRate(firingRate),
+brain(brain)
 {
-    this->setZValue(100);
+    this->setZValue(10);
     this->setUpTimers();
     this->setUpAnimations();
 }
@@ -67,10 +68,4 @@ void Zombie::setUpTimers() {
 void Zombie::setUpAnimations() {
     this->movementAnimation = new QPropertyAnimation(this, "x");
     this->movementAnimation->setDuration(1000);
-}
-
-void Zombie::setImage() {
-    QPixmap image_ground(getPicturePath());
-    QPixmap Scaled_image_ground = image_ground.scaled(75,75,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    setPixmap(Scaled_image_ground);
 }
