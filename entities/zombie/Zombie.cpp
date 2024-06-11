@@ -50,6 +50,13 @@ Zombie::~Zombie() {
 }
 
 void Zombie::move() {
+    if(this->x() < -150){
+        this->movementAnimation->stop();
+        this->attackTimer->stop();
+        this->movementTimer->stop();
+        delete this;
+        return;
+    }
     this->movementAnimation->stop();
     this->movementAnimation->setStartValue(this->x());
     this->movementAnimation->setEndValue(this->x() - 20);
