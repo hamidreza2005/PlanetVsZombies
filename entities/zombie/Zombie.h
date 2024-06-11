@@ -23,7 +23,7 @@ public:
     virtual ~Zombie();
 protected slots:
     void attack();
-    void move();
+    virtual void move();
 protected:
 private:
     int health;

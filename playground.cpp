@@ -4,8 +4,12 @@
 #include <cstdlib>
 #include <ctime>
 #include "entities/zombie/RegularZombie.h"
+#include "entities/zombie/BucketHeadZombie.h"
+#include "entities/zombie/TallZombie.h"
+#include "entities/zombie/LeafHeadZombie.h"
+#include "entities/zombie/PurpleHairZombie.h"
+#include "entities/zombie/AstronautZombie.h"
 #include "entities/plant/PeaShooter.h"
-
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent) {
     srand(static_cast<unsigned int>(time(0)));
    // isZombie = rand() % 2 == 0;
@@ -109,11 +113,11 @@ void PlayGround::setupLayout() {
 void PlayGround::createZombieCards() {
     QVector<std::function<GameEntity*()>> zombies = {
             [](){return new RegularZombie;},
-            [](){return new RegularZombie;},
-            [](){return new RegularZombie;},
-            [](){return new RegularZombie;},
-            [](){return new RegularZombie;},
-            [](){return new RegularZombie;},
+            [](){return new BucketHeadZombie;},
+            [](){return new TallZombie;},
+            [](){return new LeafHeadZombie;},
+            [](){return new PurpleHairZombie;},
+            [](){return new AstronautZombie;},
     };
 
     for(int i = 0; i < 6; i++) {

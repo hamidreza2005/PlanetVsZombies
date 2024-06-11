@@ -14,6 +14,6 @@ void GameEntity::setHealth(int newHealth) {
 
 void GameEntity::setImage() {
     QPixmap image_ground(getPicturePath());
-    QPixmap Scaled_image_ground = image_ground.scaled(75,75,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    QPixmap Scaled_image_ground = image_ground.scaled(75,75,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
     setPixmap(Scaled_image_ground);
 }

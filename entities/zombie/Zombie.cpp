@@ -74,5 +74,5 @@ void Zombie::setUpTimers() {
 
 void Zombie::setUpAnimations() {
     this->movementAnimation = new QPropertyAnimation(this, "x");
-    this->movementAnimation->setDuration(1000);
+    this->movementAnimation->setDuration(this->movementDelay * 1000);
 }
