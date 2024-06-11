@@ -32,12 +32,9 @@ private:
     QLabel* playerPlantName;
     QLabel* remainingZombieTime;
     QLabel* remainingPlantTime;
-<<<<<<< Updated upstream
     Ground* ground;
-=======
     QProgressBar* brainBar;
     QProgressBar* sunBar;
->>>>>>> Stashed changes
     bool isZombie;
     QTimer* timer;
     int remainingSeconds;
@@ -50,6 +47,9 @@ private:
     void setupPlayerPlantInfo();
     void setupGround();
     void setupLayout();
+
+public slots:
+    void onCreateEntity(Card* card);
 };
 
 #endif

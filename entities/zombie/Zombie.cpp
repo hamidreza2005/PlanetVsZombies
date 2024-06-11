@@ -1,22 +1,15 @@
 #include "Zombie.h"
 
-Zombie::Zombie(int health, float movementDelay, int attackPower,float firingRate):
-health(health),
+Zombie::Zombie(int health, float movementDelay, int attackPower,float firingRate,int brain):
+GameEntity(health),
 movementDelay(movementDelay),
 attackPower(attackPower),
-firingRate(firingRate)
+firingRate(firingRate),
+brain(brain)
 {
-    this->setZValue(100);
+    this->setZValue(10);
     this->setUpTimers();
     this->setUpAnimations();
-}
-
-int Zombie::getHealth() const {
-    return health;
-}
-
-void Zombie::setHealth(int newHealth) {
-    health = newHealth;
 }
 
 float Zombie::getMovementDelay() const {
@@ -47,7 +40,7 @@ void Zombie::reduceHealth(int amount) {
 }
 
 void Zombie::attack(){
-//    qDebug() << "Zombie attacked";
+//    qDebug() << "zombie attacked";
 }
 
 Zombie::~Zombie() {
@@ -57,6 +50,13 @@ Zombie::~Zombie() {
 }
 
 void Zombie::move() {
+    if(this->x() < -150){
+        this->movementAnimation->stop();
+        this->attackTimer->stop();
+        this->movementTimer->stop();
+        delete this;
+        return;
+    }
     this->movementAnimation->stop();
     this->movementAnimation->setStartValue(this->x());
     this->movementAnimation->setEndValue(this->x() - 20);
@@ -74,11 +74,5 @@ void Zombie::setUpTimers() {
 
 void Zombie::setUpAnimations() {
     this->movementAnimation = new QPropertyAnimation(this, "x");
-    this->movementAnimation->setDuration(1000);
-}
-
-void Zombie::setImage() {
-    QPixmap image_ground(getPicturePath());
-    QPixmap Scaled_image_ground = image_ground.scaled(75,75,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    setPixmap(Scaled_image_ground);
+    this->movementAnimation->setDuration(this->movementDelay * 1000);
 }

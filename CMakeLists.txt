@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_PREFIX_PATH "C:\\Qt\\6.7.0\\mingw_64\\lib\\cmake")
+set(CMAKE_PREFIX_PATH "C:\\Qt\\6.5.3\\mingw_64\\lib\\cmake")
 
 find_package(Qt6 COMPONENTS
         Core
@@ -18,11 +18,27 @@ add_executable(PlanetVsZombies main.cpp
     playground.h playground.cpp
         Card.cpp
         Card.h
-        Zombie/Zombie.cpp
-        Zombie/Zombie.h
+        entities/zombie/Zombie.cpp
+        entities/zombie/Zombie.h
         ground.h ground.cpp
-        Zombie/RegularZombie.cpp
-        Zombie/RegularZombie.h)
+        entities/zombie/RegularZombie.cpp
+        entities/zombie/RegularZombie.h
+        entities/GameEntity.cpp
+        entities/GameEntity.h
+        entities/plant/Plant.cpp
+        entities/plant/Plant.h
+        entities/plant/PeaShooter.cpp
+        entities/plant/PeaShooter.h
+        entities/zombie/TallZombie.cpp
+        entities/zombie/TallZombie.h
+        entities/zombie/BucketHeadZombie.cpp
+        entities/zombie/BucketHeadZombie.h
+        entities/zombie/LeafHeadZombie.cpp
+        entities/zombie/LeafHeadZombie.h
+        entities/zombie/PurpleHairZombie.cpp
+        entities/zombie/PurpleHairZombie.h
+        entities/zombie/AstronautZombie.cpp
+        entities/zombie/AstronautZombie.h)
 
 target_link_libraries(PlanetVsZombies
         Qt::Core

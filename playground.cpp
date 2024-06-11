@@ -3,11 +3,17 @@
 #include <QFont>
 #include <cstdlib>
 #include <ctime>
-#include "Zombie/RegularZombie.h"
-
+#include "entities/zombie/RegularZombie.h"
+#include "entities/zombie/BucketHeadZombie.h"
+#include "entities/zombie/TallZombie.h"
+#include "entities/zombie/LeafHeadZombie.h"
+#include "entities/zombie/PurpleHairZombie.h"
+#include "entities/zombie/AstronautZombie.h"
+#include "entities/plant/PeaShooter.h"
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210), brainCount(0), sunCount(0) {
     srand(static_cast<unsigned int>(time(0)));
-    isZombie = rand() % 2 == 0;
+   // isZombie = rand() % 2 == 0;
+    isZombie =true;
 
     this->setFixedSize(1000, 700);
 
@@ -21,28 +27,25 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210)
     if (isZombie) {
         createZombieCards();
         setupPlayerZombieInfo();
-<<<<<<< Updated upstream
-    } else {
-=======
     }
     else {
-        setupPlantGround();
->>>>>>> Stashed changes
         createPlantCards();
         setupPlayerPlantInfo();
     }
 
     setupLayout();
 
-<<<<<<< Updated upstream
-//    auto* z1 = new RegularZombie();
-//    z1->setPos(200, 158);
-//    scene->addItem(z1);
-=======
+    auto* z1 = new RegularZombie();
+    z1->setPos(200, 153);
+    scene->addItem(z1);
+
+    auto* p1 = new PeaShooter();
+    p1->setPos(50,158);
+    scene->addItem(p1);
+
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PlayGround::updateTimer);
     timer->start(1000);
->>>>>>> Stashed changes
 }
 
 void PlayGround::setupPlayerZombieInfo() {
@@ -53,16 +56,22 @@ void PlayGround::setupPlayerZombieInfo() {
     brainBar->setRange(0, 100);
     brainBar->setValue(0);
     brainBar->setFormat("%v");
-
-    QFont font("Arial", 10, QFont::Bold);
-    playerZombieName->setFont(font);
-    remainingZombieTime->setFont(font);
-    brainBar->setFont(font);
-
-    playerZombieName->setStyleSheet("QLabel { color : blue; }");
-    remainingZombieTime->setStyleSheet("QLabel { color : green; }");
-    brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
 }
+
+// void PlayGround::setupPlayerZombieInfo() {
+//     playerZombieName = new QLabel("zombie Player: ", this);
+//     brainCount = new QLabel("Brains: 0", this);
+//     remainingZombieTime = new QLabel("Time: 00:00", this);
+
+//     QFont font("Arial", 10, QFont::Bold);
+//     playerZombieName->setFont(font);
+//     remainingZombieTime->setFont(font);
+//     brainBar->setFont(font);
+
+//     playerZombieName->setStyleSheet("QLabel { color : blue; }");
+//     remainingZombieTime->setStyleSheet("QLabel { color : green; }");
+//     brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
+// }
 
 void PlayGround::setupPlayerPlantInfo() {
     playerPlantName = new QLabel("Plant Player", this);
@@ -123,37 +132,37 @@ void PlayGround::setupLayout() {
 }
 
 void PlayGround::createZombieCards() {
-    QVector<QString> zombiePathes = {
-        ":/resources/images/zombies/astronaut zombie.png",
-        ":/resources/images/zombies/tall zombie.png",
-        ":/resources/images/zombies/Bucket head zombie.png",
-        ":/resources/images/zombies/leaf hair zombie.png",
-        ":/resources/images/zombies/regular zombie.png",
-        ":/resources/images/zombies/purple hair zombie.png",
+    QVector<std::function<GameEntity*()>> zombies = {
+            [](){return new RegularZombie;},
+            [](){return new BucketHeadZombie;},
+            [](){return new TallZombie;},
+            [](){return new LeafHeadZombie;},
+            [](){return new PurpleHairZombie;},
+            [](){return new AstronautZombie;},
     };
 
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card();
-        card->setImage(zombiePathes[i]);
+        auto* card = new Card(zombies[i]);
         card->setPos(i * 150, 0);
+        QObject::connect(card, &Card::createEntity, this, &PlayGround::onCreateEntity);
         zombieCards.push_back(card);
     }
 }
 
 void PlayGround::createPlantCards() {
-    QVector<QString> plantPathes = {
-        ":/resources/images/plants/boomrang.png",
-        ":/resources/images/plants/jalapino.png",
-        ":/resources/images/plants/peashooter.png",
-        ":/resources/images/plants/plum mine.png",
-        ":/resources/images/plants/two_peashooter.png",
-        ":/resources/images/plants/walnut.png",
+    QVector<std::function<GameEntity*()>> plants = {
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
+            [](){return new PeaShooter;},
     };
 
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card();
-        card->setImage(plantPathes[i]);
+        auto* card = new Card(plants[i]);
         card->setPos(i * 150, 0);
+        QObject::connect(card, &Card::createEntity, this, &PlayGround::onCreateEntity);
         plantCards.push_back(card);
     }
 }
@@ -188,4 +197,10 @@ void PlayGround::updateSunCount(int amount) {
     sunCount += amount;
     sunBar->setValue(sunCount / 5);
     sunBar->setFormat(QString("Sun: %1").arg(sunCount));
+}
+
+void PlayGround::onCreateEntity(Card *card) {
+    auto* newEntity = card->getEntityFactory()();
+    newEntity->setPos(300, 153);
+    scene->addItem(newEntity);
 }
