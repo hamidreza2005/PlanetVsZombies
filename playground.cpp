@@ -4,9 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <QGraphicsPixmapItem>
-#include <QGraphicsTextItem>
 #include <QMouseEvent>
-#include <QDebug>
 #include "entities/zombie/RegularZombie.h"
 #include "entities/zombie/BucketHeadZombie.h"
 #include "entities/zombie/TallZombie.h"
@@ -142,7 +140,7 @@ void PlayGround::createZombieCards() {
     for(int i = 0; i < 6; i++) {
         auto* card = new Card(this->zombies[i]);
         card->setPos(i * 150, 0);
-        QObject::connect(card, &Card::createEntity, this, &PlayGround::onCreateEntity);
+        QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         zombieCards.push_back(card);
     }
 }
@@ -151,7 +149,7 @@ void PlayGround::createPlantCards() {
     for(int i = 0; i < 6; i++) {
         auto* card = new Card(this->plants[i]);
         card->setPos(i * 150, 0);
-        QObject::connect(card, &Card::createEntity, this, &PlayGround::onCreateEntity);
+        QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         plantCards.push_back(card);
     }
 }
@@ -186,33 +184,33 @@ void PlayGround::updateSunCount(int amount) {
     sunBar->setFormat(QString("Sun: %1").arg(sunCount));
 }
 
-void PlayGround::onCreateEntity(Card *card) {
-    if (selectedCard == card) {
-        selectedCard = nullptr;
-    } else {
-        selectedCard = card;
+void PlayGround::selectCard(Card *card) {
+    if(this->selectedCard == card){
+        this->selectedCard->unselect();
+        this->selectedCard = nullptr;
+        return;
     }
+
+    if(this->selectedCard)
+        this->selectedCard->unselect();
+    this->selectedCard = card;
+    this->selectedCard->select();
 }
 
 bool PlayGround::eventFilter(QObject* obj, QEvent* event) {
     if (event->type() == QEvent::MouseButtonPress) {
-        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-        handleSceneClick(mouseEvent->pos());
+        auto* mouseEvent = dynamic_cast<QMouseEvent*>(event);
+        addEntity(mouseEvent->pos());
     }
     return QWidget::eventFilter(obj, event);
 }
 
-void PlayGround::handleSceneClick(QPointF point) {
-    if (!selectedCard) {
+void PlayGround::addEntity(QPointF point) {
+    if (!selectedCard || this->isOutOfGround(&point)) {
         return;
     }
 
-    int x = point.x();
     int y = point.y();
-
-    if (x < 485 || x > 1000 || y < -80 || y > 470) {
-        return;
-    }
 
     int finalX = 750;
     int finalY;
@@ -233,18 +231,17 @@ void PlayGround::handleSceneClick(QPointF point) {
         finalY = 310.4;
     }
     else if (y <=389) {
-        qDebug() << y ;
         finalY = 388;
     }
     else{
         finalY = 465;
     }
-
-    qDebug() << finalY;
     finalY-=77.6;
     auto* newEntity = selectedCard->getEntityFactory()();
     newEntity->setPos(finalX, finalY);
-    qDebug() << finalY ;
     scene->addItem(newEntity);
-    selectedCard = nullptr;
+}
+
+bool PlayGround::isOutOfGround(const QPointF* point) {
+    return point->x() < 485 || point->x() > 1000 || point->y() < -80 || point->y() > 470;
 }

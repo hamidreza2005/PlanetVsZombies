@@ -12,7 +12,7 @@ void Card::setImage() {
 }
 
 void Card::setBorders(){
-    auto* border = new QGraphicsRectItem(this);
+    border = new QGraphicsRectItem(this);
     border->setRect(0, 0, this->width,this->height);
     border->setPen(QPen(Qt::green, 4));
     border->setZValue(-1);
@@ -26,11 +26,19 @@ Card::Card(std::function<GameEntity*()> entityFactory,int width,int height):enti
 
 void Card::mousePressEvent(QGraphicsSceneMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
-        emit createEntity(this);
+        emit selectEntity(this);
     }
     QGraphicsPixmapItem::mousePressEvent(event);
 }
 
 std::function<GameEntity *()> Card::getEntityFactory() {
     return this->entityFactory;
+}
+
+void Card::unselect() {
+    this->border->setPen(QPen(Qt::green, 4));
+}
+
+void Card::select() {
+    this->border->setPen(QPen(Qt::red, 4));
 }

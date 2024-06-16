@@ -9,8 +9,9 @@ class Card : public QObject,public QGraphicsPixmapItem{
     Q_OBJECT
 public:
     explicit Card(std::function<GameEntity*()> entityFactory,int width = 100,int height = 100);
-
     std::function<GameEntity*()> getEntityFactory();
+    void select();
+    void unselect();
 protected:
     void setImage();
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -19,9 +20,10 @@ private:
     int height = 100;
     GameEntity* entity;
     std::function<GameEntity*()> entityFactory;
+    QGraphicsRectItem* border;
     void setBorders();
 signals:
-    void createEntity(Card* card);
+    void selectEntity(Card* card);
 };
 
 

@@ -52,11 +52,10 @@ private:
     void setupPlayerPlantInfo();
     void setupGround();
     void setupLayout();
-    void createGridLabels();
-    void placeEntityAt(int row, int col);
+    bool isOutOfGround(const QPointF* point);
 public slots:
-    void onCreateEntity(Card* card);
-    void handleSceneClick(QPointF point);
+    void selectCard(Card* card);
+    void addEntity(QPointF point);
 
 };
 
