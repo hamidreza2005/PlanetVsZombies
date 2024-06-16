@@ -3,6 +3,10 @@
 #include <QFont>
 #include <cstdlib>
 #include <ctime>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsTextItem>
+#include <QMouseEvent>
+#include <QDebug>
 #include "entities/zombie/RegularZombie.h"
 #include "entities/zombie/BucketHeadZombie.h"
 #include "entities/zombie/TallZombie.h"
@@ -10,10 +14,30 @@
 #include "entities/zombie/PurpleHairZombie.h"
 #include "entities/zombie/AstronautZombie.h"
 #include "entities/plant/PeaShooter.h"
-PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210), brainCount(0), sunCount(0) {
+
+QVector<std::function<GameEntity*()>> PlayGround::zombies = {
+    [](){return new RegularZombie;},
+    [](){return new BucketHeadZombie;},
+    [](){return new TallZombie;},
+    [](){return new LeafHeadZombie;},
+    [](){return new PurpleHairZombie;},
+    [](){return new AstronautZombie;},
+    };
+
+QVector<std::function<GameEntity*()>> PlayGround::plants = {
+    [](){return new PeaShooter;},
+    [](){return new PeaShooter;},
+    [](){return new PeaShooter;},
+    [](){return new PeaShooter;},
+    [](){return new PeaShooter;},
+    [](){return new PeaShooter;},
+    };
+
+
+PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
     srand(static_cast<unsigned int>(time(0)));
-   // isZombie = rand() % 2 == 0;
-    isZombie =true;
+    //isZombie = rand() % 2 == 0;
+    isZombie=true;
 
     this->setFixedSize(1000, 700);
 
@@ -27,21 +51,14 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210)
     if (isZombie) {
         createZombieCards();
         setupPlayerZombieInfo();
-    }
-    else {
+    } else {
         createPlantCards();
         setupPlayerPlantInfo();
     }
 
     setupLayout();
 
-    auto* z1 = new RegularZombie();
-    z1->setPos(200, 153);
-    scene->addItem(z1);
-
-    auto* p1 = new PeaShooter();
-    p1->setPos(50,158);
-    scene->addItem(p1);
+    graphicsView->viewport()->installEventFilter(this);
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PlayGround::updateTimer);
@@ -50,32 +67,24 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210)
 
 void PlayGround::setupPlayerZombieInfo() {
     playerZombieName = new QLabel("Zombie Player", this);
-    //set name of the player instead of "Zombie Player"
     remainingZombieTime = new QLabel("Time: 03:30", this);
     brainBar = new QProgressBar(this);
     brainBar->setRange(0, 100);
     brainBar->setValue(0);
     brainBar->setFormat("%v");
+
+    QFont font("Arial", 10, QFont::Bold);
+    playerZombieName->setFont(font);
+    remainingZombieTime->setFont(font);
+    brainBar->setFont(font);
+
+    playerZombieName->setStyleSheet("QLabel { color : blue; }");
+    remainingZombieTime->setStyleSheet("QLabel { color : black; }");
+    brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
 }
-
-// void PlayGround::setupPlayerZombieInfo() {
-//     playerZombieName = new QLabel("zombie Player: ", this);
-//     brainCount = new QLabel("Brains: 0", this);
-//     remainingZombieTime = new QLabel("Time: 00:00", this);
-
-//     QFont font("Arial", 10, QFont::Bold);
-//     playerZombieName->setFont(font);
-//     remainingZombieTime->setFont(font);
-//     brainBar->setFont(font);
-
-//     playerZombieName->setStyleSheet("QLabel { color : blue; }");
-//     remainingZombieTime->setStyleSheet("QLabel { color : green; }");
-//     brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
-// }
 
 void PlayGround::setupPlayerPlantInfo() {
     playerPlantName = new QLabel("Plant Player", this);
-    //set name of the player instead of "Plant Player"
     remainingPlantTime = new QLabel("Time: 03:30", this);
     sunBar = new QProgressBar(this);
     sunBar->setRange(0, 100);
@@ -88,12 +97,12 @@ void PlayGround::setupPlayerPlantInfo() {
     sunBar->setFont(font);
 
     playerPlantName->setStyleSheet("QLabel { color : blue; }");
-    remainingPlantTime->setStyleSheet("QLabel { color : green; }");
+    remainingPlantTime->setStyleSheet("QLabel { color : black; }");
     sunBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: yellow; }");
 }
 
 void PlayGround::setupGround() {
-    this->ground = new Ground();
+    auto* ground = new Ground();
     ground->setPos(-260, -40);
     scene->addItem(ground);
 }
@@ -106,8 +115,7 @@ void PlayGround::setupLayout() {
         infoLayout->addWidget(playerZombieName);
         infoLayout->addWidget(brainBar);
         infoLayout->addWidget(remainingZombieTime);
-    }
-    else {
+    } else {
         infoLayout->addWidget(playerPlantName);
         infoLayout->addWidget(sunBar);
         infoLayout->addWidget(remainingPlantTime);
@@ -125,24 +133,14 @@ void PlayGround::setupLayout() {
     setLayout(mainLayout);
 
     QVector<Card*>& cards = isZombie ? zombieCards : plantCards;
-
     for (auto* card : cards) {
         cardScene->addItem(card);
     }
 }
 
 void PlayGround::createZombieCards() {
-    QVector<std::function<GameEntity*()>> zombies = {
-            [](){return new RegularZombie;},
-            [](){return new BucketHeadZombie;},
-            [](){return new TallZombie;},
-            [](){return new LeafHeadZombie;},
-            [](){return new PurpleHairZombie;},
-            [](){return new AstronautZombie;},
-    };
-
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card(zombies[i]);
+        auto* card = new Card(this->zombies[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::createEntity, this, &PlayGround::onCreateEntity);
         zombieCards.push_back(card);
@@ -150,17 +148,8 @@ void PlayGround::createZombieCards() {
 }
 
 void PlayGround::createPlantCards() {
-    QVector<std::function<GameEntity*()>> plants = {
-            [](){return new PeaShooter;},
-            [](){return new PeaShooter;},
-            [](){return new PeaShooter;},
-            [](){return new PeaShooter;},
-            [](){return new PeaShooter;},
-            [](){return new PeaShooter;},
-    };
-
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card(plants[i]);
+        auto* card = new Card(this->plants[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::createEntity, this, &PlayGround::onCreateEntity);
         plantCards.push_back(card);
@@ -177,12 +166,10 @@ void PlayGround::updateTimer() {
                                  .arg(seconds, 2, 10, QLatin1Char('0'));
         if (isZombie) {
             remainingZombieTime->setText(timeString);
-        }
-        else {
+        } else {
             remainingPlantTime->setText(timeString);
         }
-    }
-    else {
+    } else {
         timer->stop();
     }
 }
@@ -200,7 +187,64 @@ void PlayGround::updateSunCount(int amount) {
 }
 
 void PlayGround::onCreateEntity(Card *card) {
-    auto* newEntity = card->getEntityFactory()();
-    newEntity->setPos(300, 153);
+    if (selectedCard == card) {
+        selectedCard = nullptr;
+    } else {
+        selectedCard = card;
+    }
+}
+
+bool PlayGround::eventFilter(QObject* obj, QEvent* event) {
+    if (event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+        handleSceneClick(mouseEvent->pos());
+    }
+    return QWidget::eventFilter(obj, event);
+}
+
+void PlayGround::handleSceneClick(QPointF point) {
+    if (!selectedCard) {
+        return;
+    }
+
+    int x = point.x();
+    int y = point.y();
+
+    if (x < 485 || x > 1000 || y < -80 || y > 470) {
+        return;
+    }
+
+    int finalX = 750;
+    int finalY;
+
+    if (y <= 0) {
+        finalY = 0;
+    }
+    else if (y <= 78) {
+        finalY = 77.6;
+    }
+    else if (y <= 156) {
+        finalY = 155.2;
+    }
+    else if (y <= 233) {
+        finalY = 232.8;
+    }
+    else if (y <= 311) {
+        finalY = 310.4;
+    }
+    else if (y <=389) {
+        qDebug() << y ;
+        finalY = 388;
+    }
+    else{
+        finalY = 465;
+    }
+
+    qDebug() << finalY;
+    finalY-=77.6;
+    auto* newEntity = selectedCard->getEntityFactory()();
+    newEntity->setPos(finalX, finalY);
+    qDebug() << finalY ;
     scene->addItem(newEntity);
+    selectedCard = nullptr;
 }

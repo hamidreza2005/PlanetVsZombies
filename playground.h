@@ -18,6 +18,10 @@ class PlayGround : public QWidget
     Q_OBJECT
 public:
     explicit PlayGround(QWidget *parent = nullptr);
+protected:
+    bool eventFilter(QObject* obj, QEvent* event) override;
+    static QVector<std::function<GameEntity*()>> zombies;
+    static QVector<std::function<GameEntity*()>> plants;
 private slots:
     void updateTimer();
     void updateBrainCount(int amount);
@@ -40,6 +44,7 @@ private:
     int remainingSeconds;
     int brainCount;
     int sunCount;
+    Card* selectedCard;
 
     void createZombieCards();
     void createPlantCards();
@@ -47,9 +52,12 @@ private:
     void setupPlayerPlantInfo();
     void setupGround();
     void setupLayout();
-
+    void createGridLabels();
+    void placeEntityAt(int row, int col);
 public slots:
     void onCreateEntity(Card* card);
+    void handleSceneClick(QPointF point);
+
 };
 
-#endif
+#endif // PLAYGROUND_H
