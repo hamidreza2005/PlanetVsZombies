@@ -17,7 +17,7 @@ bool Rules::is8CharacterMin(const QString &field) {
 }
 
 bool Rules::isPhoneNumber(const QString &phone) {
-    QRegularExpression phonePattern(R"(\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d)");
+    QRegularExpression phonePattern(R"(^09\d{9}$)");
     QRegularExpressionMatch match = phonePattern.match(phone);
     return match.hasMatch();
 }
