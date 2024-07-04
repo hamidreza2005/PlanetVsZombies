@@ -3,17 +3,17 @@
 #include "QMap"
 #include "QTcpSocket"
 #include "QVector"
-
+#include "TcpSocket.h"
 class Controller {
-    static QMap<QString,std::function<void(QTcpSocket*,QVector<QString>&)>> *routes;
+    static QMap<QString,std::function<void(TcpSocket*,QVector<QString>&)>> *routes;
 public:
     Controller();
 
-    static void addRoute(const QString &name,std::function<void(QTcpSocket*,QVector<QString>&)> action);
+    static void addRoute(const QString &name,std::function<void(TcpSocket*,QVector<QString>&)> action);
     static bool hasRoute(const QString &name);
-    static std::function<void(QTcpSocket*,QVector<QString>&)> getAction(const QString &name);
+    static std::function<void(TcpSocket*,QVector<QString>&)> getAction(const QString &name);
 
-    void initializeRoutes();
+    static void initializeRoutes();
 };
 
 

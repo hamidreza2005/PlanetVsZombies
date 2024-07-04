@@ -5,3 +5,6 @@ CMakeLists.txt.user
 .idea
 resources.qrc.autosave
 CMakeLists.txt
+server/cmake-build-debug
+server/build
+server/.idea

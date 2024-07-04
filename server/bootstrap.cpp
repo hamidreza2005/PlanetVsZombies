@@ -2,6 +2,8 @@
 #include "iostream"
 #include "QThread"
 #include "Controller.h"
+#include "TcpSocket.h"
+
 using namespace std;
 
 const int Bootstrap::PORT = 2000;
@@ -21,7 +23,7 @@ Bootstrap::~Bootstrap()
 
 void Bootstrap::server_newConnection()
 {
-    QTcpSocket * new_client = server->nextPendingConnection();
+    QTcpSocket *new_client = server->nextPendingConnection();
     new_client->setObjectName("Client " + QString::number(clients.size() + 1));
     cout << "New Client Arrived" << endl;
     clients.append(new_client);
@@ -43,7 +45,7 @@ void Bootstrap::socket_readyRead(QTcpSocket *socket)
     if(response.isEmpty()){
         return;
     }
-    QVector<QString> responseParts = response.split(":").toVector();
+    QVector<QString> responseParts = response.split("|").toVector();
 
     if(responseParts.empty()){
         qDebug() << "request is invalid";
@@ -51,15 +53,14 @@ void Bootstrap::socket_readyRead(QTcpSocket *socket)
     }
 
     QString routeName = responseParts.first();
+    auto* sock = new TcpSocket(socket);
+
     if (!Controller::hasRoute(routeName)){
         socket->write("Error:404 not found\n");
         return;
     }
     responseParts.pop_front();
-    auto action = Controller::getAction(routeName);
-    action(socket,responseParts);
-    socket->flush();
-    socket->waitForBytesWritten(3000);
+    Controller::getAction(routeName)(sock,responseParts);
 }
 
 void Bootstrap::socket_bytesWritten(QTcpSocket *_socket)
