@@ -11,6 +11,7 @@ find_package(Qt6 COMPONENTS
         Core
         Gui
         Widgets
+        Network
         REQUIRED)
 
 add_executable(PlanetVsZombies main.cpp
@@ -38,12 +39,18 @@ add_executable(PlanetVsZombies main.cpp
         entities/zombie/PurpleHairZombie.cpp
         entities/zombie/PurpleHairZombie.h
         entities/zombie/AstronautZombie.cpp
-        entities/zombie/AstronautZombie.h)
+        entities/zombie/AstronautZombie.h
+        windows/register.cpp
+        windows/register.h
+        windows/register.ui
+        core/ClientSocket.cpp
+        core/ClientSocket.h)
 
 target_link_libraries(PlanetVsZombies
         Qt::Core
         Qt::Gui
         Qt::Widgets
+        Qt6::Network
 )
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
