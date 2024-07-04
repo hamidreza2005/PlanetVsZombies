@@ -7,7 +7,7 @@
 class Controller {
     static QMap<QString,std::function<void(TcpSocket*,const QJsonObject&)>> *routes;
 public:
-    Controller();
+    Controller() = default;
 
     static void addRoute(const QString &name,const std::function<void(TcpSocket*,const QJsonObject&)>& action);
     static bool hasRoute(const QString &name);

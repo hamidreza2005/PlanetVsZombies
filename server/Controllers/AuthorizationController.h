@@ -3,8 +3,11 @@
 #include "../TcpSocket.h"
 #include <QJsonObject>
 
-
 class AuthorizationController {
+private:
+    static QJsonObject getUserDataToRegister(const QJsonObject &request);
+    static QJsonObject userUniqueDataErrors(const QJsonObject &data);
+    static QString hashString(const QString& str);
 public:
     static void login(TcpSocket* socket,const QJsonObject& request);
     static void registration(TcpSocket* socket,const QJsonObject& request);
