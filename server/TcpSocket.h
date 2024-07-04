@@ -10,6 +10,7 @@ private:
 public:
     TcpSocket(QTcpSocket* socket);
     void write(const QString& data);
+    void write(const QJsonObject & data);
 };
 
 

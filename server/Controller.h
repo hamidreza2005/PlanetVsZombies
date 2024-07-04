@@ -5,13 +5,13 @@
 #include "QVector"
 #include "TcpSocket.h"
 class Controller {
-    static QMap<QString,std::function<void(TcpSocket*,QVector<QString>&)>> *routes;
+    static QMap<QString,std::function<void(TcpSocket*,const QJsonObject&)>> *routes;
 public:
     Controller();
 
-    static void addRoute(const QString &name,std::function<void(TcpSocket*,QVector<QString>&)> action);
+    static void addRoute(const QString &name,const std::function<void(TcpSocket*,const QJsonObject&)>& action);
     static bool hasRoute(const QString &name);
-    static std::function<void(TcpSocket*,QVector<QString>&)> getAction(const QString &name);
+    static std::function<void(TcpSocket*,const QJsonObject&)> getAction(const QString &name);
 
     static void initializeRoutes();
 };

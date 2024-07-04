@@ -1,3 +1,5 @@
+#include <QJsonDocument>
+#include <QJsonObject>
 #include "bootstrap.h"
 #include "iostream"
 #include "QThread"
@@ -45,22 +47,25 @@ void Bootstrap::socket_readyRead(QTcpSocket *socket)
     if(response.isEmpty()){
         return;
     }
-    QVector<QString> responseParts = response.split("|").toVector();
+    QVector<QString> responseParts = response.split("||").toVector();
 
-    if(responseParts.empty()){
+    if(responseParts.size() < 2){
         qDebug() << "request is invalid";
         return;
     }
 
     QString routeName = responseParts.first();
+    responseParts.pop_front();
+    QJsonDocument doc = QJsonDocument::fromJson(responseParts.first().toUtf8());
+    QJsonObject json = doc.object();
     auto* sock = new TcpSocket(socket);
 
     if (!Controller::hasRoute(routeName)){
         socket->write("Error:404 not found\n");
         return;
     }
-    responseParts.pop_front();
-    Controller::getAction(routeName)(sock,responseParts);
+
+    Controller::getAction(routeName)(sock,json);
 }
 
 void Bootstrap::socket_bytesWritten(QTcpSocket *_socket)
