@@ -11,7 +11,7 @@ void TcpSocket::write(const QString& data){
     socket->waitForBytesWritten(3000);
 }
 
-void TcpSocket::write(const QJsonObject &data) {
+void TcpSocket::write(QJsonObject &data) {
     QJsonDocument responseDoc(data);
     socket->write(responseDoc.toJson());
     socket->flush();

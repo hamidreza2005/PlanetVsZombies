@@ -3,7 +3,7 @@
 #include "QMap"
 #include "QTcpSocket"
 #include "QVector"
-#include "TcpSocket.h"
+#include "../TcpSocket.h"
 class Controller {
     static QMap<QString,std::function<void(TcpSocket*,const QJsonObject&)>> *routes;
 public:

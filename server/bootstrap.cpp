@@ -3,7 +3,7 @@
 #include "bootstrap.h"
 #include "iostream"
 #include "QThread"
-#include "Controller.h"
+#include "Controllers/Controller.h"
 #include "TcpSocket.h"
 
 using namespace std;
@@ -21,6 +21,7 @@ Bootstrap::Bootstrap()
 Bootstrap::~Bootstrap()
 {
     delete server;
+    delete controller;
 }
 
 void Bootstrap::server_newConnection()
@@ -97,28 +98,3 @@ void Bootstrap::run()
         qDebug() << "Server is ready on " << HOST << ":" << PORT;
     }
 }
-
-
-void Bootstrap::on_disconnect_clicked()
-{
-    if (!server)
-    {
-//        ui->output->append("Not connected yet!");
-    } else
-    {
-        for (auto& _socket : clients) {
-            if (!_socket)
-            {
-                delete _socket;
-            }
-
-            _socket = nullptr;
-        }
-
-        delete server;
-        server = nullptr;
-        cout << ("Disconnected!");
-    }
-
-}
-

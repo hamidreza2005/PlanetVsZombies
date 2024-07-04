@@ -5,7 +5,7 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 #include <QList>
-#include "Controller.h"
+#include "Controllers/Controller.h"
 
 class Bootstrap : public QObject
 {
@@ -19,7 +19,7 @@ private:
     void run();
 public:
     Bootstrap();
-    ~Bootstrap();
+    ~Bootstrap() override;
 
 public slots:
     void server_newConnection();
@@ -27,9 +27,5 @@ public slots:
     void socket_readyRead(QTcpSocket *_socket);
     void socket_bytesWritten(QTcpSocket *_socket);
     void socket_disconnected(QTcpSocket *_socket);
-
-private slots:
-
-    void on_disconnect_clicked();
 };
 #endif // MAINWINDOW_H

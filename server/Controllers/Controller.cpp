@@ -1,5 +1,6 @@
 #include <QJsonObject>
 #include "Controller.h"
+#include "AuthorizationController.h"
 
 QMap<QString, std::function<void(TcpSocket*,const QJsonObject&)>> *Controller::routes = new QMap<QString,std::function<void(TcpSocket*,const QJsonObject&)>>;
 
@@ -20,13 +21,6 @@ std::function<void(TcpSocket*,const QJsonObject&)> Controller::getAction(const Q
 }
 
 void Controller::initializeRoutes() {
-    Controller::addRoute("login",[](TcpSocket* socket,const QJsonObject& list){
-        socket->write("hi");
-    });
-
-    Controller::addRoute("register",[](TcpSocket* socket,const QJsonObject& list){
-        QJsonObject response;
-        response["status"] = "ok";
-        socket->write(response);
-    });
+    Controller::addRoute("login",AuthorizationController::login);
+    Controller::addRoute("register",AuthorizationController::registration);
 }
