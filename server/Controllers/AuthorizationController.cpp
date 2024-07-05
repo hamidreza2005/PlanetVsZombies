@@ -4,7 +4,32 @@
 #include <QCryptographicHash>
 
 void AuthorizationController::login(TcpSocket *socket, const QJsonObject &request) {
-    socket->write("hi");
+    Validator validator;
+    validator.validate(request,{
+            {"password",{"min:8"}},
+            {"username",{}}
+    });
+    if (!validator.successfull()){
+        socket->sendValidationError(validator.getErrorsAsJsonValue());
+        return;
+    }
+
+    QJsonObject response;
+    try{
+        auto user = DB::getInstance()->findUser({
+                {"username",request["username"]},
+                {"password",AuthorizationController::hashString(request["password"].toString())},
+        });
+        response["status"] = "200";
+        response["user"] = user;
+        socket->write(response);
+    }catch(const std::invalid_argument &e){
+        QJsonObject errorBag;
+        QJsonArray error;
+        error.append(e.what());
+        errorBag["username"] = error;
+        socket->sendValidationError(QJsonValue(errorBag),404);
+    }
 }
 
 void AuthorizationController::registration(TcpSocket *socket, const QJsonObject &request) {
@@ -16,7 +41,6 @@ void AuthorizationController::registration(TcpSocket *socket, const QJsonObject 
             {"name",{}},
             {"username",{}}
     });
-    QJsonObject response;
     if (!validator.successfull()){
         socket->sendValidationError(validator.getErrorsAsJsonValue());
         return;
@@ -33,6 +57,7 @@ void AuthorizationController::registration(TcpSocket *socket, const QJsonObject 
         return;
     }
 
+    QJsonObject response;
     DB::getInstance()->createUser(AuthorizationController::getUserDataToRegister(request));
     response["status"] = "200";
     socket->write(response);

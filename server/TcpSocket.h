@@ -11,7 +11,7 @@ public:
     TcpSocket(QTcpSocket* socket);
     void write(const QString& data);
     void write(QJsonObject & data);
-    void sendValidationError(QJsonValue errors);
+    void sendValidationError(QJsonValue errors,int statusCode = 419);
 };
 
 

@@ -15,6 +15,7 @@ public:
     QJsonArray getUsers();
     bool exists(const QString& field,const QString& value);
     void createUser(const QJsonObject &data);
+    QJsonObject findUser(const QJsonObject &data);
 
     static DB* getInstance();
     DB(DB const&) = delete;

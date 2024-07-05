@@ -56,18 +56,23 @@ bool DB::exists(const QString &field, const QString &value) {
 
     return false;
 }
-//bool AuthorizationService::userExists(QString username, QString password) {
-//    QJsonArray users = this->getUsers();
-//    string hashedPassword = AuthorizationService::hashPassword(password);
-//    for(auto user: users){
-//        auto userObj = user.toObject();
-//        if(
-//                userObj.value("username").toString() == username
-//                && userObj.value("password").toString() == QString::fromStdString(hashedPassword)
-//                ){
-//            return true;
-//        }
-//    }
-//    return false;
-//}
-//
+
+QJsonObject DB::findUser(const QJsonObject &data) {
+    if (data.isEmpty()){
+        throw std::invalid_argument("Your Query Data is Empty");
+    }
+    auto users = this->getUsers();
+    for(auto && it : users){
+        auto user = it.toObject();
+        int MatchedFields = 0;
+        for(auto dataIt = data.constBegin();dataIt != data.constEnd();dataIt++){
+            if (user.value(dataIt.key()) == dataIt.value()){
+                MatchedFields++;
+            }
+        }
+        if (MatchedFields == data.size()){
+            return user;
+        }
+    }
+    throw std::invalid_argument("User does not Exists");
+}

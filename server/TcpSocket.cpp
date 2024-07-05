@@ -19,9 +19,9 @@ void TcpSocket::write(QJsonObject &data) {
     socket->waitForBytesWritten(3000);
 }
 
-void TcpSocket::sendValidationError(QJsonValue errors) {
+void TcpSocket::sendValidationError(QJsonValue errors,int statusCode) {
     QJsonObject response;
     response["errors"] = errors;
-    response["status"] = 419;
+    response["status"] = statusCode;
     this->write(response);
 }
