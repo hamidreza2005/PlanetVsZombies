@@ -65,7 +65,7 @@ void Bootstrap::socket_readyRead(QTcpSocket *socket)
         socket->write("Error:404 not found\n");
         return;
     }
-
+    qDebug() << "Route " << routeName << " Called By " << socket->objectName();
     Controller::getAction(routeName)(sock,json);
 }
 

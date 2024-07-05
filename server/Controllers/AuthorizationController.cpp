@@ -26,7 +26,7 @@ void AuthorizationController::login(TcpSocket *socket, const QJsonObject &reques
     }catch(const std::invalid_argument &e){
         QJsonObject errorBag;
         QJsonArray error;
-        error.append(e.what());
+        error.append("Username Or Password is Incorrect");
         errorBag["username"] = error;
         socket->sendValidationError(QJsonValue(errorBag),404);
     }

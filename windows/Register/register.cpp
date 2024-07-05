@@ -37,7 +37,7 @@ void Register::on_submit_clicked() {
 void Register::handleServerResponse(const QJsonObject &data) {
     if (data["status"] == "200"){
         QMessageBox::information(this,"Success","your registration was successfull",QMessageBox::Ok);
-        exit(0);
+//        exit(0);
     }
     this->showErrors(data["errors"].toObject());
 }
