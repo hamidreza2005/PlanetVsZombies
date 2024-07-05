@@ -64,10 +64,6 @@ void Register::on_loginLink_clicked() {
     this->goToLoginPage(this);
 }
 
-void Register::disconnectDataListener() {
-    disconnect(this->dataListener);
-}
-
 void Register::connectDataListener() {
     dataListener = connect(socket, &ClientSocket::dataReceived, this, &Register::handleServerResponse);
 }

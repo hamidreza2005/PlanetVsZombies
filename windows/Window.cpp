@@ -17,3 +17,7 @@ void Window::showValidationErrors(QWidget* window,const QJsonObject &errors) {
 Window::~Window() {
     delete socket;
 }
+
+void Window::disconnectDataListener() {
+    disconnect(dataListener);
+}

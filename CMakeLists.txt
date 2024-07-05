@@ -55,6 +55,9 @@ add_executable(PlanetVsZombies main.cpp
         windows/Dashboard/dashboard.ui
         windows/mainwindow.cpp
         windows/mainwindow.h
+        windows/ResetPassword/resetpassword.cpp
+        windows/ResetPassword/resetpassword.h
+        windows/ResetPassword/resetpassword.ui
 )
 
 target_link_libraries(PlanetVsZombies

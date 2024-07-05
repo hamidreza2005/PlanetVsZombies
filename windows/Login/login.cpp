@@ -57,13 +57,13 @@ bool Login::fieldsAreNotEmpty() {
 }
 
 void Login::on_registerLink_clicked() {
-    goToRegisterPage(this);
-}
-
-void Login::disconnectDataListener() {
-    disconnect(dataListener);
+    emit goToRegisterPage(this);
 }
 
 void Login::connectDataListener() {
     dataListener = connect(socket, &ClientSocket::dataReceived, this, &Login::handleServerResponse);
+}
+
+void Login::on_resetPassword_clicked() {
+    emit goToResetPasswordPage(this);
 }

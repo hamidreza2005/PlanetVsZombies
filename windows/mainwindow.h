@@ -6,6 +6,7 @@
 #include "Login/login.h"
 #include "Register/register.h"
 #include "Dashboard/dashboard.h"
+#include "ResetPassword/resetpassword.h"
 #include "Window.h"
 
 class MainWindow : public QMainWindow {
@@ -21,12 +22,14 @@ private:
     Login *loginWindow;
     Register *registerWindow;
     Dashboard *dashboardWindow;
+    ResetPassword *resetPasswordWindow;
     ClientSocket* socket;
 
 public slots:
     void showLoginWindow(Window* senderWindow = nullptr);
     void showRegisterWindow(Window* senderWindow = nullptr);
     void showDashboardWindow(Window* senderWindow = nullptr);
+    void showResetPasswordWindow(Window* senderWindow = nullptr);
 };
 
 

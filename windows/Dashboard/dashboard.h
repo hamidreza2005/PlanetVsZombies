@@ -13,9 +13,8 @@ Q_OBJECT
 
 public:
     explicit Dashboard(ClientSocket* clientSocket,QWidget *parent = nullptr);
-    void disconnectDataListener() override;
     void handleServerResponse(const QJsonObject &data) override;
-    void connectDataReceiver() override;
+    void connectDataListener() override;
     ~Dashboard() override;
 
 private:

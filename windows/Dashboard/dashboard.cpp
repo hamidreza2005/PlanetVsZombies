@@ -15,10 +15,6 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
 
 }
 
-void Dashboard::disconnectDataListener() {
-    disconnect(dataListener);
-}
-
-void Dashboard::connectDataReceiver() {
+void Dashboard::connectDataListener() {
     dataListener = connect(socket, &ClientSocket::dataReceived, this, &Dashboard::handleServerResponse);
 }
