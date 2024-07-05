@@ -17,7 +17,7 @@ MainWindow::MainWindow(ClientSocket* clientSocket,QWidget *parent) :
     // Connect signals to slots
     connect(loginWindow, &Login::goToRegisterPage, this, &MainWindow::showRegisterWindow);
     connect(loginWindow, &Login::goToDashboardPage, this, &MainWindow::showDashboardWindow);
-//    connect(registerWindow, &RegisterWindow::showLogin, this, &MainWindow::showLoginWindow);
+    connect(registerWindow, &Register::goToLoginPage, this, &MainWindow::showLoginWindow);
 
     // Show the login window by default
     showLoginWindow();

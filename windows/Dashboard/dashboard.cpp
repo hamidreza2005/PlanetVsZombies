@@ -8,7 +8,7 @@
 #include "ui_Dashboard.h"
 
 
-Dashboard::Dashboard(QWidget *parent) :
+Dashboard::Dashboard(ClientSocket* clientSocket,QWidget *parent) :
         QWidget(parent), ui(new Ui::Dashboard) {
     ui->setupUi(this);
 }

@@ -3,9 +3,8 @@
 #include "QMessageBox"
 
 Register::Register(ClientSocket* clientSocket,QWidget *parent) :
-        QWidget(parent), ui(new Ui::Register),socket(clientSocket) {
+        Window(clientSocket,parent), ui(new Ui::Register) {
     ui->setupUi(this);
-    dataListener = connect(clientSocket, &ClientSocket::dataReceived, this, &Register::handleServerResponse);
 }
 
 Register::~Register() {
@@ -15,6 +14,7 @@ Register::~Register() {
 }
 
 void Register::on_submit_clicked() {
+    dataListener = connect(socket, &ClientSocket::dataReceived, this, &Register::handleServerResponse);
     if(this->fieldsAreNotEmpty()){
         QMessageBox::information(this,"Error","Please Fill out all the fields");
         return;
@@ -37,9 +37,10 @@ void Register::on_submit_clicked() {
 void Register::handleServerResponse(const QJsonObject &data) {
     if (data["status"] == "200"){
         QMessageBox::information(this,"Success","your registration was successfull",QMessageBox::Ok);
-//        exit(0);
+        emit this->goToLoginPage(this);
+        return;
     }
-    this->showErrors(data["errors"].toObject());
+    Window::showValidationErrors(this,data["errors"].toObject());
 }
 
 bool Register::fieldsAreNotEmpty() {
@@ -59,10 +60,10 @@ bool Register::fieldsAreNotEmpty() {
     return false;
 }
 
-void Register::showErrors(const QJsonObject &errors) {
-    QString message = "";
-    for(auto it = errors.constBegin();it != errors.constEnd();it++){
-        message += it.key() + " : " + it.value()[0].toString() + "\n";
-    }
-    QMessageBox::critical(this,"Error",message);
+void Register::on_loginLink_clicked() {
+    this->goToLoginPage(this);
+}
+
+void Register::disconnectDataListener() {
+    disconnect(this->dataListener);
 }

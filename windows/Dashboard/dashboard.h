@@ -1,11 +1,8 @@
-//
-// Created by hrhas on 7/5/2024.
-//
-
 #ifndef PLANETVSZOMBIES_DASHBOARD_H
 #define PLANETVSZOMBIES_DASHBOARD_H
 
 #include <QWidget>
+#include "../../core/ClientSocket.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -16,7 +13,7 @@ class Dashboard : public QWidget {
 Q_OBJECT
 
 public:
-    explicit Dashboard(QWidget *parent = nullptr);
+    explicit Dashboard(ClientSocket* clientSocket,QWidget *parent = nullptr);
 
     ~Dashboard() override;
 

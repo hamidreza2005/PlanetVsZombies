@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(PlanetVsZombies)
+project(server)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
@@ -9,58 +9,30 @@ set(CMAKE_PREFIX_PATH "C:\\Qt\\6.7.0\\mingw_64\\lib\\cmake")
 
 find_package(Qt6 COMPONENTS
         Core
-        Gui
-        Widgets
         Network
         REQUIRED)
 
-add_executable(PlanetVsZombies main.cpp
-    resources.qrc
-    playground.h playground.cpp
-        Card.cpp
-        Card.h
-        entities/zombie/Zombie.cpp
-        entities/zombie/Zombie.h
-        ground.h ground.cpp
-        entities/zombie/RegularZombie.cpp
-        entities/zombie/RegularZombie.h
-        entities/GameEntity.cpp
-        entities/GameEntity.h
-        entities/plant/Plant.cpp
-        entities/plant/Plant.h
-        entities/plant/PeaShooter.cpp
-        entities/plant/PeaShooter.h
-        entities/zombie/TallZombie.cpp
-        entities/zombie/TallZombie.h
-        entities/zombie/BucketHeadZombie.cpp
-        entities/zombie/BucketHeadZombie.h
-        entities/zombie/LeafHeadZombie.cpp
-        entities/zombie/LeafHeadZombie.h
-        entities/zombie/PurpleHairZombie.cpp
-        entities/zombie/PurpleHairZombie.h
-        entities/zombie/AstronautZombie.cpp
-        entities/zombie/AstronautZombie.h
-        windows/Register/register.cpp
-        windows/Register/register.h
-        windows/Register/register.ui
-        core/ClientSocket.cpp
-        core/ClientSocket.h
-        windows/Login/login.cpp
-        windows/Login/login.h
-        windows/Login/login.ui
-        windows/Window.cpp
-        windows/Window.h
-        windows/Dashboard/dashboard.cpp
-        windows/Dashboard/dashboard.h
-        windows/Dashboard/dashboard.ui
-        windows/mainwindow.cpp
-        windows/mainwindow.h
+add_executable(server main.cpp
+        bootstrap.h
+        bootstrap.cpp
+        Controllers/Controller.cpp
+        Controllers/Controller.h
+        TcpSocket.cpp
+        TcpSocket.h
+        Controllers/AuthorizationController.cpp
+        Controllers/AuthorizationController.h
+        Controllers/Validation/Validator.cpp
+        Controllers/Validation/Validator.h
+        Controllers/Validation/Rules.cpp
+        Controllers/Validation/Rules.h
+        Database/DB.cpp
+        Database/DB.h
+        Database/DB.cpp
+        exceptions/ModelNotFoundException.cpp
+        exceptions/ModelNotFoundException.h
 )
-
-target_link_libraries(PlanetVsZombies
+target_link_libraries(server
         Qt::Core
-        Qt::Gui
-        Qt::Widgets
         Qt6::Network
 )
 
@@ -85,7 +57,7 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
                 "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/platforms/")
     endif ()
-    foreach (QT_LIB Core Gui Widgets)
+    foreach (QT_LIB Core)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/bin/Qt6${QT_LIB}${DEBUG_SUFFIX}.dll"
