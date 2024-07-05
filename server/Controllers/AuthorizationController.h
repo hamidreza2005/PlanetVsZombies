@@ -11,6 +11,7 @@ private:
 public:
     static void login(TcpSocket* socket,const QJsonObject& request);
     static void registration(TcpSocket* socket,const QJsonObject& request);
+    static void resetPassword(TcpSocket* socket,const QJsonObject& request);
 };
 
 

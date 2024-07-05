@@ -19,4 +19,5 @@ std::function<void(TcpSocket*,const QJsonObject&)> Controller::getAction(const Q
 void Controller::initializeRoutes() {
     Controller::addRoute("login",AuthorizationController::login);
     Controller::addRoute("register",AuthorizationController::registration);
+    Controller::addRoute("resetPassword",AuthorizationController::resetPassword);
 }

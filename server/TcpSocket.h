@@ -12,6 +12,7 @@ public:
     void write(const QString& data);
     void write(QJsonObject & data);
     void sendValidationError(QJsonValue errors,int statusCode = 419);
+    void sendValidationError(QString field,QString error,int statusCode = 419);
 };
 
 

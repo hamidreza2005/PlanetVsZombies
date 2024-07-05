@@ -2,6 +2,7 @@
 #include "Validation/Validator.h"
 #include "../Database/DB.h"
 #include <QCryptographicHash>
+#include "../exceptions/ModelNotFoundException.h"
 
 void AuthorizationController::login(TcpSocket *socket, const QJsonObject &request) {
     Validator validator;
@@ -23,12 +24,8 @@ void AuthorizationController::login(TcpSocket *socket, const QJsonObject &reques
         response["status"] = "200";
         response["user"] = user;
         socket->write(response);
-    }catch(const std::invalid_argument &e){
-        QJsonObject errorBag;
-        QJsonArray error;
-        error.append("Username Or Password is Incorrect");
-        errorBag["username"] = error;
-        socket->sendValidationError(QJsonValue(errorBag),404);
+    }catch(const ModelNotFoundException &e){
+        socket->sendValidationError("username","Username Or Password is Incorrect",404);
     }
 }
 
@@ -91,4 +88,29 @@ QJsonObject AuthorizationController::userUniqueDataErrors(const QJsonObject &dat
         }
     }
     return jsonObj;
+}
+
+void AuthorizationController::resetPassword(TcpSocket *socket, const QJsonObject &request) {
+    Validator validator;
+    validator.validate(request,{
+            {"password",{"min:8"}},
+            {"phone",{"phoneNumber"}},
+    });
+    if (!validator.successfull()){
+        socket->sendValidationError(validator.getErrorsAsJsonValue());
+        return;
+    }
+
+    try{
+        QJsonObject response;
+        DB::getInstance()->updateUser({
+            {"phoneNumber",request["phone"]},
+        },{{"password",AuthorizationController::hashString(request["password"].toString())}});
+
+        response["status"] = "200";
+        response["message"] = "Password Changed Successfully";
+        socket->write(response);
+    }catch(const ModelNotFoundException &e){
+        socket->sendValidationError("phoneNumber","phoneNumber does not exist",404);
+    }
 }

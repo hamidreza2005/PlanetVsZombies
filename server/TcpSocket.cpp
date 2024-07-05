@@ -1,5 +1,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include "TcpSocket.h"
 
 TcpSocket::TcpSocket(QTcpSocket* socket):socket(socket) {
@@ -24,4 +25,12 @@ void TcpSocket::sendValidationError(QJsonValue errors,int statusCode) {
     response["errors"] = errors;
     response["status"] = statusCode;
     this->write(response);
+}
+
+void TcpSocket::sendValidationError(QString field, QString error, int statusCode) {
+    QJsonObject errorBag;
+    QJsonArray errorsArray;
+    errorsArray.append(error);
+    errorBag[field] = errorsArray;
+    this->sendValidationError(QJsonValue(errorBag),statusCode);
 }

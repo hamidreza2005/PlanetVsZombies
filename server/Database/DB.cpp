@@ -3,6 +3,7 @@
 #include "QJsonObject"
 #include "QJsonDocument"
 #include "QFile"
+#include "../exceptions/ModelNotFoundException.h"
 
 const QString DB::path = "./db.json";
 DB* DB::instance = nullptr;
@@ -30,12 +31,7 @@ void DB::createUser(const QJsonObject &data) {
     QJsonArray jsonArray = this->getUsers();
     jsonArray.append(data);
 
-    QJsonDocument jsonDoc(jsonArray);
-    QByteArray jsonData = jsonDoc.toJson();
-    this->dbfile->seek(0);
-    this->dbfile->resize(0);
-    dbfile->write(jsonData);
-    dbfile->flush();
+    this->writeToDB(jsonArray);
 }
 
 DB* DB::getInstance() {
@@ -74,5 +70,68 @@ QJsonObject DB::findUser(const QJsonObject &data) {
             return user;
         }
     }
-    throw std::invalid_argument("User does not Exists");
+    throw new ModelNotFoundException("User does not Exists");
+}
+
+void DB::updateUser(const QJsonObject &userData, const QJsonObject &newData) {
+    auto users = this->getUsers();
+    for(auto it = users.begin();it != users.end();it++){
+        auto user = it->toObject();
+        int MatchedFields = 0;
+        for(auto dataIt = userData.constBegin();dataIt != userData.constEnd();dataIt++){
+            if (user.value(dataIt.key()) == dataIt.value()){
+                MatchedFields++;
+            }
+        }
+
+        if (MatchedFields != userData.size()){
+            continue;
+        }
+
+        for(auto newDataIt = newData.begin();newDataIt != newData.constEnd();newDataIt++){
+            user[newDataIt.key()] = newDataIt.value();
+        }
+        *it = user;
+        this->writeToDB(users);
+        return;
+    }
+
+    throw new ModelNotFoundException("User does not Exists");
+}
+
+void DB::deleteUser(const QJsonObject &userData) {
+    auto users = this->getUsers();
+    QJsonArray::iterator toBeDeletedUser = users.end();
+    for(auto it = users.begin();it != users.end();it++){
+        auto user = it->toObject();
+        int MatchedFields = 0;
+        for(auto dataIt = userData.constBegin();dataIt != userData.constEnd();dataIt++){
+            if (user.value(dataIt.key()) == dataIt.value()){
+                MatchedFields++;
+            }
+        }
+
+        if (MatchedFields != userData.size()){
+            continue;
+        }
+
+        toBeDeletedUser = it;
+        break;
+    }
+
+    if(toBeDeletedUser == users.end()){
+        throw new ModelNotFoundException("User does not Exists");
+    }else{
+        users.erase(toBeDeletedUser);
+        this->writeToDB(users);
+    }
+}
+
+void DB::writeToDB(QJsonArray &data) {
+    QJsonDocument jsonDoc(data);
+    QByteArray jsonData = jsonDoc.toJson();
+    this->dbfile->seek(0);
+    this->dbfile->resize(0);
+    dbfile->write(jsonData);
+    dbfile->flush();
 }
