@@ -14,7 +14,7 @@ Register::~Register() {
 }
 
 void Register::on_submit_clicked() {
-    dataListener = connect(socket, &ClientSocket::dataReceived, this, &Register::handleServerResponse);
+    this->connectDataListener();
     if(this->fieldsAreNotEmpty()){
         QMessageBox::information(this,"Error","Please Fill out all the fields");
         return;
@@ -66,4 +66,8 @@ void Register::on_loginLink_clicked() {
 
 void Register::disconnectDataListener() {
     disconnect(this->dataListener);
+}
+
+void Register::connectDataListener() {
+    dataListener = connect(socket, &ClientSocket::dataReceived, this, &Register::handleServerResponse);
 }

@@ -15,6 +15,7 @@ public:
     ~Login() override;
     void disconnectDataListener() override;
     void handleServerResponse(const QJsonObject &data) override;
+    void connectDataListener() override;
 public slots:
     void on_submit_clicked();
     void on_registerLink_clicked();

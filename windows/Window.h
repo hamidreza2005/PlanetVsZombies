@@ -13,6 +13,7 @@ protected:
 public:
     explicit Window(ClientSocket* clientSocket,QWidget *parent = nullptr);
     virtual void disconnectDataListener() = 0;
+    virtual void connectDataListener() = 0;
     virtual void handleServerResponse(const QJsonObject &data) = 0;
     virtual ~Window();
     static void showValidationErrors(QWidget* window,const QJsonObject &errors);
