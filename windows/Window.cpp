@@ -1,5 +1,19 @@
-//
-// Created by hrhas on 7/5/2024.
-//
-
+#include <QMessageBox>
 #include "Window.h"
+
+Window::Window(ClientSocket* clientSocket,QWidget *parent):
+        QWidget(parent),socket(clientSocket)
+{
+
+}
+void Window::showValidationErrors(QWidget* window,const QJsonObject &errors) {
+    QString message = "";
+    for(auto it = errors.constBegin();it != errors.constEnd();it++){
+        message += it.key() + " : " + it.value()[0].toString() + "\n";
+    }
+    QMessageBox::critical(window,"Error",message);
+}
+
+Window::~Window() {
+    delete socket;
+}
