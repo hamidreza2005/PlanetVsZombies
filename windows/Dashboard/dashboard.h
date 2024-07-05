@@ -1,20 +1,21 @@
 #ifndef PLANETVSZOMBIES_DASHBOARD_H
 #define PLANETVSZOMBIES_DASHBOARD_H
 
-#include <QWidget>
 #include "../../core/ClientSocket.h"
-
+#include "../Window.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Dashboard; }
 QT_END_NAMESPACE
 
-class Dashboard : public QWidget {
+class Dashboard : public Window {
 Q_OBJECT
 
 public:
     explicit Dashboard(ClientSocket* clientSocket,QWidget *parent = nullptr);
-
+    void disconnectDataListener() override;
+    void handleServerResponse(const QJsonObject &data) override;
+    void connectDataReceiver();
     ~Dashboard() override;
 
 private:

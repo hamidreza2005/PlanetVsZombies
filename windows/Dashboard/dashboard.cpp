@@ -1,18 +1,24 @@
-//
-// Created by hrhas on 7/5/2024.
-//
-
-// You may need to build the project (run Qt uic code generator) to get "ui_Dashboard.h" resolved
-
 #include "dashboard.h"
 #include "ui_Dashboard.h"
 
 
 Dashboard::Dashboard(ClientSocket* clientSocket,QWidget *parent) :
-        QWidget(parent), ui(new Ui::Dashboard) {
+        Window(clientSocket,parent), ui(new Ui::Dashboard) {
     ui->setupUi(this);
 }
 
 Dashboard::~Dashboard() {
     delete ui;
+}
+
+void Dashboard::handleServerResponse(const QJsonObject &data) {
+
+}
+
+void Dashboard::disconnectDataListener() {
+    disconnect(dataListener);
+}
+
+void Dashboard::connectDataReceiver() {
+    dataListener = connect(socket, &ClientSocket::dataReceived, this, &Dashboard::handleServerResponse);
 }
