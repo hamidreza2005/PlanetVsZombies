@@ -1,7 +1,8 @@
 #include <QJsonArray>
+#include <QMessageBox>
 #include "dashboard.h"
 #include "ui_Dashboard.h"
-
+#include "../../core/Cookie.h"
 
 Dashboard::Dashboard(ClientSocket* clientSocket,QWidget *parent) :
         Window(clientSocket,parent), ui(new Ui::Dashboard) {
@@ -31,8 +32,22 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
     }
 
     if (data.contains("state") && data.value("state") == "getReady"){
-        qDebug() << "ready to start the game";
-        // TODO: start the game
+        QMessageBox::StandardButton reply;
+        QString message = data.value("username").toString() + " Wants to play with you. Do you want to do it?";
+        reply = QMessageBox::question(this, "Ready Check", message,
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes){
+            try{
+                this->socket->sendJson("verifyReady", {{"username",Cookie::getInstance()->loggedInPlayer->getUsername()}});
+                qDebug() << "start the fucking game";
+            }catch (...){
+                Window::showConnectionLostError(this);
+            }
+        }
+    }
+
+    if (data.contains("state") && data.value("state") == "opponentIsReady"){
+        qDebug() << "start the fucking game";
     }
 }
 
@@ -56,7 +71,7 @@ void Dashboard::on_ready_clicked() {
         return;
     }
     try{
-        this->socket->sendJson("ready",QJsonObject({{"opponentIp",ip}}));
+        this->socket->sendJson("ready",QJsonObject({{"opponentIp",ip},{"username",Cookie::getInstance()->loggedInPlayer->getUsername()}}));
     }catch (...){
         Window::showConnectionLostError(this);
     }
@@ -74,4 +89,8 @@ void Dashboard::updateOnlineUsersBox(const QJsonArray &users) {
 void Dashboard::disconnectDataListener() {
     Window::disconnectDataListener();
     this->updateOnlineUsersTimer->stop();
+}
+
+void Dashboard::on_exit_clicked() {
+    exit(0);
 }
