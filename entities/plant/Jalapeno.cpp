@@ -4,7 +4,8 @@
 #include <QGraphicsScene>
 
 Jalapeno::Jalapeno() :
-    Plant(INITIAL_HEALTH, 150, INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER)
+    Plant(INITIAL_HEALTH, SUN_NEEDED_TO_CREATE
+, INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER)
 {
     this->setImage();
 }

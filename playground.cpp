@@ -140,23 +140,44 @@ void PlayGround::setupLayout() {
     }
 }
 
-void PlayGround::createZombieCards() {
-    for(int i = 0; i < 6; i++) {
-        auto* card = new Card(this->zombies[i]);
-        card->setPos(i * 150, 0);
-        QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
-        zombieCards.push_back(card);
-    }
-}
 
 void PlayGround::createPlantCards() {
-    for(int i = 0; i < 6; i++) {
-        auto* card = new Card(this->plants[i]);
+    for (int i = 0; i < plants.size(); i++) {
+        int cost;
+        if (i == 0) cost = 100; // PeaShooter
+        else if (i == 1) cost = 200; // TwoPeaShooter
+        else if (i == 2) cost = 50; // Walnut
+        else if (i == 3) cost = 125; // Boomerang
+        else if (i == 4) cost = 150; // Jalapeno
+        else cost = 175; // PlumMine
+
+        auto* card = new Card(this->plants[i], 100, 100, cost);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         plantCards.push_back(card);
+        scene->addItem(card);
     }
 }
+
+void PlayGround::createZombieCards() {
+    for (int i = 0; i < zombies.size(); i++) {
+        int cost;
+        if (i == 0) cost = 100; // RegularZombie
+        else if (i == 1) cost = 200; // BucketHeadZombie
+        else if (i == 2) cost = 150; // TallZombie
+        else if (i == 3) cost = 120; // LeafHeadZombie
+        else if (i == 4) cost = 180; // PurpleHairZombie
+        else cost = 200; // AstronautZombie
+
+        auto* card = new Card(this->zombies[i], 100, 100, cost);
+        card->setPos(i * 150, 0);
+        QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
+        zombieCards.push_back(card);
+        scene->addItem(card);
+    }
+}
+
+
 
 void PlayGround::updateTimer() {
     if (remainingSeconds > 0) {

@@ -8,7 +8,7 @@ Bullet::Bullet(int attackPower, int speed, QGraphicsItem* parent)
     : QObject(), QGraphicsPixmapItem(parent), attackPower(attackPower), speed(speed) {
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Bullet::move);
-    timer->start(50); // تنظیم زمان حرکت تیر
+    timer->start(50);
 }
 
 void Bullet::setImage(const QString& imagePath) {

@@ -8,6 +8,7 @@ class PlumMine : public Plant
     static const int INITIAL_HEALTH = 0;
     static const int INITIAL_ATTACK_POWER = 500;
     static const int INITIAL_FIRING_RATE = 0;
+    static const int SUN_NEEDED_TO_CREATE = 175;
 
 public:
     explicit PlumMine();
