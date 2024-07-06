@@ -110,7 +110,7 @@ void AuthorizationController::resetPassword(TcpSocket *socket, const QJsonObject
         response["status"] = "200";
         response["message"] = "Password Changed Successfully";
         socket->write(response);
-    }catch(ModelNotFoundException *e){
+    }catch(ModelNotFoundException &e){
         socket->sendValidationError("phoneNumber","phoneNumber does not exist",404);
     }
 }

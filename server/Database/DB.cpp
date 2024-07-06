@@ -70,7 +70,7 @@ QJsonObject DB::findUser(const QJsonObject &data) {
             return user;
         }
     }
-    throw new ModelNotFoundException("User does not Exists");
+    throw ModelNotFoundException("User does not Exists");
 }
 
 void DB::updateUser(const QJsonObject &userData, const QJsonObject &newData) {
@@ -96,7 +96,7 @@ void DB::updateUser(const QJsonObject &userData, const QJsonObject &newData) {
         return;
     }
 
-    throw new ModelNotFoundException("User does not Exists");
+    throw ModelNotFoundException("User does not Exists");
 }
 
 void DB::deleteUser(const QJsonObject &userData) {
