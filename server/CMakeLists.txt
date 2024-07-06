@@ -32,6 +32,8 @@ add_executable(server main.cpp
         exceptions/ModelNotFoundException.h
         Controllers/GameController.cpp
         Controllers/GameController.h
+        Player.cpp
+        Player.h
 )
 target_link_libraries(server
         Qt::Core

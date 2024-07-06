@@ -23,4 +23,5 @@ void Controller::initializeRoutes() {
     Controller::addRoute("resetPassword",AuthorizationController::resetPassword);
     Controller::addRoute("getOnlineUsers",GameController::getOnlineUsers);
     Controller::addRoute("ready",GameController::ready);
+    Controller::addRoute("verifyReady",GameController::verifyBeingReady);
 }
