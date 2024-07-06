@@ -12,6 +12,12 @@
 #include "entities/zombie/PurpleHairZombie.h"
 #include "entities/zombie/AstronautZombie.h"
 #include "entities/plant/PeaShooter.h"
+#include "entities/plant/TwoPeaShooter.h"
+#include "entities/plant/Boomrang.h"
+#include "entities/plant/Jalapeno.h"
+#include "entities/plant/Walnut.h"
+#include "entities/plant/Plummine.h"
+#include <QDebug>
 
 QVector<std::function<GameEntity*()>> PlayGround::zombies = {
     [](){return new RegularZombie;},
@@ -24,18 +30,18 @@ QVector<std::function<GameEntity*()>> PlayGround::zombies = {
 
 QVector<std::function<GameEntity*()>> PlayGround::plants = {
     [](){return new PeaShooter;},
-    [](){return new PeaShooter;},
-    [](){return new PeaShooter;},
-    [](){return new PeaShooter;},
-    [](){return new PeaShooter;},
-    [](){return new PeaShooter;},
+    [](){return new TwoPeaShooter;},
+    [](){return new Walnut;},
+    [](){return new Boomerang;},
+    [](){return new Jalapeno;},
+    [](){return new PlumMine;},
     };
 
 
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
     srand(static_cast<unsigned int>(time(0)));
     //isZombie = rand() % 2 == 0;
-    isZombie=true;
+    isZombie=false;
 
     this->setFixedSize(1000, 700);
 
@@ -209,39 +215,112 @@ void PlayGround::addEntity(QPointF point) {
     if (!selectedCard || this->isOutOfGround(&point)) {
         return;
     }
+    if(isZombie)
+    {
+        int y = point.y();
 
-    int y = point.y();
+        int finalX = 750;
+        int finalY;
 
-    int finalX = 750;
-    int finalY;
-
-    if (y <= 0) {
-        finalY = 0;
-    }
-    else if (y <= 78) {
-        finalY = 77.6;
-    }
-    else if (y <= 156) {
-        finalY = 155.2;
-    }
-    else if (y <= 233) {
-        finalY = 232.8;
-    }
-    else if (y <= 311) {
-        finalY = 310.4;
-    }
-    else if (y <=389) {
-        finalY = 388;
+        if (y <= 0) {
+            finalY = 0;
+        }
+        else if (y <= 78) {
+            finalY = 77.6;
+        }
+        else if (y <= 156) {
+            finalY = 155.2;
+        }
+        else if (y <= 233) {
+            finalY = 232.8;
+        }
+        else if (y <= 311) {
+            finalY = 310.4;
+        }
+        else if (y <=389) {
+            finalY = 388;
+        }
+        else{
+            finalY = 465;
+        }
+        finalY-=77.6;
+        auto* newEntity = selectedCard->getEntityFactory()();
+        newEntity->setPos(finalX, finalY);
+        scene->addItem(newEntity);
     }
     else{
-        finalY = 465;
+        int y = point.y();
+        int x = point.x();
+        //qDebug()<< x;
+        int finalX;
+        int finalY;
+        if (y <= 0) {
+            finalY = 0;
+        }
+        else if (y <= 78) {
+            finalY = 77.6;
+        }
+        else if (y <= 156) {
+            finalY = 155.2;
+        }
+        else if (y <= 233) {
+            finalY = 232.8;
+        }
+        else if (y <= 311) {
+            finalY = 310.4;
+        }
+        else if (y <=389) {
+            finalY = 388;
+        }
+        else{
+            finalY = 465;
+        }
+
+        finalY-=77.6;
+
+        if (x <= 30) {
+            finalX = 0;
+        }
+        else if (x <= 109) {
+            finalX = 70;
+        }
+        else if (x <= 184) {
+            finalX = 146.5;
+        }
+        else if (x <= 262) {
+            finalX = 223;
+        }
+        else if (x <= 339) {
+            finalX = 300.5;
+        }
+        else if (x <=417) {
+            finalX = 378;
+        }
+        else{
+            finalX = 453.5;
+        }
+        finalX-=207;
+        auto* newEntity = selectedCard->getEntityFactory()();
+        newEntity->setPos(finalX, finalY);
+        scene->addItem(newEntity);
     }
-    finalY-=77.6;
-    auto* newEntity = selectedCard->getEntityFactory()();
-    newEntity->setPos(finalX, finalY);
-    scene->addItem(newEntity);
 }
 
 bool PlayGround::isOutOfGround(const QPointF* point) {
-    return point->x() < 485 || point->x() > 1000 || point->y() < -80 || point->y() > 470;
+    if(isZombie){
+        return point->x() < 485 || point->x() > 1000 || point->y() < -80 || point->y() > 470;
+    }
+    else{
+        return point->x() < 30 || point->x() > 490 || point->y() < -80 || point->y() > 470;
+    }
+}
+
+bool PlayGround::isPositionOccupied(QPointF point) {
+    QList<QGraphicsItem*> items = scene->items(point);
+    for (QGraphicsItem* item : items) {
+        if (dynamic_cast<Plant*>(item)) {
+            return true;
+        }
+    }
+    return false;
 }

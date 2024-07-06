@@ -53,6 +53,8 @@ private:
     void setupGround();
     void setupLayout();
     bool isOutOfGround(const QPointF* point);
+    bool isPositionOccupied(QPointF point);
+
 public slots:
     void selectCard(Card* card);
     void addEntity(QPointF point);

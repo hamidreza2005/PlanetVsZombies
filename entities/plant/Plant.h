@@ -2,23 +2,26 @@
 #define PLANETVSZOMBIES_PLANT_H
 
 #include "../GameEntity.h"
-#include "QTimer"
+#include <QTimer>
 
 class Plant : public GameEntity
 {
 public:
-    explicit Plant(int health,int sun,float firingRate,int attackPower);
+    explicit Plant(int health, int sun, float firingRate, int attackPower);
+
+    virtual void fire() = 0;
 
 protected slots:
-    void fire();
+    void fireImpl();
+
 protected:
     int sun;
     float firingRate;
     int attackPower;
     QTimer *fireTimer;
+
 private:
     void setUpTimers();
 };
 
-
-#endif
+#endif // PLANETVSZOMBIES_PLANT_H
