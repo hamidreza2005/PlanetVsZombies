@@ -12,6 +12,7 @@
 #include <QVector>
 #include "Card.h"
 #include "ground.h"
+#include "SunBrain.h"
 
 class PlayGround : public QWidget {
     Q_OBJECT
@@ -27,6 +28,8 @@ private slots:
     void updateTimer();
     void updateBrainCount(int amount);
     void updateSunCount(int amount);
+    void spawnSunBrain();
+    void collectSunBrain(int value);
 
 private:
     QGraphicsView* graphicsView;
@@ -42,6 +45,7 @@ private:
     QProgressBar* sunBar;
     bool isZombie;
     QTimer* timer;
+    QTimer* sunBrainTimer;
     int remainingSeconds;
     int brainCount;
     int sunCount;

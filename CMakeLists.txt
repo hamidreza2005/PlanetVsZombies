@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_PREFIX_PATH "C:\\Qt\\6.7.0\\mingw_64\\lib\\cmake")
+set(CMAKE_PREFIX_PATH "C:\\Qt\\6.5.3\\mingw_64\\lib\\cmake")
 
 find_package(Qt6 COMPONENTS
         Core
@@ -71,6 +71,7 @@ add_executable(PlanetVsZombies main.cpp
         entities/plant/Jalapeno.h entities/plant/Jalapeno.cpp
         entities/plant/Boomrang.h entities/plant/Boomrang.cpp
         entities/plant/Bullet.h entities/plant/Bullet.cpp
+        SunBrain.h SunBrain.cpp
     )
 
 target_link_libraries(PlanetVsZombies
