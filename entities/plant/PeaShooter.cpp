@@ -20,7 +20,7 @@ QString PeaShooter::getName() {
 
 void PeaShooter::fire() {
     if (!scene()) {
-        qDebug() << "PeaShooter is not in a scene";
+       // qDebug() << "PeaShooter is not in a scene";
         return;
     }
 

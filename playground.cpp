@@ -16,7 +16,7 @@
 #include "entities/plant/Boomrang.h"
 #include "entities/plant/Jalapeno.h"
 #include "entities/plant/Walnut.h"
-#include "entities/plant/Plummine.h"
+#include "entities/plant/PlumMine.h"
 #include <QDebug>
 
 QVector<std::function<GameEntity*()>> PlayGround::zombies = {
@@ -37,11 +37,9 @@ QVector<std::function<GameEntity*()>> PlayGround::plants = {
     [](){return new PlumMine;},
     };
 
-
 PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
     srand(static_cast<unsigned int>(time(0)));
-    //isZombie = rand() % 2 == 0;
-    isZombie=false;
+    isZombie = false;
 
     this->setFixedSize(1000, 700);
 
@@ -215,13 +213,12 @@ void PlayGround::addEntity(QPointF point) {
     if (!selectedCard || this->isOutOfGround(&point)) {
         return;
     }
-    if(isZombie)
-    {
-        int y = point.y();
+    int y = point.y();
+    int finalX, finalY;
 
-        int finalX = 750;
-        int finalY;
-
+    if(isZombie) {
+        finalX = 750;
+    } else {
         if (y <= 0) {
             finalY = 0;
         }
@@ -243,41 +240,9 @@ void PlayGround::addEntity(QPointF point) {
         else{
             finalY = 465;
         }
-        finalY-=77.6;
-        auto* newEntity = selectedCard->getEntityFactory()();
-        newEntity->setPos(finalX, finalY);
-        scene->addItem(newEntity);
-    }
-    else{
-        int y = point.y();
+        finalY -= 77.6;
+
         int x = point.x();
-        //qDebug()<< x;
-        int finalX;
-        int finalY;
-        if (y <= 0) {
-            finalY = 0;
-        }
-        else if (y <= 78) {
-            finalY = 77.6;
-        }
-        else if (y <= 156) {
-            finalY = 155.2;
-        }
-        else if (y <= 233) {
-            finalY = 232.8;
-        }
-        else if (y <= 311) {
-            finalY = 310.4;
-        }
-        else if (y <=389) {
-            finalY = 388;
-        }
-        else{
-            finalY = 465;
-        }
-
-        finalY-=77.6;
-
         if (x <= 30) {
             finalX = 0;
         }
@@ -299,7 +264,13 @@ void PlayGround::addEntity(QPointF point) {
         else{
             finalX = 453.5;
         }
-        finalX-=207;
+        finalX -= 207;
+
+        QPointF finalPosition(finalX, finalY);
+        if (isPositionOccupied(finalPosition)) {
+            return;
+        }
+
         auto* newEntity = selectedCard->getEntityFactory()();
         newEntity->setPos(finalX, finalY);
         scene->addItem(newEntity);
@@ -316,11 +287,13 @@ bool PlayGround::isOutOfGround(const QPointF* point) {
 }
 
 bool PlayGround::isPositionOccupied(QPointF point) {
-    QList<QGraphicsItem*> items = scene->items(point);
+    QList<QGraphicsItem*> items = scene->items();
     for (QGraphicsItem* item : items) {
-        if (dynamic_cast<Plant*>(item)) {
+        if (dynamic_cast<Plant*>(item) && item->pos() == point) {
+            qDebug() << "Position occupied by another plant.";
             return true;
         }
     }
+    qDebug() << "Position available.";
     return false;
 }

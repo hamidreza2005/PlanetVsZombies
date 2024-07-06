@@ -19,7 +19,7 @@ void Bullet::setImage(const QString& imagePath) {
 
 void Bullet::move() {
     if (!scene()) {
-        qDebug() << "Bullet is not in a scene";
+       // qDebug() << "Bullet is not in a scene";
         return;
     }
 

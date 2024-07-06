@@ -20,7 +20,7 @@ QString Boomerang::getName() {
 
 void Boomerang::fire() {
     if (!scene()) {
-        qDebug() << "Boomerang is not in a scene";
+       // qDebug() << "Boomerang is not in a scene";
         return;
     }
 
