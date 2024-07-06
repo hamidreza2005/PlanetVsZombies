@@ -34,3 +34,12 @@ void TcpSocket::sendValidationError(QString field, QString error, int statusCode
     errorBag[field] = errorsArray;
     this->sendValidationError(QJsonValue(errorBag),statusCode);
 }
+
+QTcpSocket *TcpSocket::getOriginalSocket() {
+    return this->socket;
+}
+
+void TcpSocket::writeOk(QJsonObject &data) {
+    data["status"] = 200;
+    this->write(data);
+}

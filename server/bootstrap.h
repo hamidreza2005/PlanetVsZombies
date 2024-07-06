@@ -16,11 +16,13 @@ private:
     QTcpServer *server = nullptr;
     QList<QTcpSocket*> clients;
     Controller* controller;
+    static Bootstrap* instance;
     void run();
 public:
     Bootstrap();
     ~Bootstrap() override;
-
+    static Bootstrap* getInstance();
+    QList<QTcpSocket*> getClients();
 public slots:
     void server_newConnection();
     void socket_connected();

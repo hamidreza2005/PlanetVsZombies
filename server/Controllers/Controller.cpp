@@ -1,6 +1,7 @@
 #include <QJsonObject>
 #include "Controller.h"
 #include "AuthorizationController.h"
+#include "GameController.h"
 
 QMap<QString, std::function<void(TcpSocket*,const QJsonObject&)>> *Controller::routes = new QMap<QString,std::function<void(TcpSocket*,const QJsonObject&)>>;
 
@@ -20,4 +21,6 @@ void Controller::initializeRoutes() {
     Controller::addRoute("login",AuthorizationController::login);
     Controller::addRoute("register",AuthorizationController::registration);
     Controller::addRoute("resetPassword",AuthorizationController::resetPassword);
+    Controller::addRoute("getOnlineUsers",GameController::getOnlineUsers);
+    Controller::addRoute("ready",GameController::ready);
 }

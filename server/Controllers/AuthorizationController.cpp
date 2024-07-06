@@ -23,6 +23,7 @@ void AuthorizationController::login(TcpSocket *socket, const QJsonObject &reques
         });
         response["status"] = "200";
         response["user"] = user;
+//        socket->getOriginalSocket()->setObjectName(user["username"].toString());
         socket->write(response);
     }catch(const ModelNotFoundException &e){
         socket->sendValidationError("username","Username Or Password is Incorrect",404);

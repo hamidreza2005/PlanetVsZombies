@@ -3,6 +3,6 @@
 
 int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
-    Bootstrap boot;
+    Bootstrap::getInstance();
     return QCoreApplication::exec();
 }

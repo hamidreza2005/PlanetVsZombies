@@ -10,7 +10,7 @@ using namespace std;
 
 const int Bootstrap::PORT = 2000;
 const QString Bootstrap::HOST = "127.0.0.1";
-
+Bootstrap* Bootstrap::instance = nullptr;
 Bootstrap::Bootstrap()
 {
     this->controller = new Controller;
@@ -65,6 +65,7 @@ void Bootstrap::socket_readyRead(QTcpSocket *socket)
         socket->write("Error:404 not found\n");
         return;
     }
+
     qDebug() << "Route " << routeName << " Called By " << socket->objectName();
     Controller::getAction(routeName)(sock,json);
 }
@@ -97,4 +98,15 @@ void Bootstrap::run()
         connect(server, &QTcpServer::newConnection, this, &Bootstrap::server_newConnection);
         qDebug() << "Server is ready on " << HOST << ":" << PORT;
     }
+}
+
+Bootstrap *Bootstrap::getInstance() {
+    if (!instance){
+        instance = new Bootstrap;
+    }
+    return Bootstrap::instance;
+}
+
+QList<QTcpSocket *> Bootstrap::getClients() {
+    return this->clients;
 }
