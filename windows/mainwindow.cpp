@@ -47,6 +47,7 @@ void MainWindow::showDashboardWindow(Window* senderWindow) {
     if (senderWindow)
         senderWindow->disconnectDataListener();
     stackedWidget->setCurrentWidget(dashboardWindow);
+    dashboardWindow->connectDataListener();
 }
 
 void MainWindow::showResetPasswordWindow(Window *senderWindow) {
