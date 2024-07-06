@@ -31,7 +31,11 @@ void Register::on_submit_clicked() {
     requestData["password"] = ui->password->text();
     requestData["username"] = ui->username->text();
     requestData["phone"] = ui->phone->text();
-    this->socket->sendJson("register",requestData);
+    try{
+        this->socket->sendJson("register",requestData);
+    }catch (...){
+        Window::showConnectionLostError(this);
+    }
 }
 
 void Register::handleServerResponse(const QJsonObject &data) {

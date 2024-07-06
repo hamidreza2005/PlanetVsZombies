@@ -1,7 +1,7 @@
 #include <QMessageBox>
 #include "resetpassword.h"
 #include "ui_ResetPassword.h"
-
+#include "../../core/exceptions/ConnectionIsLostException.h"
 
 ResetPassword::ResetPassword(ClientSocket* clientSocket,QWidget *parent) :
         Window(clientSocket,parent), ui(new Ui::ResetPassword) {
@@ -36,15 +36,14 @@ void ResetPassword::on_submit_clicked() {
         return;
     }
 
-    if (!this->socket->isConnected()){
-        QMessageBox::information(this,"Error","Connection is not possible right now.");
-        return;
-    }
-
     QJsonObject requestData;
     requestData["password"] = ui->newPassword->text();
     requestData["phone"] = ui->phoneNumber->text();
-    this->socket->sendJson("resetPassword",requestData);
+    try{
+        this->socket->sendJson("resetPassword",requestData);
+    }catch (ConnectionIsLostException &e){
+        Window::showConnectionLostError(this);
+    }
 }
 
 bool ResetPassword::fieldsAreNotEmpty() {

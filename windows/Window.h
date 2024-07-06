@@ -17,6 +17,7 @@ public:
     virtual void handleServerResponse(const QJsonObject &data) = 0;
     virtual ~Window();
     static void showValidationErrors(QWidget* window,const QJsonObject &errors);
+    static void showConnectionLostError(QWidget* window);
 };
 
 

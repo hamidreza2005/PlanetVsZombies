@@ -18,6 +18,9 @@ Window::~Window() {
     delete socket;
 }
 
+void Window::showConnectionLostError(QWidget *window) {
+    QMessageBox::information(window,"Error","Connection is not possible right now.");
+}
 void Window::disconnectDataListener() {
     disconnect(dataListener);
 }

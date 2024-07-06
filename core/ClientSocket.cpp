@@ -1,6 +1,7 @@
 #include <QJsonDocument>
 #include <QMessageBox>
 #include "ClientSocket.h"
+#include "exceptions/ConnectionIsLostException.h"
 
 const int ClientSocket::PORT = 2000;
 const QString ClientSocket::HOST = "127.0.0.1";
@@ -59,7 +60,7 @@ void ClientSocket::sendJson(const QString& route,const QJsonObject &json) {
 
 void ClientSocket::sendString(const QString &string) {
     if (!this->isConnected()){
-        throw 1;
+        throw ConnectionIsLostException();
     }
     socket->write(string.toUtf8());
     socket->flush();

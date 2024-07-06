@@ -58,6 +58,8 @@ add_executable(PlanetVsZombies main.cpp
         windows/ResetPassword/resetpassword.cpp
         windows/ResetPassword/resetpassword.h
         windows/ResetPassword/resetpassword.ui
+        core/exceptions/ConnectionIsLostException.cpp
+        core/exceptions/ConnectionIsLostException.h
 )
 
 target_link_libraries(PlanetVsZombies

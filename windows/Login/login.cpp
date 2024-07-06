@@ -25,7 +25,11 @@ void Login::on_submit_clicked() {
     QJsonObject requestData;
     requestData["password"] = ui->password->text();
     requestData["username"] = ui->username->text();
-    this->socket->sendJson("login",requestData);
+    try{
+        this->socket->sendJson("login",requestData);
+    }catch (...){
+        Window::showConnectionLostError(this);
+    }
 }
 
 void Login::handleServerResponse(const QJsonObject &data) {
