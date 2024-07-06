@@ -1,7 +1,7 @@
 #include <QMessageBox>
 #include "login.h"
 #include "ui_Login.h"
-#include "../Window.h"
+#include "../window.h"
 #include "../../playground.h"
 
 
@@ -19,11 +19,6 @@ void Login::on_submit_clicked() {
     this->connectDataListener();
     if(this->fieldsAreNotEmpty()){
         QMessageBox::information(this,"Error","Please Fill out all the fields");
-        return;
-    }
-
-    if (!this->socket->isConnected()){
-        QMessageBox::information(this,"Error","Connection is not possible right now.");
         return;
     }
 

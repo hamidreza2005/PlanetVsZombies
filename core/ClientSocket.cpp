@@ -1,4 +1,5 @@
 #include <QJsonDocument>
+#include <QMessageBox>
 #include "ClientSocket.h"
 
 const int ClientSocket::PORT = 2000;
@@ -8,10 +9,13 @@ ClientSocket::ClientSocket() {
     this->connectToHost();
     this->connectSiganlsToListeners();
     this->reconnectTimer = new QTimer();
-    this->reconnectTimer->setInterval(10000);
+    this->reconnectTimer->setInterval(5000);
     connect(reconnectTimer, &QTimer::timeout, this, [this](){
-        this->connectToHost();
+        qDebug() << "trying to connect to host one more time";
+        this->socket->connectToHost(HOST, PORT);
     });
+
+    this->reconnectTimer->start();
 }
 
 ClientSocket::~ClientSocket() {
@@ -28,13 +32,15 @@ void ClientSocket::connectToHost() {
 }
 
 void ClientSocket::socket_connected() {
+    this->reconnectTimer->stop();
     qDebug() << "Socket is connected" ;
 }
 
 void ClientSocket::socket_disconnected() {
-//    if (!this->reconnectTimer->isActive()){
-//        this->reconnectTimer->start();
-//    }
+    qDebug() << "Socket got disconnected" ;
+    if (!this->reconnectTimer->isActive()){
+        this->reconnectTimer->start();
+    }
 }
 
 void ClientSocket::read() {
@@ -45,9 +51,6 @@ void ClientSocket::read() {
 
 
 void ClientSocket::sendJson(const QString& route,const QJsonObject &json) {
-    if(!this->isConnected()){
-        this->connectToHost();
-    }
     QJsonDocument doc(json);
     QByteArray data = doc.toJson();
     QString msg = route + "||"+ QString::fromUtf8(data);
@@ -55,6 +58,9 @@ void ClientSocket::sendJson(const QString& route,const QJsonObject &json) {
 }
 
 void ClientSocket::sendString(const QString &string) {
+    if (!this->isConnected()){
+        throw 1;
+    }
     socket->write(string.toUtf8());
     socket->flush();
 }
