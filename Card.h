@@ -1,30 +1,38 @@
 #ifndef PLANETVSZOMBIES_CARD_H
 #define PLANETVSZOMBIES_CARD_H
-#include "QGraphicsPixmapItem"
-#include "QObject"
-#include "entities/GameEntity.h"
-#include "QGraphicsSceneMouseEvent"
 
-class Card : public QObject,public QGraphicsPixmapItem{
+#include <QGraphicsPixmapItem>
+#include <QObject>
+#include <QGraphicsSceneMouseEvent>
+#include <functional>
+#include "entities/GameEntity.h"
+#include <QGraphicsTextItem>
+
+class Card : public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
 public:
-    explicit Card(std::function<GameEntity*()> entityFactory,int width = 100,int height = 100);
+    explicit Card(std::function<GameEntity*()> entityFactory, int width = 100, int height = 100, int cost = 0, QGraphicsItem* parent = nullptr);
     std::function<GameEntity*()> getEntityFactory();
     void select();
     void unselect();
-protected:
-    void setImage();
-    void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
-private:
-    int width = 100;
-    int height = 100;
-    GameEntity* entity;
-    std::function<GameEntity*()> entityFactory;
-    QGraphicsRectItem* border;
-    void setBorders();
+    void setCost(int cost);
+
 signals:
     void selectEntity(Card* card);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+    void setImage();
+    void setBorders();
+
+private:
+    std::function<GameEntity*()> entityFactory;
+    GameEntity* entity;
+    QGraphicsRectItem* border;
+    QGraphicsTextItem* costText;
+    int width;
+    int height;
+    int cost;
 };
 
-
-#endif //PLANETVSZOMBIES_CARD_H
+#endif // PLANETVSZOMBIES_CARD_H

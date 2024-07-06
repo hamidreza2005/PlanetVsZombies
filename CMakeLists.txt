@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_PREFIX_PATH "C:\\Qt\\6.7.0\\mingw_64\\lib\\cmake")
+set(CMAKE_PREFIX_PATH "C:\\Qt\\6.5.3\\mingw_64\\lib\\cmake")
 
 find_package(Qt6 COMPONENTS
         Core
@@ -64,7 +64,14 @@ add_executable(PlanetVsZombies main.cpp
         core/Player.h
         core/Cookie.cpp
         core/Cookie.h
-)
+        entities/plant/TwoPeaShooter.h
+        entities/plant/TwoPeaShooter.cpp
+        entities/plant/Walnut.h entities/plant/Walnut.cpp
+        entities/plant/Plummine.h entities/plant/Plummine.cpp
+        entities/plant/Jalapeno.h entities/plant/Jalapeno.cpp
+        entities/plant/Boomrang.h entities/plant/Boomrang.cpp
+        entities/plant/Bullet.h entities/plant/Bullet.cpp
+    )
 
 target_link_libraries(PlanetVsZombies
         Qt::Core

@@ -1,27 +1,27 @@
-#include "PeaShooter.h"
+#include "TwoPeaShooter.h"
 #include "Bullet.h"
 #include "../zombie/Zombie.h"
 #include <QGraphicsScene>
 #include <QDebug>
 
-PeaShooter::PeaShooter() :
+TwoPeaShooter::TwoPeaShooter() :
     Plant(INITIAL_HEALTH,SUN_NEEDED_TO_CREATE
 , INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER)
 {
     this->setImage();
 }
 
-QString PeaShooter::getPicturePath() const {
-    return ":/resources/images/plants/peashooter.png";
+QString TwoPeaShooter::getPicturePath() const {
+    return ":/resources/images/plants/two_peashooter.png";
 }
 
-QString PeaShooter::getName() {
-    return "PeaShooter Plant";
+QString TwoPeaShooter::getName() {
+    return "TwoPeaShooter Plant";
 }
 
-void PeaShooter::fire() {
+void TwoPeaShooter::fire() {
     if (!scene()) {
-       // qDebug() << "PeaShooter is not in a scene";
+        //qDebug() << "TwoPeaShooter is not in a scene";
         return;
     }
 
