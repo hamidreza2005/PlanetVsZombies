@@ -42,7 +42,7 @@ void Zombie::reduceHealth(int amount) {
 
 void Zombie::attack(){
     if (!this->isThereAPlantInWay()){
-        this->activateMovementMove();
+        this->activateMovementMode();
         return;
     }
 
@@ -113,7 +113,7 @@ void Zombie::activateAttackMode() {
     this->movementTimer->stop();
 }
 
-void Zombie::activateMovementMove() {
+void Zombie::activateMovementMode() {
     this->movementTimer->start(this->movementDelay * 1000);
     this->attackTimer->stop();
 }

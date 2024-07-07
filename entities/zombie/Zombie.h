@@ -39,8 +39,7 @@ private:
     void setUpAnimations();
     bool isThereAPlantInWay();
     void activateAttackMode();
-    void activateMovementMove();
-    void
+    void activateMovementMode();
 };
 
 

@@ -19,13 +19,25 @@ QString Jalapeno::getName() {
 }
 
 void Jalapeno::fire() {
-    QList<QGraphicsItem*> collidingItems = this->collidingItems();
-    for (QGraphicsItem* item : collidingItems) {
+    if (!scene()) {
+        return;
+    }
+
+    qreal rowY = this->y();
+    QList<QGraphicsItem*> allItems = scene()->items();
+    for (QGraphicsItem* item : allItems) {
         Zombie* zombie = dynamic_cast<Zombie*>(item);
         if (zombie) {
-            zombie->reduceHealth(this->attackPower);
+            if (qAbs(zombie->y() - rowY) <= 10.0) {
+                zombie->setHealth(zombie->getHealth() - this->attackPower);
+                if(zombie->getHealth() < 0){
+                    scene()->removeItem(zombie);
+                    delete zombie;
+                }
+            }
         }
     }
+
     scene()->removeItem(this);
     delete this;
 }

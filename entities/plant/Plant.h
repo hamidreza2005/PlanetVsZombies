@@ -8,7 +8,7 @@ class Plant : public GameEntity
 {
 public:
     explicit Plant(int health, int sun, float firingRate, int attackPower);
-
+    virtual ~Plant();
     virtual void fire() = 0;
 
 protected slots:

@@ -22,3 +22,8 @@ void Plant::setUpTimers() {
     connect(fireTimer, &QTimer::timeout, this, &Plant::fireImpl);
     this->fireTimer->start(firingRate * 1000);
 }
+
+Plant::~Plant() {
+    this->fireTimer->stop();
+    delete this->fireTimer;
+}
