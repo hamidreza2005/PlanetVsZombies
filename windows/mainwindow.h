@@ -7,7 +7,8 @@
 #include "Register/register.h"
 #include "Dashboard/dashboard.h"
 #include "ResetPassword/resetpassword.h"
-#include "Window.h"
+#include "window.h"
+#include "../playground.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -23,13 +24,16 @@ private:
     Register *registerWindow;
     Dashboard *dashboardWindow;
     ResetPassword *resetPasswordWindow;
+    PlayGround* playgroundWindow;
     ClientSocket* socket;
 
+    void connectSignals();
 public slots:
     void showLoginWindow(Window* senderWindow = nullptr);
     void showRegisterWindow(Window* senderWindow = nullptr);
     void showDashboardWindow(Window* senderWindow = nullptr);
     void showResetPasswordWindow(Window* senderWindow = nullptr);
+    void showPlaygroundWindow(Window* senderWindow = nullptr);
 };
 
 

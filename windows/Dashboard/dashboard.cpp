@@ -29,25 +29,17 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
     if (data.contains("onlineUsers")){
         QJsonArray onlineUsers = data["onlineUsers"].toArray();
         this->updateOnlineUsersBox(onlineUsers);
+        return;
     }
 
     if (data.contains("state") && data.value("state") == "getReady"){
-        QMessageBox::StandardButton reply;
-        QString message = data.value("username").toString() + " Wants to play with you. Do you want to do it?";
-        reply = QMessageBox::question(this, "Ready Check", message,
-                                      QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::Yes){
-            try{
-                this->socket->sendJson("verifyReady", {{"username",Cookie::getInstance()->loggedInPlayer->getUsername()}});
-                qDebug() << "start the fucking game";
-            }catch (...){
-                Window::showConnectionLostError(this);
-            }
-        }
+        this->verifyCurrentClientIsReadyToPlay(data.value("username").toString());
+        return;
     }
-
-    if (data.contains("state") && data.value("state") == "opponentIsReady"){
-        qDebug() << "start the fucking game";
+    if (data.contains("state") && data.value("state") == "startTheGame"){
+        Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
+        emit this->startTheGame(this);
+        return;
     }
 }
 
@@ -93,4 +85,18 @@ void Dashboard::disconnectDataListener() {
 
 void Dashboard::on_exit_clicked() {
     exit(0);
+}
+
+void Dashboard::verifyCurrentClientIsReadyToPlay(const QString & opponentUsername) {
+    QMessageBox::StandardButton reply;
+    QString message = opponentUsername + " Wants to play with you. Do you want to do it?";
+    reply = QMessageBox::question(this, "Ready Check", message,
+                                  QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes){
+        try{
+            this->socket->sendJson("verifyReady", {{"username",Cookie::getInstance()->loggedInPlayer->getUsername()}});
+        }catch (...){
+            Window::showConnectionLostError(this);
+        }
+    }
 }

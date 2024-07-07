@@ -2,6 +2,7 @@
 #include "GameController.h"
 #include "../bootstrap.h"
 #include "../Player.h"
+#include "../Cache.h"
 void GameController::getOnlineUsers(TcpSocket *socket, const QJsonObject &request) {
     auto allClients =  Bootstrap::getInstance()->getClients();
     auto it = std::find(allClients.begin(), allClients.end(),socket->getOriginalSocket());
@@ -37,7 +38,7 @@ void GameController::ready(TcpSocket *socket, const QJsonObject &request) {
     }
     auto opponentSocket = new TcpSocket(*it);
     auto firstPlayer = new Player(request["username"].toString(),socket);
-    Bootstrap::getInstance()->firstPlayer = firstPlayer;
+    Cache::getInstance()->firstPlayer = firstPlayer;
     QJsonObject response;
     response["state"] = "getReady";
     response["username"] = request["username"];
@@ -45,12 +46,33 @@ void GameController::ready(TcpSocket *socket, const QJsonObject &request) {
 }
 
 void GameController::verifyBeingReady(TcpSocket *socket, const QJsonObject &request) {
-    if (Bootstrap::getInstance()->firstPlayer == nullptr){
+    if (Cache::getInstance()->firstPlayer == nullptr){
+        socket->sendValidationError("game","there is no first player to start the game");
         return;
     }
     auto secondPlayer = new Player(request["username"].toString(),socket);
-    Bootstrap::getInstance()->secondPlayer = secondPlayer;
+    Cache::getInstance()->secondPlayer = secondPlayer;
+    srand(time(0));
+
+    QString firstPlayerRole = rand() % 2 == 0 ? "zombie" : "plant";
+    QString secondPlayerRole = firstPlayerRole == "zombie" ? "plant" : "zombie" ;
+
     QJsonObject response;
-    response["state"] = "opponentIsReady";
-    Bootstrap::getInstance()->firstPlayer->socket->write(response);
+    response["state"] = "startTheGame";
+    response["role"] = firstPlayerRole;
+    Cache::getInstance()->firstPlayer->setRole(firstPlayerRole);
+    Cache::getInstance()->firstPlayer->socket->write(response);
+
+    response["role"] = secondPlayerRole;
+    Cache::getInstance()->secondPlayer->setRole(secondPlayerRole);
+    Cache::getInstance()->secondPlayer->socket->write(response);
+}
+
+void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
+    if (!Cache::getInstance()->isThereAGamePlaying()){
+        socket->sendValidationError("game","there is no game");
+        return;
+    }
+
+
 }

@@ -2,7 +2,7 @@
 #include <QPixmap>
 
 Ground::Ground(QObject *parent)
-    : QGraphicsPixmapItem()
+    : QGraphicsPixmapItem(), QObject(parent)
 {
     QPixmap image_ground(":/resources/images/field.png");
     QPixmap Scaled_image_ground = image_ground.scaled(1080,540,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);

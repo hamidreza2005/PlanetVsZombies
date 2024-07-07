@@ -21,6 +21,7 @@ protected slots:
     void read();
 signals:
     void dataReceived(const QJsonObject &data);
+    void connectionLost();
 public:
     QTcpSocket *socket = nullptr;
     ClientSocket();

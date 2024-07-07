@@ -24,4 +24,5 @@ void Controller::initializeRoutes() {
     Controller::addRoute("getOnlineUsers",GameController::getOnlineUsers);
     Controller::addRoute("ready",GameController::ready);
     Controller::addRoute("verifyReady",GameController::verifyBeingReady);
+    Controller::addRoute("gameRoom",GameController::gameRoom);
 }

@@ -5,6 +5,7 @@
 #include "QThread"
 #include "Controllers/Controller.h"
 #include "TcpSocket.h"
+#include "Cache.h"
 
 using namespace std;
 
@@ -77,7 +78,11 @@ void Bootstrap::socket_bytesWritten(QTcpSocket *_socket)
 
 void Bootstrap::socket_disconnected(QTcpSocket *_socket)
 {
-    qDebug() << (_socket->objectName() + " disconnected!") << "\n";
+    if(Cache::getInstance()->isThereAGamePlaying()){
+        qDebug() << "trying to signal other player";
+        this->sendEndGameSignals(_socket);
+    }
+    qDebug() << (_socket->objectName() + " disconnected!");
     clients.removeOne(_socket);
 
     for (int var = 0; var < clients.size(); ++var)
@@ -109,4 +114,16 @@ Bootstrap *Bootstrap::getInstance() {
 
 QList<QTcpSocket *> Bootstrap::getClients() {
     return this->clients;
+}
+
+void Bootstrap::sendEndGameSignals(QTcpSocket* leftPlayer) {
+    QJsonObject response;
+    response["state"] = "opponentLeft";
+    if (leftPlayer == Cache::getInstance()->firstPlayer->socket->getOriginalSocket()){
+        Cache::getInstance()->secondPlayer->socket->write(response);
+        Cache::getInstance()->endTheGame();
+    }else if(leftPlayer == Cache::getInstance()->secondPlayer->socket->getOriginalSocket()){
+        Cache::getInstance()->firstPlayer->socket->write(response);
+        Cache::getInstance()->endTheGame();
+    }
 }

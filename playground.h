@@ -13,12 +13,16 @@
 #include "Card.h"
 #include "ground.h"
 #include "SunBrain.h"
+#include "windows/Window.h"
+#include "core/ClientSocket.h"
 
-class PlayGround : public QWidget {
+class PlayGround : public Window {
     Q_OBJECT
 public:
-    explicit PlayGround(QWidget *parent = nullptr);
-
+    explicit PlayGround(ClientSocket* clientSocket,QWidget *parent = nullptr);
+    void play();
+    void connectDataListener() override;
+    void handleServerResponse(const QJsonObject &data) override;
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
     static QVector<std::function<GameEntity*()>> zombies;
@@ -43,6 +47,8 @@ private:
     Ground* ground;
     QProgressBar* brainBar;
     QProgressBar* sunBar;
+    QHBoxLayout* infoLayout;
+    QVBoxLayout* mainLayout;
     bool isZombie;
     QTimer* timer;
     QTimer* sunBrainTimer;
@@ -59,10 +65,13 @@ private:
     void setupLayout();
     bool isOutOfGround(const QPointF* point);
     bool isPositionOccupied(QPointF point);
-
+    void endTheGame();
 public slots:
     void selectCard(Card* card);
     void addEntity(QPointF point);
+    void connectionLost();
+signals:
+    void goToDashboardPage(Window* sender);
 };
 
 #endif // PLAYGROUND_H
