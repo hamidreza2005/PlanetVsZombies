@@ -1,7 +1,6 @@
 #include <QJsonArray>
 #include "GameController.h"
 #include "../bootstrap.h"
-#include "../Player.h"
 #include "../Cache.h"
 void GameController::getOnlineUsers(TcpSocket *socket, const QJsonObject &request) {
     auto allClients =  Bootstrap::getInstance()->getClients();
@@ -73,6 +72,27 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
         socket->sendValidationError("game","there is no game");
         return;
     }
+    Player* firstPlayer = Cache::getInstance()->firstPlayer;
+    Player* secondPlayer = Cache::getInstance()->secondPlayer;
+    bool isSentByFirstPlayer = socket->getOriginalSocket() == firstPlayer->socket->getOriginalSocket();
 
+    if (request["state"] != "add"){
+        return;
+    }
 
+//    if (GameController::isPlayerAllowedToAddEntity(isSentByFirstPlayer,firstPlayer,secondPlayer,request["entity"].toString())){
+//        return;
+//    }
+
+    QJsonObject response = request;
+    if(isSentByFirstPlayer){
+        secondPlayer->socket->write(response);
+    }else if(socket->getOriginalSocket() == secondPlayer->socket->getOriginalSocket()){
+        firstPlayer->socket->write(response);
+    }
+}
+
+bool GameController::isPlayerAllowedToAddEntity(bool isSentByFirstPlayer,Player* player1,Player* player2,QString entityName) {
+    return (isSentByFirstPlayer && player1->getRole() != entityName)
+           || (!isSentByFirstPlayer && player2->getRole() != entityName);
 }

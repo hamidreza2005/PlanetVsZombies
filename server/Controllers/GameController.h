@@ -4,8 +4,11 @@
 
 #include <QJsonObject>
 #include "../TcpSocket.h"
+#include "../Player.h"
 
 class GameController {
+private:
+    static bool isPlayerAllowedToAddEntity(bool isSentByFirstPlayer,Player* player1,Player* player2,QString entityName);
 public:
     static void getOnlineUsers(TcpSocket* socket,const QJsonObject& request);
     static void verifyBeingReady(TcpSocket* socket,const QJsonObject& request);
