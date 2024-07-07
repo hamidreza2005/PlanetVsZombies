@@ -28,6 +28,8 @@ public slots:
 private:
     Ui::Dashboard *ui;
     QTimer* updateOnlineUsersTimer;
+
+    void verifyCurrentClientIsReadyToPlay(const QString & opponentUsername);
 };
 
 

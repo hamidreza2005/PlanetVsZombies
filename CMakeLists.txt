@@ -71,7 +71,8 @@ add_executable(PlanetVsZombies main.cpp
         entities/plant/Jalapeno.h entities/plant/Jalapeno.cpp
         entities/plant/Boomrang.h entities/plant/Boomrang.cpp
         entities/plant/Bullet.h entities/plant/Bullet.cpp
-    )
+        entities/plant/TwoPeaShooter.cpp
+)
 
 target_link_libraries(PlanetVsZombies
         Qt::Core
