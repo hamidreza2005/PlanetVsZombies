@@ -20,12 +20,7 @@ MainWindow::MainWindow(ClientSocket* clientSocket,QWidget *parent) :
     this->setFixedSize(1000,700);
     stackedWidget->setFixedSize(1000,700);
     // Connect signals to slots
-    connect(loginWindow, &Login::goToRegisterPage, this, &MainWindow::showRegisterWindow);
-    connect(loginWindow, &Login::goToDashboardPage, this, &MainWindow::showDashboardWindow);
-    connect(loginWindow, &Login::goToResetPasswordPage, this, &MainWindow::showResetPasswordWindow);
-    connect(resetPasswordWindow, &ResetPassword::goToLoginPage, this, &MainWindow::showLoginWindow);
-    connect(registerWindow, &Register::goToLoginPage, this, &MainWindow::showLoginWindow);
-    connect(dashboardWindow, &Dashboard::startTheGame, this, &MainWindow::showPlaygroundWindow);
+    this->connectSignals();
 
     // Show the login window by default
     showLoginWindow();
@@ -65,4 +60,14 @@ void MainWindow::showPlaygroundWindow(Window *senderWindow) {
         senderWindow->disconnectDataListener();
     stackedWidget->setCurrentWidget(playgroundWindow);
     playgroundWindow->play();
+}
+
+void MainWindow::connectSignals() {
+    connect(loginWindow, &Login::goToRegisterPage, this, &MainWindow::showRegisterWindow);
+    connect(loginWindow, &Login::goToDashboardPage, this, &MainWindow::showDashboardWindow);
+    connect(loginWindow, &Login::goToResetPasswordPage, this, &MainWindow::showResetPasswordWindow);
+    connect(resetPasswordWindow, &ResetPassword::goToLoginPage, this, &MainWindow::showLoginWindow);
+    connect(registerWindow, &Register::goToLoginPage, this, &MainWindow::showLoginWindow);
+    connect(dashboardWindow, &Dashboard::startTheGame, this, &MainWindow::showPlaygroundWindow);
+    connect(playgroundWindow, &PlayGround::goToDashboardPage, this, &MainWindow::showPlaygroundWindow);
 }

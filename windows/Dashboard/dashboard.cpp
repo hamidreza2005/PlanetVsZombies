@@ -29,15 +29,17 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
     if (data.contains("onlineUsers")){
         QJsonArray onlineUsers = data["onlineUsers"].toArray();
         this->updateOnlineUsersBox(onlineUsers);
+        return;
     }
 
     if (data.contains("state") && data.value("state") == "getReady"){
         this->verifyCurrentClientIsReadyToPlay(data.value("username").toString());
+        return;
     }
-
     if (data.contains("state") && data.value("state") == "startTheGame"){
         Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
         emit this->startTheGame(this);
+        return;
     }
 }
 

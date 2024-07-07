@@ -61,10 +61,13 @@ private:
     void setupLayout();
     bool isOutOfGround(const QPointF* point);
     bool isPositionOccupied(QPointF point);
-
+    void endTheGame();
 public slots:
     void selectCard(Card* card);
     void addEntity(QPointF point);
+    void connectionLost();
+signals:
+    void goToDashboardPage(Window* sender);
 };
 
 #endif // PLAYGROUND_H

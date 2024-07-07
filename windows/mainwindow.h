@@ -27,6 +27,7 @@ private:
     PlayGround* playgroundWindow;
     ClientSocket* socket;
 
+    void connectSignals();
 public slots:
     void showLoginWindow(Window* senderWindow = nullptr);
     void showRegisterWindow(Window* senderWindow = nullptr);

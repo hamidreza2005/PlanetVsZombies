@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include "ClientSocket.h"
 #include "exceptions/ConnectionIsLostException.h"
+#include "../playground.h"
 
 const int ClientSocket::PORT = 2000;
 const QString ClientSocket::HOST = "127.0.0.1";
@@ -38,6 +39,7 @@ void ClientSocket::socket_connected() {
 }
 
 void ClientSocket::socket_disconnected() {
+//    emit this->connectionLost();
     qDebug() << "Socket got disconnected" ;
     if (!this->reconnectTimer->isActive()){
         this->reconnectTimer->start();
