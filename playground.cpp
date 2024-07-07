@@ -16,7 +16,6 @@
 #include "entities/plant/Jalapeno.h"
 #include "entities/plant/Walnut.h"
 #include "entities/plant/PlumMine.h"
-#include <QDebug>
 #include <QRandomGenerator>
 #include "core/Cookie.h"
 
@@ -295,6 +294,20 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
 }
 
 void PlayGround::endTheGame() {
+    QList<QGraphicsItem*> items = scene->items();
+    for (QGraphicsItem* item : items) {
+        delete item;
+    }
+    timer->stop();
+    sunBrainTimer->stop();
+    delete infoLayout;
+    delete mainLayout;
+    delete playerPlantName;
+    delete playerZombieName;
+    delete remainingPlantTime;
+    delete remainingZombieTime;
+    delete brainBar;
+    delete sunBar;
     emit this->goToDashboardPage(this);
 }
 

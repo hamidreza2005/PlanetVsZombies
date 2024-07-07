@@ -34,7 +34,6 @@ void Login::on_submit_clicked() {
 
 void Login::handleServerResponse(const QJsonObject &data) {
     if (data["status"] == "200"){
-//        QMessageBox::information(this,"Success","your login was successfull",QMessageBox::Ok);
         Cookie::getInstance()->loggedInPlayer = new Player(data["user"]["username"].toString());
         emit this->goToDashboardPage(this);
         return;
