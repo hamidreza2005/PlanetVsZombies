@@ -2,13 +2,13 @@
 #include "../zombie/Zombie.h"
 #include <QGraphicsScene>
 #include <QList>
-#include <QDebug>
 
 Bullet::Bullet(int attackPower, int speed, QGraphicsItem* parent)
     : QObject(), QGraphicsPixmapItem(parent), attackPower(attackPower), speed(speed) {
-    QTimer* timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Bullet::move);
-    timer->start(50);
+    this->setImage(":/resources/images/sun.png");
+    movementTimer = new QTimer(this);
+    connect(movementTimer, &QTimer::timeout, this, &Bullet::move);
+    movementTimer->start(50);
 }
 
 void Bullet::setImage(const QString& imagePath) {
@@ -19,7 +19,6 @@ void Bullet::setImage(const QString& imagePath) {
 
 void Bullet::move() {
     if (!scene()) {
-       // qDebug() << "Bullet is not in a scene";
         return;
     }
 
@@ -42,4 +41,8 @@ void Bullet::move() {
         }
         delete this;
     }
+}
+
+Bullet::~Bullet() {
+    delete movementTimer;
 }

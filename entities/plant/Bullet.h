@@ -10,7 +10,7 @@ class Bullet : public QObject, public QGraphicsPixmapItem {
 
 public:
     Bullet(int attackPower, int speed, QGraphicsItem* parent = nullptr);
-    void setImage(const QString& imagePath);
+    ~Bullet() override;
 
 public slots:
     void move();
@@ -18,6 +18,9 @@ public slots:
 private:
     int attackPower;
     int speed;
+    QTimer* movementTimer;
+
+    void setImage(const QString& imagePath);
 };
 
 #endif // PLANETVSZOMBIES_BULLET_H

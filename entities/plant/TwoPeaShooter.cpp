@@ -26,7 +26,6 @@ void TwoPeaShooter::fire() {
     }
 
     Bullet* bullet = new Bullet(attackPower, 10);
-    bullet->setImage(":/resources/images/sun.png");
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);
 }
