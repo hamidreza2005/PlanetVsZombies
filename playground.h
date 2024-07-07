@@ -66,6 +66,8 @@ private:
     bool isOutOfGround(const QPointF* point);
     bool isPositionOccupied(QPointF point);
     void endTheGame();
+    double getYForNewEntity(int y);
+    double getXForPlants(int x);
 public slots:
     void selectCard(Card* card);
     void addEntity(QPointF point);

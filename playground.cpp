@@ -218,105 +218,19 @@ void PlayGround::addEntity(QPointF point) {
     if (!selectedCard || this->isOutOfGround(&point)) {
         return;
     }
-    qDebug() << "it is not out of the ground";
 
-    int y = point.y();
     int finalX, finalY;
+    finalX = isZombie ? 750 : this->getXForPlants(point.x());
+    finalY = this->getYForNewEntity(point.y());
 
-    if(isZombie) {
-        finalX = 750;
-        if (y <= 0) {
-            finalY = 0;
-        }
-        else if (y <= 78) {
-            finalY = 77.6;
-        }
-        else if (y <= 156) {
-            finalY = 155.2;
-        }
-        else if (y <= 233) {
-            finalY = 232.8;
-        }
-        else if (y <= 311) {
-            finalY = 310.4;
-        }
-        else if (y <=389) {
-            finalY = 388;
-        }
-        else{
-            finalY = 465;
-        }
-        finalY -= 77.6;
-        qDebug() << "Zombie got added";
-        QPointF finalPosition(finalX, finalY);
-        if (isPositionOccupied(finalPosition)) {
-            qDebug() << "Location is occupied";
-            return;
-        }
-
-        qDebug() << "Zombie got added";
-        auto* newEntity = selectedCard->getEntityFactory()();
-        newEntity->setPos(finalX, finalY);
-        scene->addItem(newEntity);
-
+    QPointF finalPosition(finalX, finalY);
+    if (isPositionOccupied(finalPosition)) {
+        return;
     }
-    else {
-        if (y <= 0) {
-            finalY = 0;
-        }
-        else if (y <= 78) {
-            finalY = 77.6;
-        }
-        else if (y <= 156) {
-            finalY = 155.2;
-        }
-        else if (y <= 233) {
-            finalY = 232.8;
-        }
-        else if (y <= 311) {
-            finalY = 310.4;
-        }
-        else if (y <=389) {
-            finalY = 388;
-        }
-        else{
-            finalY = 465;
-        }
-        finalY -= 77.6;
 
-        int x = point.x();
-        if (x <= 30) {
-            finalX = 0;
-        }
-        else if (x <= 109) {
-            finalX = 70;
-        }
-        else if (x <= 184) {
-            finalX = 146.5;
-        }
-        else if (x <= 262) {
-            finalX = 223;
-        }
-        else if (x <= 339) {
-            finalX = 300.5;
-        }
-        else if (x <=417) {
-            finalX = 378;
-        }
-        else{
-            finalX = 453.5;
-        }
-        finalX -= 207;
-
-        QPointF finalPosition(finalX, finalY);
-        if (isPositionOccupied(finalPosition)) {
-            return;
-        }
-
-        auto* newEntity = selectedCard->getEntityFactory()();
-        newEntity->setPos(finalX, finalY);
-        scene->addItem(newEntity);
-    }
+    auto* newEntity = selectedCard->getEntityFactory()();
+    newEntity->setPos(finalX, finalY);
+    scene->addItem(newEntity);
 }
 
 
@@ -388,4 +302,61 @@ void PlayGround::connectionLost() {
     QMessageBox::critical(this, "Problem", "Your Connection Got Lost",
                           QMessageBox::Yes);
     this->endTheGame();
+}
+
+double PlayGround::getYForNewEntity(int y) {
+    double finalY;
+
+    if (y <= 0) {
+        finalY = 0;
+    }
+    else if (y <= 78) {
+        finalY = 77.6;
+    }
+    else if (y <= 156) {
+        finalY = 155.2;
+    }
+    else if (y <= 233) {
+        finalY = 232.8;
+    }
+    else if (y <= 311) {
+        finalY = 310.4;
+    }
+    else if (y <=389) {
+        finalY = 388;
+    }
+    else{
+        finalY = 465;
+    }
+    finalY -= 77.6;
+
+    return finalY;
+}
+
+double PlayGround::getXForPlants(int x) {
+    double finalX;
+
+    if (x <= 30) {
+        finalX = 0;
+    }
+    else if (x <= 109) {
+        finalX = 70;
+    }
+    else if (x <= 184) {
+        finalX = 146.5;
+    }
+    else if (x <= 262) {
+        finalX = 223;
+    }
+    else if (x <= 339) {
+        finalX = 300.5;
+    }
+    else if (x <=417) {
+        finalX = 378;
+    }
+    else{
+        finalX = 453.5;
+    }
+    finalX -= 207;
+    return finalX;
 }
