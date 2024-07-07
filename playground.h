@@ -25,8 +25,8 @@ public:
     void handleServerResponse(const QJsonObject &data) override;
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
-    static QVector<std::function<GameEntity*()>> zombies;
-    static QVector<std::function<GameEntity*()>> plants;
+    static QMap<QString,std::function<GameEntity*()>> zombies;
+    static QMap<QString,std::function<GameEntity*()>> plants;
 
 private slots:
     void updateTimer();
@@ -66,8 +66,8 @@ private:
     bool isOutOfGround(const QPointF* point);
     bool isPositionOccupied(QPointF point);
     void endTheGame();
-    double getYForNewEntity(int y);
-    double getXForPlants(int x);
+    void sendAddRequest(const QString& name,int x,int y);
+
 public slots:
     void selectCard(Card* card);
     void addEntity(QPointF point);

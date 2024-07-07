@@ -9,8 +9,8 @@ class Ground : public QObject,public QGraphicsPixmapItem
     Q_OBJECT
 public:
     explicit Ground(QObject *parent = nullptr);
-
-signals:
+    static double getYForNewEntity(int y);
+    static double getXForPlants(int x);
 };
 
 #endif // GROUND_H

@@ -18,23 +18,24 @@
 #include "entities/plant/PlumMine.h"
 #include <QRandomGenerator>
 #include "core/Cookie.h"
+#include "QMap"
 
-QVector<std::function<GameEntity*()>> PlayGround::zombies = {
-    [](){return new RegularZombie;},
-    [](){return new BucketHeadZombie;},
-    [](){return new TallZombie;},
-    [](){return new LeafHeadZombie;},
-    [](){return new PurpleHairZombie;},
-    [](){return new AstronautZombie;},
+QMap<QString,std::function<GameEntity*()>> PlayGround::zombies = {
+        {"Regular Zombie",[](){return new RegularZombie;}},
+        {"Bucket Head Zombie",[](){return new BucketHeadZombie;}},
+        {"Tall Zombie",[](){return new TallZombie;}},
+        {"Laef Head Zombie",[]() { return new LeafHeadZombie; }},
+        {"Purple Head Zombie",[](){return new PurpleHairZombie;}},
+        {"Astronaut Zombie",[](){return new AstronautZombie;}},
     };
 
-QVector<std::function<GameEntity*()>> PlayGround::plants = {
-    [](){return new PeaShooter;},
-    [](){return new TwoPeaShooter;},
-    [](){return new Walnut;},
-    [](){return new Boomerang;},
-    [](){return new Jalapeno;},
-    [](){return new PlumMine;},
+QMap<QString,std::function<GameEntity*()>> PlayGround::plants = {
+        {"PeaShooter Plant",[]() { return new PeaShooter; }},
+        {"TwoPeaShooter Plant",[]() { return new TwoPeaShooter; }},
+        {"Walnut Plant",[]() { return new Walnut; }},
+        {"Boomerang Plant",[]() { return new Boomerang; }},
+        {"Jalapeno Plant",[](){return new Jalapeno;}},
+        {"Plum Mine Plant",[](){return new PlumMine;}},
     };
 
 PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clientSocket,parent), remainingSeconds(210), brainCount(50), sunCount(50), selectedCard(nullptr) {
@@ -146,7 +147,7 @@ void PlayGround::setupLayout() {
 
 void PlayGround::createZombieCards() {
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card(this->zombies[i]);
+        auto* card = new Card(this->zombies.values()[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         zombieCards.push_back(card);
@@ -155,7 +156,7 @@ void PlayGround::createZombieCards() {
 
 void PlayGround::createPlantCards() {
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card(this->plants[i]);
+        auto* card = new Card(this->plants.values()[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         plantCards.push_back(card);
@@ -219,8 +220,8 @@ void PlayGround::addEntity(QPointF point) {
     }
 
     int finalX, finalY;
-    finalX = isZombie ? 750 : this->getXForPlants(point.x());
-    finalY = this->getYForNewEntity(point.y());
+    finalX = isZombie ? 750 : ground->getXForPlants(point.x());
+    finalY = ground->getYForNewEntity(point.y());
 
     QPointF finalPosition(finalX, finalY);
     if (isPositionOccupied(finalPosition)) {
@@ -230,6 +231,7 @@ void PlayGround::addEntity(QPointF point) {
     auto* newEntity = selectedCard->getEntityFactory()();
     newEntity->setPos(finalX, finalY);
     scene->addItem(newEntity);
+    this->sendAddRequest(newEntity->getName(),finalX,finalY);
 }
 
 
@@ -280,7 +282,6 @@ void PlayGround::connectDataListener() {
 }
 
 void PlayGround::handleServerResponse(const QJsonObject &data) {
-    qDebug() << data;
     if (!data.contains("state")){
         return;
     }
@@ -290,6 +291,20 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
                               QMessageBox::Yes);
         this->endTheGame();
         return;
+    }
+
+    if(data.value("state") == "add"){
+        GameEntity* newEntity;
+        QString entityName = data.value("entity").toString();
+        if(this->zombies.contains(entityName)){
+            newEntity = this->zombies.value(entityName)();
+        }else if(this->plants.contains(entityName)){
+            newEntity = this->plants.value(entityName)();
+        }else{
+            return;
+        }
+        newEntity->setPos(data.value("x").toInt(), data.value("y").toInt());
+        scene->addItem(newEntity);
     }
 }
 
@@ -317,59 +332,11 @@ void PlayGround::connectionLost() {
     this->endTheGame();
 }
 
-double PlayGround::getYForNewEntity(int y) {
-    double finalY;
-
-    if (y <= 0) {
-        finalY = 0;
-    }
-    else if (y <= 78) {
-        finalY = 77.6;
-    }
-    else if (y <= 156) {
-        finalY = 155.2;
-    }
-    else if (y <= 233) {
-        finalY = 232.8;
-    }
-    else if (y <= 311) {
-        finalY = 310.4;
-    }
-    else if (y <=389) {
-        finalY = 388;
-    }
-    else{
-        finalY = 465;
-    }
-    finalY -= 77.6;
-
-    return finalY;
-}
-
-double PlayGround::getXForPlants(int x) {
-    double finalX;
-
-    if (x <= 30) {
-        finalX = 0;
-    }
-    else if (x <= 109) {
-        finalX = 70;
-    }
-    else if (x <= 184) {
-        finalX = 146.5;
-    }
-    else if (x <= 262) {
-        finalX = 223;
-    }
-    else if (x <= 339) {
-        finalX = 300.5;
-    }
-    else if (x <=417) {
-        finalX = 378;
-    }
-    else{
-        finalX = 453.5;
-    }
-    finalX -= 207;
-    return finalX;
+void PlayGround::sendAddRequest(const QString& name,int x,int y) {
+    QJsonObject response;
+    response["state"] = "add";
+    response["entity"] = name;
+    response["x"] = x;
+    response["y"] = y;
+    this->socket->sendJson("gameRoom",response);
 }
