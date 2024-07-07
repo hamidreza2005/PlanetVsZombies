@@ -225,7 +225,42 @@ void PlayGround::addEntity(QPointF point) {
 
     if(isZombie) {
         finalX = 750;
-    } else {
+        if (y <= 0) {
+            finalY = 0;
+        }
+        else if (y <= 78) {
+            finalY = 77.6;
+        }
+        else if (y <= 156) {
+            finalY = 155.2;
+        }
+        else if (y <= 233) {
+            finalY = 232.8;
+        }
+        else if (y <= 311) {
+            finalY = 310.4;
+        }
+        else if (y <=389) {
+            finalY = 388;
+        }
+        else{
+            finalY = 465;
+        }
+        finalY -= 77.6;
+        qDebug() << "Zombie got added";
+        QPointF finalPosition(finalX, finalY);
+        if (isPositionOccupied(finalPosition)) {
+            qDebug() << "Location is occupied";
+            return;
+        }
+
+        qDebug() << "Zombie got added";
+        auto* newEntity = selectedCard->getEntityFactory()();
+        newEntity->setPos(finalX, finalY);
+        scene->addItem(newEntity);
+
+    }
+    else {
         if (y <= 0) {
             finalY = 0;
         }
@@ -273,19 +308,17 @@ void PlayGround::addEntity(QPointF point) {
         }
         finalX -= 207;
 
-        qDebug() << "Zombie got added";
         QPointF finalPosition(finalX, finalY);
         if (isPositionOccupied(finalPosition)) {
-            qDebug() << "Location is occupied";
             return;
         }
 
-        qDebug() << "Zombie got added";
         auto* newEntity = selectedCard->getEntityFactory()();
         newEntity->setPos(finalX, finalY);
         scene->addItem(newEntity);
     }
 }
+
 
 bool PlayGround::isOutOfGround(const QPointF* point) {
     if(isZombie){
@@ -334,7 +367,6 @@ void PlayGround::connectDataListener() {
 }
 
 void PlayGround::handleServerResponse(const QJsonObject &data) {
-    qDebug() << "hi";
     qDebug() << data;
     if (!data.contains("state")){
         return;
