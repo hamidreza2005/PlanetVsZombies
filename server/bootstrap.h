@@ -19,10 +19,9 @@ private:
     QList<QTcpSocket*> clients;
     Controller* controller;
     void run();
-public:
-    Player* firstPlayer = nullptr;
-    Player* secondPlayer = nullptr;
 
+    void sendEndGameSignals(QTcpSocket* leftPlayer);
+public:
     Bootstrap();
     ~Bootstrap() override;
     Bootstrap(Bootstrap const&) = delete;

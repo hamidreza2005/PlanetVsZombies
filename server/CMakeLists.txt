@@ -34,6 +34,8 @@ add_executable(server main.cpp
         Controllers/GameController.h
         Player.cpp
         Player.h
+        Cache.cpp
+        Cache.h
 )
 target_link_libraries(server
         Qt::Core
