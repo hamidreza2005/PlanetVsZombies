@@ -50,7 +50,18 @@ void GameController::verifyBeingReady(TcpSocket *socket, const QJsonObject &requ
     }
     auto secondPlayer = new Player(request["username"].toString(),socket);
     Bootstrap::getInstance()->secondPlayer = secondPlayer;
+    srand(time(0));
+
+    QString firstPlayerRole = rand() % 2 == 0 ? "zombie" : "plant";
+    QString secondPlayerRole = firstPlayerRole == "zombie" ? "plant" : "zombie" ;
+
     QJsonObject response;
-    response["state"] = "opponentIsReady";
+    response["state"] = "startTheGame";
+    response["role"] = firstPlayerRole;
+    Bootstrap::getInstance()->firstPlayer->setRole(firstPlayerRole);
     Bootstrap::getInstance()->firstPlayer->socket->write(response);
+
+    response["role"] = secondPlayerRole;
+    Bootstrap::getInstance()->secondPlayer->setRole(secondPlayerRole);
+    Bootstrap::getInstance()->secondPlayer->socket->write(response);
 }

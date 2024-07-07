@@ -25,6 +25,9 @@ public:
 
     Bootstrap();
     ~Bootstrap() override;
+    Bootstrap(Bootstrap const&) = delete;
+    void operator=(Bootstrap const&) = delete;
+
     static Bootstrap* getInstance();
     QList<QTcpSocket*> getClients();
 public slots:
