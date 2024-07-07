@@ -36,7 +36,8 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
     }
 
     if (data.contains("state") && data.value("state") == "startTheGame"){
-        qDebug() << "start the fucking game";
+        Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
+        emit this->startTheGame(this);
     }
 }
 

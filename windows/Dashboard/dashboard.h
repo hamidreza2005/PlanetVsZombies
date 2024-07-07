@@ -25,6 +25,8 @@ public:
 public slots:
     void on_ready_clicked();
     void on_exit_clicked();
+signals:
+    void startTheGame(Window* sender);
 private:
     Ui::Dashboard *ui;
     QTimer* updateOnlineUsersTimer;

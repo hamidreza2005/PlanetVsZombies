@@ -1,8 +1,6 @@
 #include "playground.h"
 #include "ground.h"
 #include <QFont>
-#include <cstdlib>
-#include <ctime>
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
 #include "entities/zombie/RegularZombie.h"
@@ -17,7 +15,7 @@
 #include "entities/plant/Jalapeno.h"
 #include "entities/plant/Walnut.h"
 #include "entities/plant/PlumMine.h"
-#include <QDebug>
+#include "core/Cookie.h"
 
 QVector<std::function<GameEntity*()>> PlayGround::zombies = {
     [](){return new RegularZombie;},
@@ -37,19 +35,22 @@ QVector<std::function<GameEntity*()>> PlayGround::plants = {
     [](){return new PlumMine;},
     };
 
-PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
-    srand(static_cast<unsigned int>(time(0)));
-    isZombie = false;
-
+PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clientSocket,parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
     this->setFixedSize(1000, 700);
-
     graphicsView = new QGraphicsView(this);
     graphicsView->setFixedSize(1000, 500);
     scene = new QGraphicsScene(this);
     graphicsView->setScene(scene);
     graphicsView->setSceneRect(0, 0, 650, 450);
+    graphicsView->viewport()->installEventFilter(this);
 
-    setupGround();
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &PlayGround::updateTimer);
+}
+
+void PlayGround::play() {
+    this->connectDataListener();
+    isZombie = Cookie::getInstance()->loggedInPlayer->getRole() == "zombie";
     if (isZombie) {
         createZombieCards();
         setupPlayerZombieInfo();
@@ -57,13 +58,8 @@ PlayGround::PlayGround(QWidget *parent) : QWidget(parent), remainingSeconds(210)
         createPlantCards();
         setupPlayerPlantInfo();
     }
-
     setupLayout();
-
-    graphicsView->viewport()->installEventFilter(this);
-
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &PlayGround::updateTimer);
+    this->setupGround();
     timer->start(1000);
 }
 
@@ -81,7 +77,7 @@ void PlayGround::setupPlayerZombieInfo() {
     brainBar->setFont(font);
 
     playerZombieName->setStyleSheet("QLabel { color : blue; }");
-    remainingZombieTime->setStyleSheet("QLabel { color : black; }");
+    remainingZombieTime->setStyleSheet("QLabel { color : red; }");
     brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
 }
 
@@ -104,15 +100,15 @@ void PlayGround::setupPlayerPlantInfo() {
 }
 
 void PlayGround::setupGround() {
-    auto* ground = new Ground();
+    ground = new Ground(this);
     ground->setPos(-260, -40);
     scene->addItem(ground);
 }
 
 void PlayGround::setupLayout() {
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout = new QVBoxLayout(this);
 
-    QHBoxLayout* infoLayout = new QHBoxLayout();
+    infoLayout = new QHBoxLayout(this);
     if (isZombie) {
         infoLayout->addWidget(playerZombieName);
         infoLayout->addWidget(brainBar);
@@ -126,8 +122,8 @@ void PlayGround::setupLayout() {
     mainLayout->addLayout(infoLayout, 1);
     mainLayout->addWidget(graphicsView, 4);
 
-    QGraphicsView* cardView = new QGraphicsView(this);
-    QGraphicsScene* cardScene = new QGraphicsScene(this);
+    auto cardView = new QGraphicsView(this);
+    auto cardScene = new QGraphicsScene(this);
     cardView->setScene(cardScene);
     cardView->setFixedHeight(150);
 
@@ -317,4 +313,12 @@ bool PlayGround::isPositionOccupied(QPointF point) {
     }
     qDebug() << "Position available.";
     return false;
+}
+
+void PlayGround::connectDataListener() {
+    dataListener = connect(socket, &ClientSocket::dataReceived, this, &PlayGround::handleServerResponse);
+}
+
+void PlayGround::handleServerResponse(const QJsonObject &data) {
+    qDebug() << "hi";
 }

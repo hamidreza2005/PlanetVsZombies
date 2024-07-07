@@ -5,10 +5,12 @@
 class Player {
 private:
     QString username;
+    QString role;
 public:
     explicit Player(QString username);
 
     QString getUsername();
+    QString& getRole();
 };
 
 
