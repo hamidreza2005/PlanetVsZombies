@@ -3,8 +3,8 @@
 #include <QGraphicsScene>
 #include <QList>
 
-Bullet::Bullet(int attackPower, int speed, QGraphicsItem* parent)
-    : QObject(), QGraphicsPixmapItem(parent), attackPower(attackPower), speed(speed) {
+Bullet::Bullet(int attackPower, int speed,bool canHitMultipleZombies, QGraphicsItem* parent)
+    : QObject(), QGraphicsPixmapItem(parent), attackPower(attackPower), speed(speed), canHitMultipleZombies(canHitMultipleZombies) {
     this->setImage(":/resources/images/sun.png");
     movementTimer = new QTimer(this);
     connect(movementTimer, &QTimer::timeout, this, &Bullet::move);
@@ -24,9 +24,18 @@ void Bullet::move() {
 
     QList<QGraphicsItem*> collidingItems = this->collidingItems();
     for (QGraphicsItem* item : collidingItems) {
-        Zombie* zombie = dynamic_cast<Zombie*>(item);
-        if (zombie) {
-            zombie->reduceHealth(attackPower);
+        auto zombie = dynamic_cast<Zombie*>(item);
+        if (!zombie) {
+            continue;
+        }
+
+        zombie->setHealth(zombie->getHealth() - attackPower);
+        if(zombie->getHealth() < 0){
+            scene()->removeItem(zombie);
+            delete zombie;
+        }
+
+        if (!this->canHitMultipleZombies){
             scene()->removeItem(this);
             delete this;
             return;

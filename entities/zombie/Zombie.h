@@ -37,6 +37,10 @@ private:
 
     void setUpTimers();
     void setUpAnimations();
+    bool isThereAPlantInWay();
+    void activateAttackMode();
+    void activateMovementMove();
+    void
 };
 
 

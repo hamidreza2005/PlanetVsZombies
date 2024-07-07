@@ -25,7 +25,7 @@ void Boomerang::fire() {
         return;
     }
 
-    Bullet* bullet = new Bullet(attackPower, 10);
+    Bullet* bullet = new Bullet(attackPower, 10, true);
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);
 }

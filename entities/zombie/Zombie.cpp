@@ -1,4 +1,5 @@
 #include "Zombie.h"
+#include "../plant/Plant.h"
 
 Zombie::Zombie(int health, float movementDelay, int attackPower,float firingRate,int brain):
 GameEntity(health),
@@ -40,20 +41,39 @@ void Zombie::reduceHealth(int amount) {
 }
 
 void Zombie::attack(){
-//    qDebug() << "zombie attacked";
+    if (!this->isThereAPlantInWay()){
+        this->activateMovementMove();
+        return;
+    }
+
+    QList<QGraphicsItem*> collidingItems = this->collidingItems();
+    for (QGraphicsItem* item : collidingItems) {
+        auto plant = dynamic_cast<Plant*>(item);
+        if (!plant) {
+            continue;
+        }
+        plant->setHealth(plant->getHealth() - this->attackPower);
+        if(plant->getHealth() < 0){
+            delete plant;
+        }
+    }
 }
 
 Zombie::~Zombie() {
+    this->movementTimer->stop();
+    this->attackTimer->stop();
+    this->movementAnimation->stop();
     delete this->movementTimer;
     delete this->attackTimer;
     delete this->movementAnimation;
 }
 
 void Zombie::move() {
+    if (this->isThereAPlantInWay()){
+        this->activateAttackMode();
+        return;
+    }
     if(this->x() < -150){
-        this->movementAnimation->stop();
-        this->attackTimer->stop();
-        this->movementTimer->stop();
         delete this;
         return;
     }
@@ -68,11 +88,32 @@ void Zombie::setUpTimers() {
     this->movementTimer = new QTimer();
     connect(attackTimer,&QTimer::timeout,this,&Zombie::attack);
     connect(movementTimer,&QTimer::timeout,this,&Zombie::move);
-    this->attackTimer->start(this->firingRate * 1000);
     this->movementTimer->start(this->movementDelay * 1000);
 }
 
 void Zombie::setUpAnimations() {
     this->movementAnimation = new QPropertyAnimation(this, "x");
     this->movementAnimation->setDuration(this->movementDelay * 1000);
+}
+
+bool Zombie::isThereAPlantInWay() {
+    QList<QGraphicsItem*> collidingItems = this->collidingItems();
+    for (QGraphicsItem* item : collidingItems) {
+        auto plant = dynamic_cast<Plant*>(item);
+        if (plant) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Zombie::activateAttackMode() {
+    this->attackTimer->start(this->firingRate * 1000);
+    this->movementAnimation->stop();
+    this->movementTimer->stop();
+}
+
+void Zombie::activateMovementMove() {
+    this->movementTimer->start(this->movementDelay * 1000);
+    this->attackTimer->stop();
 }
