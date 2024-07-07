@@ -27,10 +27,10 @@ public slots:
     void on_exit_clicked();
 signals:
     void startTheGame(Window* sender);
+    void goToLoginPage(Window* sender);
 private:
     Ui::Dashboard *ui;
     QTimer* updateOnlineUsersTimer;
-
     void verifyCurrentClientIsReadyToPlay(const QString & opponentUsername);
 };
 

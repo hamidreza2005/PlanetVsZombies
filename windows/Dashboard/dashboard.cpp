@@ -84,7 +84,8 @@ void Dashboard::disconnectDataListener() {
 }
 
 void Dashboard::on_exit_clicked() {
-    exit(0);
+    Cookie::getInstance()->loggedInPlayer = nullptr;
+    this->goToLoginPage(this);
 }
 
 void Dashboard::verifyCurrentClientIsReadyToPlay(const QString & opponentUsername) {

@@ -69,5 +69,6 @@ void MainWindow::connectSignals() {
     connect(resetPasswordWindow, &ResetPassword::goToLoginPage, this, &MainWindow::showLoginWindow);
     connect(registerWindow, &Register::goToLoginPage, this, &MainWindow::showLoginWindow);
     connect(dashboardWindow, &Dashboard::startTheGame, this, &MainWindow::showPlaygroundWindow);
+    connect(dashboardWindow, &Dashboard::goToLoginPage, this, &MainWindow::showLoginWindow);
     connect(playgroundWindow, &PlayGround::goToDashboardPage, this, &MainWindow::showDashboardWindow);
 }
