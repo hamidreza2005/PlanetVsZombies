@@ -20,7 +20,8 @@ private:
     Controller* controller;
     void run();
 
-    void sendEndGameSignals(QTcpSocket* leftPlayer);
+    void sendEndGameSignals(QTcpSocket* exitedPlayer);
+    void saveGameInHistory(Player* leftPlayer,Player* existedPlayer);
 public:
     Bootstrap();
     ~Bootstrap() override;

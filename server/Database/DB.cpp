@@ -5,24 +5,31 @@
 #include "QFile"
 #include "../exceptions/ModelNotFoundException.h"
 
-const QString DB::path = "./db.json";
+const QString DB::usersDbPath = "./db.json";
+const QString DB::historyDbPath = "./history.json";
 DB* DB::instance = nullptr;
 
 DB::DB() {
-    this->dbfile = new QFile(DB::path);
-    if (!this->dbfile->open(QIODevice::ReadWrite)) {
-        qWarning() << "Couldn't open file for reading.";
+    this->usersFile = new QFile(DB::usersDbPath);
+    this->historyFile = new QFile(DB::historyDbPath);
+    if (!this->usersFile->open(QIODevice::ReadWrite)) {
+        qWarning() << "Couldn't open users file";
+    }
+    if(!this->historyFile->open(QIODevice::ReadWrite)){
+        qWarning() << "Couldn't open history file";
     }
 }
 
 DB::~DB() {
-    dbfile->close();
-    delete dbfile;
+    this->usersFile->close();
+    this->historyFile->close();
+    delete usersFile;
+    delete historyFile;
 }
 
 QJsonArray DB::getUsers() {
-    this->dbfile->seek(0);
-    QByteArray jsonData = this->dbfile->readAll();
+    this->usersFile->seek(0);
+    QByteArray jsonData = this->usersFile->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
     return jsonDoc.array();
 }
@@ -31,7 +38,7 @@ void DB::createUser(const QJsonObject &data) {
     QJsonArray jsonArray = this->getUsers();
     jsonArray.append(data);
 
-    this->writeToDB(jsonArray);
+    this->writeToDB(jsonArray,this->usersFile);
 }
 
 DB* DB::getInstance() {
@@ -92,7 +99,7 @@ void DB::updateUser(const QJsonObject &userData, const QJsonObject &newData) {
             user[newDataIt.key()] = newDataIt.value();
         }
         *it = user;
-        this->writeToDB(users);
+        this->writeToDB(users,this->usersFile);
         return;
     }
 
@@ -123,19 +130,41 @@ void DB::deleteUser(const QJsonObject &userData) {
         throw new ModelNotFoundException("User does not Exists");
     }else{
         users.erase(toBeDeletedUser);
-        this->writeToDB(users);
+        this->writeToDB(users,this->usersFile);
     }
 }
 
-void DB::writeToDB(QJsonArray &data) {
+void DB::writeToDB(QJsonArray &data,QFile* file) {
     QJsonDocument jsonDoc(data);
     QByteArray jsonData = jsonDoc.toJson();
-    this->dbfile->seek(0);
-    this->dbfile->resize(0);
-    dbfile->write(jsonData);
-    dbfile->flush();
+    file->seek(0);
+    file->resize(0);
+    file->write(jsonData);
+    file->flush();
 }
 
 void DB::saveInToHistory(QJsonObject data) {
+    QJsonArray jsonArray = this->getHistory();
+    jsonArray.append(data);
 
+    this->writeToDB(jsonArray,this->historyFile);
+}
+
+QJsonArray DB::getHistory() {
+    this->historyFile->seek(0);
+    QByteArray jsonData = this->historyFile->readAll();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
+    return jsonDoc.array();
+}
+
+QJsonArray DB::findHistory(const QString &username) {
+    auto allHistory = this->getHistory();
+    QJsonArray result;
+    for(auto && it : allHistory){
+        auto history = it.toObject();
+        if (history.value("firstPlayer") == username || history.value("secondPlayer") == username){
+            result.append(history);
+        }
+    }
+    return result;
 }

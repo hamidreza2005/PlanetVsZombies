@@ -25,4 +25,5 @@ void Controller::initializeRoutes() {
     Controller::addRoute("ready",GameController::ready);
     Controller::addRoute("verifyReady",GameController::verifyBeingReady);
     Controller::addRoute("gameRoom",GameController::gameRoom);
+    Controller::addRoute("getHistory",GameController::getHistory);
 }

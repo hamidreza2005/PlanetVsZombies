@@ -4,16 +4,8 @@
 #include "../Cache.h"
 #include "../Database/DB.h"
 void GameController::getOnlineUsers(TcpSocket *socket, const QJsonObject &request) {
-//    qDebug() << socket->getOriginalSocket()->socketDescriptor();
-//    qDebug() << socket->getOriginalSocket()->objectName();
-//    qDebug() << socket->getOriginalSocket()->peerPort();
-//    qDebug() << socket->getOriginalSocket()->peerAddress();
     auto allClients =  Bootstrap::getInstance()->getClients();
     auto it = std::find(allClients.begin(), allClients.end(),socket->getOriginalSocket());
-//    qDebug() << (*it)->socketDescriptor();
-//    qDebug() << (*it)->objectName();
-//    qDebug() << (*it)->peerPort();
-//    qDebug() << (*it)->peerAddress();
     if (it != allClients.end()) {
         allClients.erase(it);
     }
@@ -150,7 +142,13 @@ void GameController::handleEndOfTheGame(const QString &winnerRole) {
         }else{
             res["result"] = "draw";
         }
-        DB::getInstance()->saveInToHistory({});
+        DB::getInstance()->saveInToHistory({
+            {"firstPlayer",firstPlayer->getUsername()},
+            {"secondPlayer",secondPlayer->getUsername()},
+            {"firstRoundWinner",(*Cache::getInstance()->firstRoundWinner)->getUsername()},
+            {"secondRoundWinner",(*Cache::getInstance()->secondRoundWinner)->getUsername()},
+            {"result",res["result"].toString()},
+        });
         gameShouldBeEnded = true;
     }else{
         res["state"] = "roundWinner";
@@ -173,4 +171,13 @@ void GameController::switchPlayersRoles(Player *firstPlayer, Player *secondPlaye
     auto temp = firstPlayer->getRole();
     firstPlayer->setRole(secondPlayer->getRole());
     secondPlayer->setRole(temp);
+}
+
+void GameController::getHistory(TcpSocket *socket, const QJsonObject &request) {
+    auto username = request.value("username").toString();
+    auto history = DB::getInstance()->findHistory(username);
+    QJsonObject response;
+    response["status"] = "200";
+    response["history"] = history;
+    socket->write(response);
 }

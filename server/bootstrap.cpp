@@ -6,6 +6,7 @@
 #include "Controllers/Controller.h"
 #include "TcpSocket.h"
 #include "Cache.h"
+#include "Database/DB.h"
 
 using namespace std;
 
@@ -116,18 +117,29 @@ QList<QTcpSocket *> Bootstrap::getClients() {
     return this->clients;
 }
 
-void Bootstrap::sendEndGameSignals(QTcpSocket* leftPlayer) {
+void Bootstrap::sendEndGameSignals(QTcpSocket* exitedPlayer) {
     QJsonObject response;
     response["state"] = "opponentLeft";
     Player* firstPlayer = Cache::getInstance()->firstPlayer;
     Player* secondPlayer = Cache::getInstance()->secondPlayer;
-    if (leftPlayer == firstPlayer->socket->getOriginalSocket()){
+    if (exitedPlayer == firstPlayer->socket->getOriginalSocket()){
         if(secondPlayer->socket->isConnected())
            secondPlayer->socket->write(response);
+
         Cache::getInstance()->endTheGame();
-    }else if(leftPlayer == secondPlayer->socket->getOriginalSocket()){
+    }else if(exitedPlayer == secondPlayer->socket->getOriginalSocket()){
         if(firstPlayer->socket->isConnected())
             firstPlayer->socket->write(response);
         Cache::getInstance()->endTheGame();
     }
+}
+
+void Bootstrap::saveGameInHistory(Player *leftPlayer,Player* existedPlayer) {
+    DB::getInstance()->saveInToHistory({
+       {"firstPlayer",leftPlayer->getUsername()},
+       {"secondPlayer",existedPlayer->getUsername()},
+       {"firstRoundWinner",leftPlayer->getUsername()},
+       {"secondRoundWinner",leftPlayer->getUsername()},
+       {"result","win"},
+   });
 }
