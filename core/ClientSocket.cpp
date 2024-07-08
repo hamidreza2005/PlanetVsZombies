@@ -39,7 +39,7 @@ void ClientSocket::socket_connected() {
 }
 
 void ClientSocket::socket_disconnected() {
-//    emit this->connectionLost();
+    emit this->connectionLost();
     qDebug() << "Socket got disconnected" ;
     if (!this->reconnectTimer->isActive()){
         this->reconnectTimer->start();

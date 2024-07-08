@@ -25,6 +25,7 @@ public:
 public slots:
     void on_ready_clicked();
     void on_exit_clicked();
+    void on_refreshUsers_clicked();
 signals:
     void startTheGame(Window* sender);
     void goToLoginPage(Window* sender);

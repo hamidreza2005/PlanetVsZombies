@@ -47,6 +47,7 @@ private:
     QProgressBar* sunBar;
     QHBoxLayout* infoLayout;
     QVBoxLayout* mainLayout;
+    QMetaObject::Connection connectionLostListener;
     bool isZombie;
     QTimer* timer;
     QTimer* sunBrainTimer;

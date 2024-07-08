@@ -52,7 +52,7 @@ PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clie
 }
 
 void PlayGround::play() {
-    connect(socket,&ClientSocket::connectionLost,this,&PlayGround::connectionLost);
+    connectionLostListener = connect(socket,&ClientSocket::connectionLost,this,&PlayGround::connectionLost);
     isZombie = Cookie::getInstance()->loggedInPlayer->getRole() == "zombie";
     if (isZombie) {
         createZombieCards();
@@ -299,6 +299,7 @@ void PlayGround::endTheGame() {
     delete remainingTime;
     delete brainBar;
     delete sunBar;
+    disconnect(connectionLostListener);
     emit this->goToDashboardPage(this);
 }
 

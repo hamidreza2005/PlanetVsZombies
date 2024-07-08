@@ -46,7 +46,7 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
 void Dashboard::connectDataListener() {
     dataListener = connect(socket, &ClientSocket::dataReceived, this, &Dashboard::handleServerResponse);
     this->getOnlineUsers();
-    this->updateOnlineUsersTimer->start();
+//    this->updateOnlineUsersTimer->start();
 }
 
 void Dashboard::getOnlineUsers() {
@@ -85,7 +85,7 @@ void Dashboard::disconnectDataListener() {
 
 void Dashboard::on_exit_clicked() {
     Cookie::getInstance()->loggedInPlayer = nullptr;
-    this->goToLoginPage(this);
+    emit this->goToLoginPage(this);
 }
 
 void Dashboard::verifyCurrentClientIsReadyToPlay(const QString & opponentUsername) {
@@ -100,4 +100,8 @@ void Dashboard::verifyCurrentClientIsReadyToPlay(const QString & opponentUsernam
             Window::showConnectionLostError(this);
         }
     }
+}
+
+void Dashboard::on_refreshUsers_clicked() {
+    this->getOnlineUsers();
 }
