@@ -72,7 +72,10 @@ add_executable(PlanetVsZombies main.cpp
         entities/plant/Boomrang.h entities/plant/Boomrang.cpp
         entities/plant/Bullet.h entities/plant/Bullet.cpp
         SunBrain.h SunBrain.cpp
-    )
+        windows/History/history.cpp
+        windows/History/history.h
+        windows/History/history.ui
+)
 
 target_link_libraries(PlanetVsZombies
         Qt::Core

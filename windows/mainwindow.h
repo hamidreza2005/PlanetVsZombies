@@ -9,6 +9,7 @@
 #include "ResetPassword/resetpassword.h"
 #include "window.h"
 #include "../playground.h"
+#include "History/history.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -25,15 +26,18 @@ private:
     Dashboard *dashboardWindow;
     ResetPassword *resetPasswordWindow;
     PlayGround* playgroundWindow;
+    History* historyWindow;
     ClientSocket* socket;
 
     void connectSignals();
+    void createWindows();
 public slots:
     void showLoginWindow(Window* senderWindow = nullptr);
     void showRegisterWindow(Window* senderWindow = nullptr);
     void showDashboardWindow(Window* senderWindow = nullptr);
     void showResetPasswordWindow(Window* senderWindow = nullptr);
     void showPlaygroundWindow(Window* senderWindow = nullptr);
+    void showHistoryWindow(Window* senderWindow = nullptr);
 };
 
 

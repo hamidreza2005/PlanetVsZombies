@@ -16,5 +16,6 @@
         <file>resources/images/zombies/regular zombie.png</file>
         <file>resources/images/zombies/tall zombie.png</file>
         <file>resources/images/background.png</file>
+        <file>resources/images/icon.png</file>
     </qresource>
 </RCC>

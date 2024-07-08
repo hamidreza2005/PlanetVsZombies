@@ -4,24 +4,21 @@
 MainWindow::MainWindow(ClientSocket* clientSocket,QWidget *parent) :
         QMainWindow(parent),
         socket(clientSocket),
-        stackedWidget(new QStackedWidget(this)),
-        loginWindow(new Login(clientSocket,this)),
-        registerWindow(new Register(clientSocket,this)),
-        dashboardWindow(new Dashboard(clientSocket,this)),
-        resetPasswordWindow(new ResetPassword(clientSocket,this)),
-        playgroundWindow(new PlayGround(clientSocket,this))
+        stackedWidget(new QStackedWidget(this))
 {
+    this->createWindows();
     stackedWidget->addWidget(loginWindow);
     stackedWidget->addWidget(registerWindow);
     stackedWidget->addWidget(dashboardWindow);
     stackedWidget->addWidget(resetPasswordWindow);
     stackedWidget->addWidget(playgroundWindow);
+    stackedWidget->addWidget(historyWindow);
     setCentralWidget(stackedWidget);
     this->setFixedSize(1000,700);
     stackedWidget->setFixedSize(1000,700);
     // Connect signals to slots
     this->connectSignals();
-
+    this->setWindowIcon(QIcon(":/resources/images/icon.png"));
     // Show the login window by default
     showLoginWindow();
 }
@@ -67,6 +64,13 @@ void MainWindow::showPlaygroundWindow(Window *senderWindow) {
     playgroundWindow->play();
 }
 
+void MainWindow::showHistoryWindow(Window *senderWindow) {
+    if (senderWindow)
+        senderWindow->disconnectDataListener();
+    historyWindow->connectDataListener();
+    stackedWidget->setCurrentWidget(historyWindow);
+}
+
 void MainWindow::connectSignals() {
     connect(loginWindow, &Login::goToRegisterPage, this, &MainWindow::showRegisterWindow);
     connect(loginWindow, &Login::goToDashboardPage, this, &MainWindow::showDashboardWindow);
@@ -75,5 +79,17 @@ void MainWindow::connectSignals() {
     connect(registerWindow, &Register::goToLoginPage, this, &MainWindow::showLoginWindow);
     connect(dashboardWindow, &Dashboard::startTheGame, this, &MainWindow::showPlaygroundWindow);
     connect(dashboardWindow, &Dashboard::goToLoginPage, this, &MainWindow::showLoginWindow);
+    connect(dashboardWindow, &Dashboard::goToHistoryPage, this, &MainWindow::showHistoryWindow);
     connect(playgroundWindow, &PlayGround::goToDashboardPage, this, &MainWindow::showDashboardWindow);
+    connect(historyWindow, &History::goToDashboard, this, &MainWindow::showDashboardWindow);
+}
+
+void MainWindow::createWindows() {
+
+    this->loginWindow = new Login(socket,this),
+    this->registerWindow = new Register(socket,this);
+    this->dashboardWindow = new Dashboard(socket,this);
+    this->resetPasswordWindow = new ResetPassword(socket,this);
+    this->playgroundWindow = new PlayGround(socket,this);
+    this->historyWindow = new History(socket,this);
 }

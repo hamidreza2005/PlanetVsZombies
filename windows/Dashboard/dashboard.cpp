@@ -106,3 +106,7 @@ void Dashboard::verifyCurrentClientIsReadyToPlay(const QString & opponentUsernam
 void Dashboard::on_refreshUsers_clicked() {
     this->getOnlineUsers();
 }
+
+void Dashboard::on_history_clicked() {
+    emit this->goToHistoryPage(this);
+}

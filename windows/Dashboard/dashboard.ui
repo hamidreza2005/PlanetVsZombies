@@ -15,6 +15,9 @@
     <pointsize>11</pointsize>
    </font>
   </property>
+  <property name="cursor">
+   <cursorShape>PointingHandCursor</cursorShape>
+  </property>
   <property name="windowTitle">
    <string>Dashboard</string>
   </property>
@@ -60,7 +63,7 @@
     <rect>
      <x>10</x>
      <y>430</y>
-     <width>81</width>
+     <width>150</width>
      <height>41</height>
     </rect>
    </property>
@@ -101,7 +104,7 @@
     <rect>
      <x>10</x>
      <y>60</y>
-     <width>151</width>
+     <width>150</width>
      <height>41</height>
     </rect>
    </property>
@@ -142,6 +145,12 @@
      <width>91</width>
      <height>41</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>Ready</string>
@@ -247,6 +256,33 @@
    <property name="frameShadow">
     <enum>QFrame::Shadow::Raised</enum>
    </property>
+   <widget class="QPushButton" name="history">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>150</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 85, 0);
+border:3px solid #068027;
+border-radius:5px;</string>
+    </property>
+    <property name="text">
+     <string>History</string>
+    </property>
+   </widget>
   </widget>
   <zorder>frame</zorder>
   <zorder>label</zorder>
