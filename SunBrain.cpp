@@ -1,30 +1,49 @@
 #include "SunBrain.h"
 #include <QGraphicsSceneMouseEvent>
-#include <QPropertyAnimation>
 #include <QRandomGenerator>
 #include <QGraphicsScene>
 #include <QCursor>
 #include <QGraphicsView>
-#include <QWidget>
 
-SunBrain::SunBrain(const QString &imagePath, int value, QProgressBar *targetBar, bool isZombieMode, QObject *parent)
-    : QObject(parent), QGraphicsPixmapItem(nullptr), value(value), targetBar(targetBar), isZombieMode(isZombieMode) {
+SunBrain::SunBrain(const QString &imagePath, int value, QProgressBar *targetBar, bool isZombieMode, QGraphicsItem *rotatingItem, QObject *parent)
+    : QObject(parent), QGraphicsPixmapItem(nullptr), value(value), targetBar(targetBar), isZombieMode(isZombieMode), rotatingItem(rotatingItem), isCollected(false) {
     setPixmap(QPixmap(imagePath).scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     setCursor(QCursor(Qt::PointingHandCursor));
 
+    calculateTargetPosition();
+
     disappearTimer = new QTimer(this);
     connect(disappearTimer, &QTimer::timeout, this, &SunBrain::disappear);
-    disappearTimer->start(5000); // 5 seconds
+
+    fallTimer = new QTimer(this);
+    connect(fallTimer, &QTimer::timeout, this, &SunBrain::fall);
+
+    colorizeTimer = new QTimer(this);
+    connect(colorizeTimer, &QTimer::timeout, this, &SunBrain::colorizeRed);
+
+    delayTimer = new QTimer(this);
+    connect(delayTimer, &QTimer::timeout, this, &SunBrain::startTimers);
+
+    delayTimer->start(3000);
+
+    colorEffect = new QGraphicsColorizeEffect();
+}
+
+void SunBrain::calculateTargetPosition() {
+    int x = QRandomGenerator::global()->bounded(isZombieMode ? 500 : 200, isZombieMode ? 700 : 400);
+    int y = QRandomGenerator::global()->bounded(100, 400);
+    targetPosition = QPointF(x, y);
 }
 
 void SunBrain::fall() {
-    int endY = QRandomGenerator::global()->bounded(100, 400);
-
-    QPropertyAnimation *animation = new QPropertyAnimation(this, "pos");
-    animation->setDuration(QRandomGenerator::global()->bounded(1000, 3000));
-    animation->setStartValue(pos());
-    animation->setEndValue(QPointF(pos().x(), endY));
-    animation->start(QAbstractAnimation::DeleteWhenStopped);
+    if (y() < targetPosition.y()) {
+        setY(y() + 1);
+    } else {
+        fallTimer->stop();
+        emit landed(); // Emit landed signal
+        disappearTimer->start(5000);
+        colorizeTimer->start(2000);
+    }
 }
 
 void SunBrain::disappear() {
@@ -34,17 +53,33 @@ void SunBrain::disappear() {
 
 void SunBrain::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     Q_UNUSED(event)
+    isCollected = true;
     emit collected(value);
 
-    QPropertyAnimation* moveAnimation = new QPropertyAnimation(this, "pos");
-    moveAnimation->setDuration(500);
+    moveTimer = new QTimer(this);
+    connect(moveTimer, &QTimer::timeout, this, &SunBrain::moveToTarget);
+    moveTimer->start(15);
+}
 
-    QPointF targetPos = targetBar->mapToGlobal(targetBar->rect().center());
-    QGraphicsView* view = scene()->views().first();
-    QPoint targetViewPos = view->mapFromGlobal(targetPos.toPoint());
-    QPointF targetScenePos = view->mapToScene(targetViewPos);
+void SunBrain::moveToTarget() {
+    if (!isCollected) return;
 
-    moveAnimation->setEndValue(targetScenePos);
-    connect(moveAnimation, &QPropertyAnimation::finished, this, &SunBrain::disappear);
-    moveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+    QPointF targetPos = QPointF(480, 490); // Updated to move to specific coordinates
+    if (pos().x() < targetPos.x()) setX(x() + 3);
+    if (pos().y() < targetPos.y()) setY(y() + 3);
+    if (pos().x() >= targetPos.x() && pos().y() >= targetPos.y()) {
+        moveTimer->stop();
+        disappear();
+    }
+}
+
+void SunBrain::colorizeRed() {
+    colorEffect->setColor(Qt::red);
+    setGraphicsEffect(colorEffect);
+    colorizeTimer->stop();
+}
+
+void SunBrain::startTimers() {
+    fallTimer->start(30);
+    delayTimer->stop();
 }

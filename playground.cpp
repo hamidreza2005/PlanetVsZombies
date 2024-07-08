@@ -20,7 +20,9 @@
 #include <QRandomGenerator>
 #include "core/Cookie.h"
 #include <QGraphicsRotation>
-#include <QTransform>
+#include <QGraphicsItemAnimation>
+#include <QTimeLine>
+#include <QPropertyAnimation>
 
 QVector<std::function<GameEntity*()>> PlayGround::zombies = {
     [](){return new RegularZombie;},
@@ -52,6 +54,9 @@ PlayGround::PlayGround(ClientSocket* clientSocket, QWidget *parent)
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PlayGround::updateTimer);
+
+    cardStateTimer = new QTimer(this);
+    connect(cardStateTimer, &QTimer::timeout, this, &PlayGround::checkCardStates);
 }
 
 void PlayGround::play() {
@@ -71,7 +76,9 @@ void PlayGround::play() {
 
     sunBrainTimer = new QTimer(this);
     connect(sunBrainTimer, &QTimer::timeout, this, &PlayGround::spawnSunBrain);
-    sunBrainTimer->start(5000);
+    sunBrainTimer->start(10000);
+
+    cardStateTimer->start(1000);
 }
 
 void PlayGround::setupPlayerZombieInfo() {
@@ -87,15 +94,12 @@ void PlayGround::setupPlayerZombieInfo() {
     remainingZombieTime->setFont(font);
     brainBar->setFont(font);
 
-    brainBar->setFixedHeight(20);  // Smaller height for the bar
-    brainBar->setFixedWidth(200);  // Reduce width for adding rotating image
+    brainBar->setFixedHeight(20);
+    brainBar->setFixedWidth(200);
 
     playerZombieName->setStyleSheet("QLabel { color : blue; }");
     remainingZombieTime->setStyleSheet("QLabel { color : red; }");
     brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
-
-    // Add rotating image next to the brain bar
-    setupRotatingImage(":/resources/images/Brain.png", brainBar->geometry().right() + 10, brainBar->geometry().top());
 }
 
 void PlayGround::setupPlayerPlantInfo() {
@@ -111,15 +115,12 @@ void PlayGround::setupPlayerPlantInfo() {
     remainingPlantTime->setFont(font);
     sunBar->setFont(font);
 
-    sunBar->setFixedHeight(20);  // Smaller height for the bar
-    sunBar->setFixedWidth(200);  // Reduce width for adding rotating image
+    sunBar->setFixedHeight(20);
+    sunBar->setFixedWidth(200);
 
     playerPlantName->setStyleSheet("QLabel { color : blue; }");
     remainingPlantTime->setStyleSheet("QLabel { color : red; }");
     sunBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: yellow; }");
-
-    // Add rotating image next to the sun bar
-    setupRotatingImage(":/resources/images/sun.png", sunBar->geometry().left() + 10, sunBar->geometry().top());
 }
 
 void PlayGround::setupGround() {
@@ -153,27 +154,57 @@ void PlayGround::setupLayout() {
     mainLayout->addWidget(cardView, 1);
     setLayout(mainLayout);
 
+    int cardWidth = 100;
+    int gapBetweenCards = 2;
+    int rotatingImageSize = 100;
+
     QVector<Card*>& cards = isZombie ? zombieCards : plantCards;
-    for (auto* card : cards) {
-        cardScene->addItem(card);
+    for (int i = 0; i < 3; ++i) {
+        cards[i]->setPos(i * (cardWidth + gapBetweenCards), 0);
+        cardScene->addItem(cards[i]);
+    }
+
+    setupRotatingImage(isZombie ? ":/resources/images/Brain.png" : ":/resources/images/sun.png", cardScene);
+
+    for (int i = 3; i < 6; ++i) {
+        cards[i]->setPos((i + 1) * (cardWidth + gapBetweenCards), 0);
+        cardScene->addItem(cards[i]);
     }
 }
 
 void PlayGround::createZombieCards() {
-    for (int i = 0; i < 6; i++) {
-        auto* card = new Card(this->zombies[i]);
-        card->setPos(i * 150, 0);
+    for (int i = 0; i < zombies.size(); i++) {
+        int cost;
+        if (i == 0) cost = 100;
+        else if (i == 1) cost = 200;
+        else if (i == 2) cost = 150;
+        else if (i == 3) cost = 120;
+        else if (i == 4) cost = 180;
+        else cost = 200;
+
+        auto* card = new Card(this->zombies[i], 100, 100, cost);
+        card->setPos((i * 100) , 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         zombieCards.push_back(card);
+        scene->addItem(card);
     }
 }
 
 void PlayGround::createPlantCards() {
-    for (int i = 0; i < 6; i++) {
-        auto* card = new Card(this->plants[i]);
-        card->setPos(i * 150, 0);
+    for (int i = 0; i < plants.size(); i++) {
+        int cost;
+        if (i == 0) cost = 100; // PeaShooter
+        else if (i == 1) cost = 200; // TwoPeaShooter
+        else if (i == 2) cost = 50; // Walnut
+        else if (i == 3) cost = 125; // Boomerang
+        else if (i == 4) cost = 150; // Jalapeno
+        else cost = 175; // PlumMine
+
+        auto* card = new Card(this->plants[i], 100, 100, cost);
+        card->setPos((i * 100), 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         plantCards.push_back(card);
+        scene->addItem(card);
     }
 }
 
@@ -239,9 +270,7 @@ void PlayGround::addEntity(QPointF point) {
 
     if (isZombie) {
         finalX = 750;
-        if (y <= 0) {
-            finalY = 0;
-        } else if (y <= 78) {
+        if (y > 0 && y <= 78) {
             finalY = 77.6;
         } else if (y <= 156) {
             finalY = 155.2;
@@ -266,11 +295,10 @@ void PlayGround::addEntity(QPointF point) {
         auto* newEntity = selectedCard->getEntityFactory()();
         newEntity->setPos(finalX, finalY);
         scene->addItem(newEntity);
+        updateBrainCount(-selectedCard->getCost());
 
     } else {
-        if (y <= 0) {
-            finalY = 0;
-        } else if (y <= 78) {
+        if (y > 0 && y <= 78) {
             finalY = 77.6;
         } else if (y <= 156) {
             finalY = 155.2;
@@ -286,9 +314,7 @@ void PlayGround::addEntity(QPointF point) {
         finalY -= 77.6;
 
         int x = point.x();
-        if (x <= 30) {
-            finalX = 0;
-        } else if (x <= 109) {
+        if (x > 29 && x <= 109) {
             finalX = 70;
         } else if (x <= 184) {
             finalX = 146.5;
@@ -311,7 +337,10 @@ void PlayGround::addEntity(QPointF point) {
         auto* newEntity = selectedCard->getEntityFactory()();
         newEntity->setPos(finalX, finalY);
         scene->addItem(newEntity);
+        updateSunCount(-selectedCard->getCost());
     }
+
+    checkCardStates();
 }
 
 bool PlayGround::isOutOfGround(const QPointF* point) {
@@ -337,41 +366,35 @@ bool PlayGround::isPositionOccupied(QPointF point) {
 void PlayGround::spawnSunBrain() {
     QString imagePath = isZombie ? ":/resources/images/Brain.png" : ":/resources/images/sun.png";
     int value = 50;
-    SunBrain *sunBrain = new SunBrain(imagePath, value, isZombie ? brainBar : sunBar, isZombie);
+    SunBrain *sunBrain = new SunBrain(imagePath, value, isZombie ? brainBar : sunBar, isZombie, rotatingItem);
 
     int x = QRandomGenerator::global()->bounded(isZombie ? 485 : 30, isZombie ? 750 : 490);
-    int y = -50;
+    int y = -100;
 
     sunBrain->setPos(x, y);
 
     connect(sunBrain, &SunBrain::collected, this, &PlayGround::collectSunBrain);
+    connect(sunBrain, &SunBrain::landed, this, &PlayGround::handleLanded); // Handle when SunBrain lands
     scene->addItem(sunBrain);
-
-    sunBrain->fall();
 }
 
-void PlayGround::setupRotatingImage(const QString& imagePath, int xPos, int yPos) {
-    QGraphicsPixmapItem* rotatingItem = new QGraphicsPixmapItem(QPixmap(imagePath).scaled(10, 10, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+void PlayGround::setupRotatingImage(const QString& imagePath, QGraphicsScene* cardScene) {
+    rotatingItem = new QGraphicsPixmapItem(QPixmap(imagePath).scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     rotatingItem->setTransformOriginPoint(rotatingItem->boundingRect().center());
-    rotatingItem->setZValue(10);  // Ensure it's on top
+    rotatingItem->setZValue(10);
 
+    int xPos = 3 * (100 + 2);
+    int yPos = 0;
     rotatingItem->setPos(xPos, yPos);
 
-    QGraphicsScene* uiScene = new QGraphicsScene(this);
-    QGraphicsView* uiView = new QGraphicsView(uiScene, this);
-    uiView->setStyleSheet("background: transparent; border: none;");
-    uiView->setGeometry(xPos, yPos, 50, 50);
-    uiView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    uiView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    uiScene->addItem(rotatingItem);
-
-    auto *rotation = new QGraphicsRotation;
+    QGraphicsRotation* rotation = new QGraphicsRotation;
     rotation->setAngle(0);
     rotation->setAxis(Qt::YAxis);
     rotation->setOrigin(QVector3D(rotatingItem->boundingRect().center().x(), rotatingItem->boundingRect().center().y(), 0));
     rotatingItem->setTransformations({rotation});
+    cardScene->addItem(rotatingItem);
 
-    auto *rotationAnimation = new QPropertyAnimation(rotation, "angle");
+    auto rotationAnimation = new QPropertyAnimation(rotation, "angle");
     rotationAnimation->setDuration(2000);
     rotationAnimation->setStartValue(0);
     rotationAnimation->setEndValue(360);
@@ -413,4 +436,27 @@ void PlayGround::connectionLost() {
     QMessageBox::critical(this, "Problem", "Your Connection Got Lost",
                           QMessageBox::Yes);
     this->endTheGame();
+}
+
+void PlayGround::checkCardStates() {
+    int availablePoints = isZombie ? brainCount : sunCount;
+    QVector<Card*>& cards = isZombie ? zombieCards : plantCards;
+
+    for (Card* card : cards) {
+        if (card->getCost() > availablePoints) {
+            card->setEnabled(false);
+            card->setOpacity(0.5); // Dim the card to show it's unavailable
+            if (selectedCard == card) {
+                card->unselect();
+                selectedCard = nullptr;
+            }
+        } else {
+            card->setEnabled(true);
+            card->setOpacity(1.0); // Reset opacity to normal
+        }
+    }
+}
+
+void PlayGround::handleLanded() {
+    sunBrainTimer->start(10000); // Restart the timer to spawn SunBrain after 10 seconds
 }

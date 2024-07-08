@@ -16,6 +16,7 @@ public:
     void select();
     void unselect();
     void setCost(int cost);
+    int getCost() const;
 
 signals:
     void selectEntity(Card* card);

@@ -34,6 +34,8 @@ private slots:
     void updateSunCount(int amount);
     void spawnSunBrain();
     void collectSunBrain(int value);
+    void checkCardStates();
+    void handleLanded();
 
 private:
     QGraphicsView* graphicsView;
@@ -52,10 +54,12 @@ private:
     bool isZombie;
     QTimer* timer;
     QTimer* sunBrainTimer;
+    QTimer* cardStateTimer;
     int remainingSeconds;
     int brainCount;
     int sunCount;
     Card* selectedCard;
+    QGraphicsPixmapItem* rotatingItem;
 
     void createZombieCards();
     void createPlantCards();
@@ -65,7 +69,7 @@ private:
     void setupLayout();
     bool isOutOfGround(const QPointF* point);
     bool isPositionOccupied(QPointF point);
-    void setupRotatingImage(const QString& imagePath, int xPos, int yPos);
+    void setupRotatingImage(const QString& imagePath, QGraphicsScene* cardScene);
     void endTheGame();
 public slots:
     void selectCard(Card* card);

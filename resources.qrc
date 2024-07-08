@@ -15,5 +15,8 @@
         <file>resources/images/zombies/purple hair zombie.png</file>
         <file>resources/images/zombies/regular zombie.png</file>
         <file>resources/images/zombies/tall zombie.png</file>
+        <file>resources/images/fire.gif</file>
+        <file>resources/images/fire.png</file>
     </qresource>
+    <qresource prefix="/im"/>
 </RCC>
