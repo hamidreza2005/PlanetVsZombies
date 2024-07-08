@@ -19,7 +19,7 @@
 class PlayGround : public Window {
     Q_OBJECT
 public:
-    explicit PlayGround(ClientSocket* clientSocket,QWidget *parent = nullptr);
+    explicit PlayGround(ClientSocket* clientSocket, QWidget *parent = nullptr);
     void play();
     void connectDataListener() override;
     void handleServerResponse(const QJsonObject &data) override;
@@ -65,6 +65,7 @@ private:
     void setupLayout();
     bool isOutOfGround(const QPointF* point);
     bool isPositionOccupied(QPointF point);
+    void setupRotatingImage(const QString& imagePath, int xPos, int yPos);
     void endTheGame();
 public slots:
     void selectCard(Card* card);

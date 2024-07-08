@@ -19,6 +19,8 @@
 #include <QDebug>
 #include <QRandomGenerator>
 #include "core/Cookie.h"
+#include <QGraphicsRotation>
+#include <QTransform>
 
 QVector<std::function<GameEntity*()>> PlayGround::zombies = {
     [](){return new RegularZombie;},
@@ -38,7 +40,8 @@ QVector<std::function<GameEntity*()>> PlayGround::plants = {
     [](){return new PlumMine;},
     };
 
-PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clientSocket,parent), remainingSeconds(210), brainCount(50), sunCount(50), selectedCard(nullptr) {
+PlayGround::PlayGround(ClientSocket* clientSocket, QWidget *parent)
+    : Window(clientSocket, parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
     this->setFixedSize(1000, 700);
     graphicsView = new QGraphicsView(this);
     graphicsView->setFixedSize(1000, 500);
@@ -53,7 +56,7 @@ PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clie
 
 void PlayGround::play() {
     this->connectDataListener();
-    connect(socket,&ClientSocket::connectionLost,this,&PlayGround::connectionLost);
+    connect(socket, &ClientSocket::connectionLost, this, &PlayGround::connectionLost);
     isZombie = Cookie::getInstance()->loggedInPlayer->getRole() == "zombie";
     if (isZombie) {
         createZombieCards();
@@ -66,17 +69,16 @@ void PlayGround::play() {
     this->setupGround();
     timer->start(1000);
 
-    // Set up timer to spawn SunBrain items
     sunBrainTimer = new QTimer(this);
     connect(sunBrainTimer, &QTimer::timeout, this, &PlayGround::spawnSunBrain);
-    sunBrainTimer->start(5000); // Spawn every 5 seconds
+    sunBrainTimer->start(5000);
 }
 
 void PlayGround::setupPlayerZombieInfo() {
     playerZombieName = new QLabel("Zombie Player", this);
     remainingZombieTime = new QLabel("Time: 03:30", this);
     brainBar = new QProgressBar(this);
-    brainBar->setRange(0, 100);
+    brainBar->setRange(0, 1000);
     brainBar->setValue(0);
     brainBar->setFormat("%v");
 
@@ -85,16 +87,22 @@ void PlayGround::setupPlayerZombieInfo() {
     remainingZombieTime->setFont(font);
     brainBar->setFont(font);
 
+    brainBar->setFixedHeight(20);  // Smaller height for the bar
+    brainBar->setFixedWidth(200);  // Reduce width for adding rotating image
+
     playerZombieName->setStyleSheet("QLabel { color : blue; }");
     remainingZombieTime->setStyleSheet("QLabel { color : red; }");
     brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
+
+    // Add rotating image next to the brain bar
+    setupRotatingImage(":/resources/images/Brain.png", brainBar->geometry().right() + 10, brainBar->geometry().top());
 }
 
 void PlayGround::setupPlayerPlantInfo() {
     playerPlantName = new QLabel("Plant Player", this);
     remainingPlantTime = new QLabel("Time: 03:30", this);
     sunBar = new QProgressBar(this);
-    sunBar->setRange(0, 100);
+    sunBar->setRange(0, 1000);
     sunBar->setValue(0);
     sunBar->setFormat("%v");
 
@@ -103,9 +111,15 @@ void PlayGround::setupPlayerPlantInfo() {
     remainingPlantTime->setFont(font);
     sunBar->setFont(font);
 
+    sunBar->setFixedHeight(20);  // Smaller height for the bar
+    sunBar->setFixedWidth(200);  // Reduce width for adding rotating image
+
     playerPlantName->setStyleSheet("QLabel { color : blue; }");
     remainingPlantTime->setStyleSheet("QLabel { color : red; }");
     sunBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: yellow; }");
+
+    // Add rotating image next to the sun bar
+    setupRotatingImage(":/resources/images/sun.png", sunBar->geometry().left() + 10, sunBar->geometry().top());
 }
 
 void PlayGround::setupGround() {
@@ -146,7 +160,7 @@ void PlayGround::setupLayout() {
 }
 
 void PlayGround::createZombieCards() {
-    for(int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++) {
         auto* card = new Card(this->zombies[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
@@ -155,7 +169,7 @@ void PlayGround::createZombieCards() {
 }
 
 void PlayGround::createPlantCards() {
-    for(int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++) {
         auto* card = new Card(this->plants[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
@@ -183,24 +197,24 @@ void PlayGround::updateTimer() {
 
 void PlayGround::updateBrainCount(int amount) {
     brainCount += amount;
-    brainBar->setValue(brainCount / 5);
+    brainBar->setValue(brainCount);
     brainBar->setFormat(QString("Brains: %1").arg(brainCount));
 }
 
 void PlayGround::updateSunCount(int amount) {
     sunCount += amount;
-    sunBar->setValue(sunCount / 5);
+    sunBar->setValue(sunCount);
     sunBar->setFormat(QString("Sun: %1").arg(sunCount));
 }
 
 void PlayGround::selectCard(Card *card) {
-    if(this->selectedCard == card){
+    if (this->selectedCard == card) {
         this->selectedCard->unselect();
         this->selectedCard = nullptr;
         return;
     }
 
-    if(this->selectedCard)
+    if (this->selectedCard)
         this->selectedCard->unselect();
     this->selectedCard = card;
     this->selectedCard->select();
@@ -223,27 +237,21 @@ void PlayGround::addEntity(QPointF point) {
     int y = point.y();
     int finalX, finalY;
 
-    if(isZombie) {
+    if (isZombie) {
         finalX = 750;
         if (y <= 0) {
             finalY = 0;
-        }
-        else if (y <= 78) {
+        } else if (y <= 78) {
             finalY = 77.6;
-        }
-        else if (y <= 156) {
+        } else if (y <= 156) {
             finalY = 155.2;
-        }
-        else if (y <= 233) {
+        } else if (y <= 233) {
             finalY = 232.8;
-        }
-        else if (y <= 311) {
+        } else if (y <= 311) {
             finalY = 310.4;
-        }
-        else if (y <=389) {
+        } else if (y <= 389) {
             finalY = 388;
-        }
-        else{
+        } else {
             finalY = 465;
         }
         finalY -= 77.6;
@@ -259,27 +267,20 @@ void PlayGround::addEntity(QPointF point) {
         newEntity->setPos(finalX, finalY);
         scene->addItem(newEntity);
 
-    }
-    else {
+    } else {
         if (y <= 0) {
             finalY = 0;
-        }
-        else if (y <= 78) {
+        } else if (y <= 78) {
             finalY = 77.6;
-        }
-        else if (y <= 156) {
+        } else if (y <= 156) {
             finalY = 155.2;
-        }
-        else if (y <= 233) {
+        } else if (y <= 233) {
             finalY = 232.8;
-        }
-        else if (y <= 311) {
+        } else if (y <= 311) {
             finalY = 310.4;
-        }
-        else if (y <=389) {
+        } else if (y <= 389) {
             finalY = 388;
-        }
-        else{
+        } else {
             finalY = 465;
         }
         finalY -= 77.6;
@@ -287,23 +288,17 @@ void PlayGround::addEntity(QPointF point) {
         int x = point.x();
         if (x <= 30) {
             finalX = 0;
-        }
-        else if (x <= 109) {
+        } else if (x <= 109) {
             finalX = 70;
-        }
-        else if (x <= 184) {
+        } else if (x <= 184) {
             finalX = 146.5;
-        }
-        else if (x <= 262) {
+        } else if (x <= 262) {
             finalX = 223;
-        }
-        else if (x <= 339) {
+        } else if (x <= 339) {
             finalX = 300.5;
-        }
-        else if (x <=417) {
+        } else if (x <= 417) {
             finalX = 378;
-        }
-        else{
+        } else {
             finalX = 453.5;
         }
         finalX -= 207;
@@ -319,12 +314,10 @@ void PlayGround::addEntity(QPointF point) {
     }
 }
 
-
 bool PlayGround::isOutOfGround(const QPointF* point) {
-    if(isZombie){
+    if (isZombie) {
         return point->x() < 485 || point->x() > 1000 || point->y() < -80 || point->y() > 470;
-    }
-    else{
+    } else {
         return point->x() < 30 || point->x() > 490 || point->y() < -80 || point->y() > 470;
     }
 }
@@ -344,14 +337,46 @@ bool PlayGround::isPositionOccupied(QPointF point) {
 void PlayGround::spawnSunBrain() {
     QString imagePath = isZombie ? ":/resources/images/Brain.png" : ":/resources/images/sun.png";
     int value = 50;
-    SunBrain *sunBrain = new SunBrain(imagePath, value);
+    SunBrain *sunBrain = new SunBrain(imagePath, value, isZombie ? brainBar : sunBar, isZombie);
 
-    int x = QRandomGenerator::global()->bounded(isZombie ? 485 : 30, isZombie ? 1000 : 490);
-    int y = -50; // Start above the scene
+    int x = QRandomGenerator::global()->bounded(isZombie ? 485 : 30, isZombie ? 750 : 490);
+    int y = -50;
+
     sunBrain->setPos(x, y);
 
     connect(sunBrain, &SunBrain::collected, this, &PlayGround::collectSunBrain);
     scene->addItem(sunBrain);
+
+    sunBrain->fall();
+}
+
+void PlayGround::setupRotatingImage(const QString& imagePath, int xPos, int yPos) {
+    QGraphicsPixmapItem* rotatingItem = new QGraphicsPixmapItem(QPixmap(imagePath).scaled(10, 10, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    rotatingItem->setTransformOriginPoint(rotatingItem->boundingRect().center());
+    rotatingItem->setZValue(10);  // Ensure it's on top
+
+    rotatingItem->setPos(xPos, yPos);
+
+    QGraphicsScene* uiScene = new QGraphicsScene(this);
+    QGraphicsView* uiView = new QGraphicsView(uiScene, this);
+    uiView->setStyleSheet("background: transparent; border: none;");
+    uiView->setGeometry(xPos, yPos, 50, 50);
+    uiView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    uiView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    uiScene->addItem(rotatingItem);
+
+    auto *rotation = new QGraphicsRotation;
+    rotation->setAngle(0);
+    rotation->setAxis(Qt::YAxis);
+    rotation->setOrigin(QVector3D(rotatingItem->boundingRect().center().x(), rotatingItem->boundingRect().center().y(), 0));
+    rotatingItem->setTransformations({rotation});
+
+    auto *rotationAnimation = new QPropertyAnimation(rotation, "angle");
+    rotationAnimation->setDuration(2000);
+    rotationAnimation->setStartValue(0);
+    rotationAnimation->setEndValue(360);
+    rotationAnimation->setLoopCount(-1);
+    rotationAnimation->start();
 }
 
 void PlayGround::collectSunBrain(int value) {
@@ -368,11 +393,11 @@ void PlayGround::connectDataListener() {
 
 void PlayGround::handleServerResponse(const QJsonObject &data) {
     qDebug() << data;
-    if (!data.contains("state")){
+    if (!data.contains("state")) {
         return;
     }
 
-    if(data.value("state") == "opponentLeft"){
+    if (data.value("state") == "opponentLeft") {
         QMessageBox::critical(this, "Problem", "Your Opponent Left The game",
                               QMessageBox::Yes);
         this->endTheGame();

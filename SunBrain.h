@@ -4,11 +4,12 @@
 #include <QGraphicsPixmapItem>
 #include <QObject>
 #include <QTimer>
+#include <QProgressBar>
 
 class SunBrain : public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
 public:
-    explicit SunBrain(const QString &imagePath, int value, QObject *parent = nullptr);
+    explicit SunBrain(const QString &imagePath, int value, QProgressBar *targetBar, bool isZombieMode, QObject *parent = nullptr);
 
 signals:
     void collected(int value);
@@ -23,6 +24,8 @@ protected:
 private:
     int value;
     QTimer *disappearTimer;
+    QProgressBar *targetBar;
+    bool isZombieMode;
 };
 
 #endif // PLANETVSZOMBIES_SUNBRAIN_H

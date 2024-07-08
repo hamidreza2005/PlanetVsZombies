@@ -4,16 +4,13 @@
 #include <QRandomGenerator>
 #include <QGraphicsScene>
 #include <QCursor>
+#include <QGraphicsView>
+#include <QWidget>
 
-SunBrain::SunBrain(const QString &imagePath, int value, QObject *parent)
-    : QObject(parent), QGraphicsPixmapItem(nullptr), value(value) {
+SunBrain::SunBrain(const QString &imagePath, int value, QProgressBar *targetBar, bool isZombieMode, QObject *parent)
+    : QObject(parent), QGraphicsPixmapItem(nullptr), value(value), targetBar(targetBar), isZombieMode(isZombieMode) {
     setPixmap(QPixmap(imagePath).scaled(50, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     setCursor(QCursor(Qt::PointingHandCursor));
-
-
-    int fallSpeed = QRandomGenerator::global()->bounded(1000, 3000);
-    QTimer::singleShot(fallSpeed, this, &SunBrain::fall);
-
 
     disappearTimer = new QTimer(this);
     connect(disappearTimer, &QTimer::timeout, this, &SunBrain::disappear);
@@ -21,14 +18,12 @@ SunBrain::SunBrain(const QString &imagePath, int value, QObject *parent)
 }
 
 void SunBrain::fall() {
-    int x = pos().x();
-    int y = pos().y();
-    int endY = QRandomGenerator::global()->bounded(0, 450);
+    int endY = QRandomGenerator::global()->bounded(100, 400);
 
-    QPropertyAnimation *animation = new QPropertyAnimation(this, "y");
-    animation->setDuration(2000);
-    animation->setStartValue(y);
-    animation->setEndValue(endY);
+    QPropertyAnimation *animation = new QPropertyAnimation(this, "pos");
+    animation->setDuration(QRandomGenerator::global()->bounded(1000, 3000));
+    animation->setStartValue(pos());
+    animation->setEndValue(QPointF(pos().x(), endY));
     animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
@@ -40,6 +35,16 @@ void SunBrain::disappear() {
 void SunBrain::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     Q_UNUSED(event)
     emit collected(value);
-    scene()->removeItem(this);
-    delete this;
+
+    QPropertyAnimation* moveAnimation = new QPropertyAnimation(this, "pos");
+    moveAnimation->setDuration(500);
+
+    QPointF targetPos = targetBar->mapToGlobal(targetBar->rect().center());
+    QGraphicsView* view = scene()->views().first();
+    QPoint targetViewPos = view->mapFromGlobal(targetPos.toPoint());
+    QPointF targetScenePos = view->mapToScene(targetViewPos);
+
+    moveAnimation->setEndValue(targetScenePos);
+    connect(moveAnimation, &QPropertyAnimation::finished, this, &SunBrain::disappear);
+    moveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
