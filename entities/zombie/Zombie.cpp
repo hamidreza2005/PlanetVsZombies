@@ -73,7 +73,8 @@ void Zombie::move() {
         this->activateAttackMode();
         return;
     }
-    if(this->x() < -150){
+    if(this->hasReachedTheEndOfTheGround()){
+        emit this->zombieReachedToTheEnd();
         delete this;
         return;
     }
@@ -116,4 +117,8 @@ void Zombie::activateAttackMode() {
 void Zombie::activateMovementMode() {
     this->movementTimer->start(this->movementDelay * 1000);
     this->attackTimer->stop();
+}
+
+bool Zombie::hasReachedTheEndOfTheGround() {
+    return this->x() < -150;
 }

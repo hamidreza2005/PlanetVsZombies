@@ -11,6 +11,7 @@ public:
     explicit Ground(QObject *parent = nullptr);
     static double getYForNewEntity(int y);
     static double getXForPlants(int x);
+    bool isOutOfGround(bool isEntityZombie,const QPointF* point);
 };
 
 #endif // GROUND_H

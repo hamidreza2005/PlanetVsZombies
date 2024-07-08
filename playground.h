@@ -63,7 +63,7 @@ private:
     void setupPlayerPlantInfo();
     void setupGround();
     void setupLayout();
-    bool isOutOfGround(const QPointF* point);
+
     bool isPositionOccupied(QPointF point);
     void endTheGame();
     void sendAddRequest(const QString& name,int x,int y);
@@ -72,6 +72,8 @@ public slots:
     void selectCard(Card* card);
     void addEntity(QPointF point);
     void connectionLost();
+    void AZombieReachedTheEnd();
+    void ranOutOfTime();
 signals:
     void goToDashboardPage(Window* sender);
 };

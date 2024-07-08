@@ -38,7 +38,7 @@ QMap<QString,std::function<GameEntity*()>> PlayGround::plants = {
         {"Plum Mine Plant",[](){return new PlumMine;}},
     };
 
-PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clientSocket,parent), remainingSeconds(210), brainCount(50), sunCount(50), selectedCard(nullptr) {
+PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clientSocket,parent), remainingSeconds(10), brainCount(50), sunCount(50), selectedCard(nullptr) {
     this->setFixedSize(1000, 700);
     graphicsView = new QGraphicsView(this);
     graphicsView->setFixedSize(1000, 500);
@@ -177,6 +177,7 @@ void PlayGround::updateTimer() {
             remainingPlantTime->setText(timeString);
         }
     } else {
+        this->ranOutOfTime();
         timer->stop();
     }
 }
@@ -215,7 +216,7 @@ bool PlayGround::eventFilter(QObject* obj, QEvent* event) {
 }
 
 void PlayGround::addEntity(QPointF point) {
-    if (!selectedCard || this->isOutOfGround(&point)) {
+    if (!selectedCard || ground->isOutOfGround(isZombie,&point)) {
         return;
     }
 
@@ -231,28 +232,19 @@ void PlayGround::addEntity(QPointF point) {
     auto* newEntity = selectedCard->getEntityFactory()();
     newEntity->setPos(finalX, finalY);
     scene->addItem(newEntity);
+    if(auto zombie = dynamic_cast<Zombie*>(newEntity)){
+        connect(zombie,&Zombie::zombieReachedToTheEnd,this,&PlayGround::AZombieReachedTheEnd);
+    }
     this->sendAddRequest(newEntity->getName(),finalX,finalY);
-}
-
-
-bool PlayGround::isOutOfGround(const QPointF* point) {
-    if(isZombie){
-        return point->x() < 485 || point->x() > 1000 || point->y() < -80 || point->y() > 470;
-    }
-    else{
-        return point->x() < 30 || point->x() > 490 || point->y() < -80 || point->y() > 470;
-    }
 }
 
 bool PlayGround::isPositionOccupied(QPointF point) {
     QList<QGraphicsItem*> items = scene->items();
     for (QGraphicsItem* item : items) {
         if (dynamic_cast<Plant*>(item) && item->pos() == point) {
-            qDebug() << "Position occupied by another plant.";
             return true;
         }
     }
-    qDebug() << "Position available.";
     return false;
 }
 
@@ -339,4 +331,12 @@ void PlayGround::sendAddRequest(const QString& name,int x,int y) {
     response["x"] = x;
     response["y"] = y;
     this->socket->sendJson("gameRoom",response);
+}
+
+void PlayGround::AZombieReachedTheEnd() {
+    qDebug() << "a zombie reached the end";
+}
+
+void PlayGround::ranOutOfTime() {
+    qDebug() << "We ran out of time";
 }

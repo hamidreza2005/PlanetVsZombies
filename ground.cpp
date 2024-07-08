@@ -1,4 +1,5 @@
 #include "ground.h"
+#include "entities/plant/Plant.h"
 #include <QPixmap>
 
 Ground::Ground(QObject *parent)
@@ -64,4 +65,11 @@ double Ground::getXForPlants(int x) {
     }
     finalX -= 207;
     return finalX;
+}
+
+bool Ground::isOutOfGround(bool isEntityZombie, const QPointF *point) {
+    if(isEntityZombie){
+        return point->x() < 485 || point->x() > 1000 || point->y() < -80 || point->y() > 470;
+    }
+    return point->x() < 30 || point->x() > 490 || point->y() < -80 || point->y() > 470;
 }

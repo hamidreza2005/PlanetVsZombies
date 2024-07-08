@@ -6,6 +6,7 @@
 #include "../GameEntity.h"
 
 class Zombie : public GameEntity{
+    Q_OBJECT
 public:
     explicit Zombie(int health, float movementDelay, int attackPower, float firingRate,int brain);
 
@@ -40,6 +41,9 @@ private:
     bool isThereAPlantInWay();
     void activateAttackMode();
     void activateMovementMode();
+    bool hasReachedTheEndOfTheGround();
+signals:
+    void zombieReachedToTheEnd();
 };
 
 
