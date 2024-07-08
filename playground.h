@@ -23,6 +23,8 @@ public:
     void play();
     void connectDataListener() override;
     void handleServerResponse(const QJsonObject &data) override;
+    void connectConnectionLostListener();
+    void disconnectConnectionLostListener();
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
     static QMap<QString,std::function<GameEntity*()>> zombies;
@@ -38,8 +40,9 @@ private slots:
 private:
     QGraphicsView* graphicsView;
     QGraphicsScene* scene;
-    QVector<Card*> zombieCards;
-    QVector<Card*> plantCards;
+    QGraphicsScene* cardsScene;
+    QGraphicsView* cardView;
+    QVector<Card*> cards;
     QLabel* playerName;
     QLabel* remainingTime;
     Ground* ground;
@@ -56,8 +59,7 @@ private:
     int sunCount;
     Card* selectedCard;
 
-    void createZombieCards();
-    void createPlantCards();
+    void createCards();
     void setupPlayerZombieInfo();
     void setupPlayerPlantInfo();
     void setupGround();
@@ -67,8 +69,11 @@ private:
     bool isPositionOccupied(QPointF point);
     void endTheGame();
     void sendAddRequest(const QString& name,int x,int y);
-    void addNewEntityFromServer(QJsonObject entityData);
-
+    void addNewEntityFromServer(const QJsonObject &entityData);
+    void cleanThePlayground();
+    void startARound();
+    void removeAllCards();
+    void sendOverSocket(const QJsonObject& response);
 public slots:
     void selectCard(Card* card);
     void addEntity(QPointF point);

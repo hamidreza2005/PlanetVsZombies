@@ -18,6 +18,7 @@ public:
     virtual ~Window();
     static void showValidationErrors(QWidget* window,const QJsonObject &errors);
     static void showConnectionLostError(QWidget* window);
+    static void showPopupMessage(const QString &message, int duration = 2000, QWidget *parent = nullptr);
 };
 
 

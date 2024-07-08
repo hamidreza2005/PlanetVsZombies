@@ -62,6 +62,7 @@ void MainWindow::showPlaygroundWindow(Window *senderWindow) {
     if (senderWindow)
         senderWindow->disconnectDataListener();
     playgroundWindow->connectDataListener();
+    playgroundWindow->connectConnectionLostListener();
     stackedWidget->setCurrentWidget(playgroundWindow);
     playgroundWindow->play();
 }

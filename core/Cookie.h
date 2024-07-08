@@ -9,6 +9,8 @@ public:
     Cookie() = default;
     static Cookie* getInstance();
     Player* loggedInPlayer = nullptr;
+    QString playingRound = "0";
+    int zombiesCountThatReachedTheEnd = 0;
 };
 
 

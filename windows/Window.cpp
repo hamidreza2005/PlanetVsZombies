@@ -24,3 +24,31 @@ void Window::showConnectionLostError(QWidget *window) {
 void Window::disconnectDataListener() {
     disconnect(dataListener);
 }
+
+void Window::showPopupMessage(const QString &message, int duration, QWidget *parent){
+    auto messageBox = new QMessageBox(parent);
+    messageBox->setText(message);
+    messageBox->setStandardButtons(QMessageBox::NoButton);
+    messageBox->setWindowFlag(Qt::FramelessWindowHint);
+    QString styleSheet = R"(
+        QMessageBox {
+            background-color: #02a121;
+            color: #FFFFFF;
+            padding: 10px;
+            font-size: 20px;
+            border: 2px solid #027018;
+            text-align:center;
+        }
+        QLabel {
+            color: #FFFFFF;
+            font-size: 20px;
+        }
+    )";
+    messageBox->setStyleSheet(styleSheet);
+    messageBox->show();
+
+    QTimer::singleShot(duration, [messageBox]() {
+        messageBox->close();
+        delete messageBox;
+    });
+}

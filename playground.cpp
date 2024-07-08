@@ -46,25 +46,25 @@ PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clie
     graphicsView->setScene(scene);
     graphicsView->setSceneRect(0, 0, 650, 450);
     graphicsView->viewport()->installEventFilter(this);
+    this->setupGround();
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PlayGround::updateTimer);
 }
 
 void PlayGround::play() {
-    connectionLostListener = connect(socket,&ClientSocket::connectionLost,this,&PlayGround::connectionLost);
     isZombie = Cookie::getInstance()->loggedInPlayer->getRole() == "zombie";
+    this->createCards();
     if (isZombie) {
-        createZombieCards();
         setupPlayerZombieInfo();
     } else {
-        createPlantCards();
         setupPlayerPlantInfo();
     }
     this->setPlayerName();
     this->setupRemainingTimeInfo();
     this->setupLayout();
-    this->setupGround();
+    Window::showPopupMessage("Round " + Cookie::getInstance()->playingRound,1000);
+    remainingSeconds = 210;
     timer->start(1000);
 
     sunBrainTimer = new QTimer(this);
@@ -130,35 +130,26 @@ void PlayGround::setupLayout() {
     mainLayout->addLayout(infoLayout, 1);
     mainLayout->addWidget(graphicsView, 4);
 
-    auto cardView = new QGraphicsView(this);
-    auto cardScene = new QGraphicsScene(this);
-    cardView->setScene(cardScene);
+    cardView = new QGraphicsView(this);
+    cardsScene = new QGraphicsScene(this);
+    cardView->setScene(cardsScene);
     cardView->setFixedHeight(150);
 
     mainLayout->addWidget(cardView, 1);
     setLayout(mainLayout);
 
-    QVector<Card*>& cards = isZombie ? zombieCards : plantCards;
-    for (auto* card : cards) {
-        cardScene->addItem(card);
+    for (auto* card : this->cards) {
+        cardsScene->addItem(card);
     }
 }
 
-void PlayGround::createZombieCards() {
+void PlayGround::createCards() {
+    QList<std::function<GameEntity*()>> entites = isZombie ? PlayGround::zombies.values() : PlayGround::plants.values();
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card(PlayGround::zombies.values()[i]);
+        auto* card = new Card(entites[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
-        zombieCards.push_back(card);
-    }
-}
-
-void PlayGround::createPlantCards() {
-    for(int i = 0; i < 6; i++) {
-        auto* card = new Card(PlayGround::plants.values()[i]);
-        card->setPos(i * 150, 0);
-        QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
-        plantCards.push_back(card);
+        cards.push_back(card);
     }
 }
 
@@ -283,24 +274,52 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
 
     if(data.value("state") == "add"){
         this->addNewEntityFromServer(data);
+        return;
+    }
+
+    if(data.value("state") == "roundWinner"){
+        Window::showPopupMessage(data.value("message").toString(),2000,this);
+        Cookie::getInstance()->playingRound = data.value("round").toString();
+        Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
+        QTimer::singleShot(2000,[this](){
+            this->startARound();
+        });
+        return;
+    }
+
+    if (data.value("state") == "GameEnded"){
+        QString message = data.value("result").toString() + "\n";
+        if (data.contains("winner")){
+            message += data.value("winner").toString() + " Won the Game";
+        }
+        Window::showPopupMessage(message,2000,this);
+        Cookie::getInstance()->playingRound = "0";
+        QTimer::singleShot(2000,[this](){
+            this->endTheGame();
+        });
+        return;
     }
 }
 
-void PlayGround::endTheGame() {
+void PlayGround::cleanThePlayground() {
+    this->selectedCard = nullptr;
     QList<QGraphicsItem*> items = scene->items();
     for (QGraphicsItem* item : items) {
+        if (dynamic_cast<Ground*>(item)){
+            continue;
+        }
         delete item;
     }
     timer->stop();
     sunBrainTimer->stop();
+    Cookie::getInstance()->zombiesCountThatReachedTheEnd = 0;
     delete infoLayout;
     delete mainLayout;
     delete playerName;
     delete remainingTime;
-    delete brainBar;
-    delete sunBar;
-    disconnect(connectionLostListener);
-    emit this->goToDashboardPage(this);
+    this->removeAllCards();
+    delete cardsScene;
+    delete cardView;
 }
 
 void PlayGround::connectionLost() {
@@ -315,18 +334,55 @@ void PlayGround::sendAddRequest(const QString& name,int x,int y) {
     response["entity"] = name;
     response["x"] = x;
     response["y"] = y;
-    this->socket->sendJson("gameRoom",response);
+    this->sendOverSocket(response);
 }
 
 void PlayGround::AZombieReachedTheEnd() {
-    qDebug() << "a zombie reached the end";
+    if(Cookie::getInstance()->zombiesCountThatReachedTheEnd > 1){
+        return;
+    }
+    QJsonObject response;
+    response["state"] = "zombieReachedTheEnd";
+    this->sendOverSocket(response);
+    Cookie::getInstance()->zombiesCountThatReachedTheEnd++;
 }
 
 void PlayGround::ranOutOfTime() {
-    qDebug() << "We ran out of time";
+    QJsonObject response;
+    response["state"] = "timeEnded";
+    this->sendOverSocket(response);
 }
 
-void PlayGround::addNewEntityFromServer(QJsonObject entityData){
+void PlayGround::connectConnectionLostListener() {
+    connectionLostListener = connect(socket,&ClientSocket::connectionLost,this,&PlayGround::connectionLost);
+}
+
+void PlayGround::disconnectConnectionLostListener() {
+    if(connectionLostListener){
+        disconnect(connectionLostListener);
+    }
+}
+
+void PlayGround::startARound() {
+    this->cleanThePlayground();
+    this->play();
+}
+
+void PlayGround::endTheGame() {
+    this->cleanThePlayground();
+    this->disconnectConnectionLostListener();
+    emit this->goToDashboardPage(this);
+}
+
+void PlayGround::removeAllCards() {
+    for(auto card : this->cards) {
+        cardsScene->removeItem(card);
+        delete card;
+    }
+    this->cards.erase(this->cards.begin(),this->cards.end());
+}
+
+void PlayGround::addNewEntityFromServer(const QJsonObject &entityData){
     GameEntity* newEntity;
     QString entityName = entityData.value("entity").toString();
 
@@ -339,4 +395,12 @@ void PlayGround::addNewEntityFromServer(QJsonObject entityData){
     }
     newEntity->setPos(entityData.value("x").toInt(), entityData.value("y").toInt());
     scene->addItem(newEntity);
+}
+
+void PlayGround::sendOverSocket(const QJsonObject &response) {
+    try{
+        this->socket->sendJson("gameRoom",response);
+    }catch (...){
+
+    }
 }
