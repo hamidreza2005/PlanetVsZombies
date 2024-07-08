@@ -7,6 +7,8 @@ class Cache {
 public:
     Player* firstPlayer = nullptr;
     Player* secondPlayer = nullptr;
+    Player** secondRoundWinner = nullptr;
+    Player** firstRoundWinner = nullptr;
 
     Cache();
     Cache(Cache const&) = delete;

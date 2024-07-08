@@ -43,3 +43,7 @@ void TcpSocket::writeOk(QJsonObject &data) {
     data["status"] = 200;
     this->write(data);
 }
+
+bool TcpSocket::isConnected() {
+    return this->socket->state() == QTcpSocket::ConnectedState;
+}

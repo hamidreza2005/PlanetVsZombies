@@ -119,11 +119,15 @@ QList<QTcpSocket *> Bootstrap::getClients() {
 void Bootstrap::sendEndGameSignals(QTcpSocket* leftPlayer) {
     QJsonObject response;
     response["state"] = "opponentLeft";
-    if (leftPlayer == Cache::getInstance()->firstPlayer->socket->getOriginalSocket()){
-        Cache::getInstance()->secondPlayer->socket->write(response);
+    Player* firstPlayer = Cache::getInstance()->firstPlayer;
+    Player* secondPlayer = Cache::getInstance()->secondPlayer;
+    if (leftPlayer == firstPlayer->socket->getOriginalSocket()){
+        if(secondPlayer->socket->isConnected())
+           secondPlayer->socket->write(response);
         Cache::getInstance()->endTheGame();
-    }else if(leftPlayer == Cache::getInstance()->secondPlayer->socket->getOriginalSocket()){
-        Cache::getInstance()->firstPlayer->socket->write(response);
+    }else if(leftPlayer == secondPlayer->socket->getOriginalSocket()){
+        if(firstPlayer->socket->isConnected())
+            firstPlayer->socket->write(response);
         Cache::getInstance()->endTheGame();
     }
 }

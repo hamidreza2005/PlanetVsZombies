@@ -2,6 +2,7 @@
 #include "GameController.h"
 #include "../bootstrap.h"
 #include "../Cache.h"
+#include "../Database/DB.h"
 void GameController::getOnlineUsers(TcpSocket *socket, const QJsonObject &request) {
     auto allClients =  Bootstrap::getInstance()->getClients();
     auto it = std::find(allClients.begin(), allClients.end(),socket->getOriginalSocket());
@@ -58,6 +59,7 @@ void GameController::verifyBeingReady(TcpSocket *socket, const QJsonObject &requ
 
     QJsonObject response;
     response["state"] = "startTheGame";
+    response["round"] = "1";
     response["role"] = firstPlayerRole;
     Cache::getInstance()->firstPlayer->setRole(firstPlayerRole);
     Cache::getInstance()->firstPlayer->socket->write(response);
@@ -76,23 +78,78 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
     Player* secondPlayer = Cache::getInstance()->secondPlayer;
     bool isSentByFirstPlayer = socket->getOriginalSocket() == firstPlayer->socket->getOriginalSocket();
 
-    if (request["state"] != "add"){
+    if (request["state"] == "zombieReachedTheEnd"){
+        GameController::handleEndOfTheGame("zombie");
         return;
     }
 
-//    if (GameController::isPlayerAllowedToAddEntity(isSentByFirstPlayer,firstPlayer,secondPlayer,request["entity"].toString())){
-//        return;
-//    }
+    if(request["state"] == "timeEnded" && isSentByFirstPlayer){
+        GameController::handleEndOfTheGame("plant");
+        return;
+    }
 
-    QJsonObject response = request;
-    if(isSentByFirstPlayer){
-        secondPlayer->socket->write(response);
-    }else if(socket->getOriginalSocket() == secondPlayer->socket->getOriginalSocket()){
-        firstPlayer->socket->write(response);
+    if (request["state"] == "add"){
+//        if (GameController::isPlayerAllowedToAddEntity(isSentByFirstPlayer,firstPlayer,secondPlayer,request["entity"].toString())){
+//          return;
+//        }
+
+        QJsonObject response = request;
+        if(isSentByFirstPlayer){
+            secondPlayer->socket->write(response);
+        }else if(socket->getOriginalSocket() == secondPlayer->socket->getOriginalSocket()){
+            firstPlayer->socket->write(response);
+        }
+        return;
     }
 }
 
 bool GameController::isPlayerAllowedToAddEntity(bool isSentByFirstPlayer,Player* player1,Player* player2,QString entityName) {
     return (isSentByFirstPlayer && player1->getRole() != entityName)
            || (!isSentByFirstPlayer && player2->getRole() != entityName);
+}
+
+void GameController::handleEndOfTheGame(const QString &winnerRole) {
+    Player* firstPlayer = Cache::getInstance()->firstPlayer;
+    Player* secondPlayer = Cache::getInstance()->secondPlayer;
+    Player** roundWinner = Cache::getInstance()->firstRoundWinner == nullptr ? &Cache::getInstance()->firstPlayer : &Cache::getInstance()->secondPlayer;
+    bool gameShouldBeEnded = false;
+
+    if (firstPlayer->getRole() == winnerRole){
+        roundWinner = &firstPlayer;
+    }else{
+        roundWinner = &secondPlayer;
+    }
+    if (Cache::getInstance()->firstRoundWinner == nullptr){
+        Cache::getInstance()->firstRoundWinner = roundWinner;
+    }else{
+        Cache::getInstance()->secondRoundWinner = roundWinner;
+    }
+
+    QJsonObject res;
+    if (Cache::getInstance()->secondRoundWinner != nullptr){
+        res["state"] = "GameEnded";
+        if (Cache::getInstance()->secondRoundWinner == Cache::getInstance()->firstRoundWinner){
+            res["result"] = "win";
+            res["winner"] = (*Cache::getInstance()->secondRoundWinner)->getUsername();
+        }else{
+            res["result"] = "draw";
+        }
+        DB::getInstance()->saveInToHistory({});
+        gameShouldBeEnded = true;
+    }else{
+        res["state"] = "roundWinner";
+        res["message"] = (*roundWinner)->getUsername() + " Won the first Round";
+        res["round"] = "2";
+        firstPlayer->setRole(firstPlayer->getRole() == "zombie" ? "plant" : "zombie");
+        secondPlayer->setRole(secondPlayer->getRole() == "zombie" ? "plant" : "zombie");
+    }
+
+    res["role"] = firstPlayer->getRole();
+    firstPlayer->socket->write(res);
+
+    res["role"] = secondPlayer->getRole();
+    secondPlayer->socket->write(res);
+    if (gameShouldBeEnded){
+        Cache::getInstance()->endTheGame();
+    }
 }

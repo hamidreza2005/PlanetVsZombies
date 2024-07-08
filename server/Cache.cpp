@@ -19,4 +19,6 @@ void Cache::endTheGame() {
     delete secondPlayer;
     this->firstPlayer = nullptr;
     this->secondPlayer = nullptr;
+    this->firstRoundWinner = nullptr;
+    this->secondRoundWinner = nullptr;
 }

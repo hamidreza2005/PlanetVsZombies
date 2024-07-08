@@ -135,3 +135,7 @@ void DB::writeToDB(QJsonArray &data) {
     dbfile->write(jsonData);
     dbfile->flush();
 }
+
+void DB::saveInToHistory(QJsonObject data) {
+
+}

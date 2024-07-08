@@ -20,6 +20,7 @@ public:
     QJsonObject findUser(const QJsonObject &data);
     void updateUser(const QJsonObject &userData,const QJsonObject &newData);
     void deleteUser(const QJsonObject &userData);
+    void saveInToHistory(QJsonObject data);
     static DB* getInstance();
     DB(DB const&) = delete;
     void operator=(DB const&) = delete;
