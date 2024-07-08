@@ -47,3 +47,11 @@ void TcpSocket::writeOk(QJsonObject &data) {
 bool TcpSocket::isConnected() {
     return this->socket->state() == QTcpSocket::ConnectedState;
 }
+
+bool TcpSocket::operator==(const TcpSocket &other) {
+    return this->socket == other.socket;
+}
+
+bool TcpSocket::operator!=(const TcpSocket &other) {
+    return this->socket != other.socket;
+}

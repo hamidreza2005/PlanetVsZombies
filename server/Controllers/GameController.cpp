@@ -4,8 +4,16 @@
 #include "../Cache.h"
 #include "../Database/DB.h"
 void GameController::getOnlineUsers(TcpSocket *socket, const QJsonObject &request) {
+//    qDebug() << socket->getOriginalSocket()->socketDescriptor();
+//    qDebug() << socket->getOriginalSocket()->objectName();
+//    qDebug() << socket->getOriginalSocket()->peerPort();
+//    qDebug() << socket->getOriginalSocket()->peerAddress();
     auto allClients =  Bootstrap::getInstance()->getClients();
     auto it = std::find(allClients.begin(), allClients.end(),socket->getOriginalSocket());
+//    qDebug() << (*it)->socketDescriptor();
+//    qDebug() << (*it)->objectName();
+//    qDebug() << (*it)->peerPort();
+//    qDebug() << (*it)->peerAddress();
     if (it != allClients.end()) {
         allClients.erase(it);
     }
@@ -74,16 +82,26 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
         socket->sendValidationError("game","there is no game");
         return;
     }
+
     Player* firstPlayer = Cache::getInstance()->firstPlayer;
     Player* secondPlayer = Cache::getInstance()->secondPlayer;
-    bool isSentByFirstPlayer = socket->getOriginalSocket() == firstPlayer->socket->getOriginalSocket();
+    bool requestIsSentByFirstPlayer = socket->getOriginalSocket() == firstPlayer->socket->getOriginalSocket();
+    bool requestIsSentBySecondPlayer = socket->getOriginalSocket() == secondPlayer->socket->getOriginalSocket();
 
-    if (request["state"] == "zombieReachedTheEnd"){
-        GameController::handleEndOfTheGame("zombie");
+    if (!requestIsSentByFirstPlayer && !requestIsSentBySecondPlayer){
+        socket->sendValidationError("game","you can't interfere in the game");
         return;
     }
 
-    if(request["state"] == "timeEnded" && isSentByFirstPlayer){
+    if (request["state"] == "zombieReachedTheEnd"){
+        if ((requestIsSentByFirstPlayer && firstPlayer->getRole() == "zombie") || (requestIsSentBySecondPlayer && secondPlayer->getRole() == "zombie")){
+            GameController::handleEndOfTheGame("zombie");
+        }
+        return;
+    }
+
+
+    if(request["state"] == "timeEnded" && requestIsSentByFirstPlayer){
         GameController::handleEndOfTheGame("plant");
         return;
     }
@@ -92,14 +110,12 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
 //        if (GameController::isPlayerAllowedToAddEntity(isSentByFirstPlayer,firstPlayer,secondPlayer,request["entity"].toString())){
 //          return;
 //        }
-
         QJsonObject response = request;
-        if(isSentByFirstPlayer){
+        if(requestIsSentByFirstPlayer){
             secondPlayer->socket->write(response);
-        }else if(socket->getOriginalSocket() == secondPlayer->socket->getOriginalSocket()){
+        }else{
             firstPlayer->socket->write(response);
         }
-        return;
     }
 }
 
@@ -140,8 +156,7 @@ void GameController::handleEndOfTheGame(const QString &winnerRole) {
         res["state"] = "roundWinner";
         res["message"] = (*roundWinner)->getUsername() + " Won the first Round";
         res["round"] = "2";
-        firstPlayer->setRole(firstPlayer->getRole() == "zombie" ? "plant" : "zombie");
-        secondPlayer->setRole(secondPlayer->getRole() == "zombie" ? "plant" : "zombie");
+        GameController::switchPlayersRoles(firstPlayer,secondPlayer);
     }
 
     res["role"] = firstPlayer->getRole();
@@ -152,4 +167,10 @@ void GameController::handleEndOfTheGame(const QString &winnerRole) {
     if (gameShouldBeEnded){
         Cache::getInstance()->endTheGame();
     }
+}
+
+void GameController::switchPlayersRoles(Player *firstPlayer, Player *secondPlayer) {
+    auto temp = firstPlayer->getRole();
+    firstPlayer->setRole(secondPlayer->getRole());
+    secondPlayer->setRole(temp);
 }

@@ -16,6 +16,9 @@ public:
     void sendValidationError(QString field,QString error,int statusCode = 419);
     bool isConnected();
     QTcpSocket* getOriginalSocket();
+
+    bool operator==(const TcpSocket& other);
+    bool operator!=(const TcpSocket& other);
 };
 
 
