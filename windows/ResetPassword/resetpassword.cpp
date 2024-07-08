@@ -30,7 +30,6 @@ void ResetPassword::on_loginLink_clicked() {
 }
 
 void ResetPassword::on_submit_clicked() {
-    this->connectDataListener();
     if(this->fieldsAreNotEmpty()){
         QMessageBox::information(this,"Error","Please Fill out all the fields");
         return;

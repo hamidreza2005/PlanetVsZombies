@@ -38,7 +38,7 @@ QMap<QString,std::function<GameEntity*()>> PlayGround::plants = {
         {"Plum Mine Plant",[](){return new PlumMine;}},
     };
 
-PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clientSocket,parent), remainingSeconds(10), brainCount(50), sunCount(50), selectedCard(nullptr) {
+PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clientSocket,parent), remainingSeconds(210), brainCount(50), sunCount(50), selectedCard(nullptr) {
     this->setFixedSize(1000, 700);
     graphicsView = new QGraphicsView(this);
     graphicsView->setFixedSize(1000, 500);
@@ -52,7 +52,6 @@ PlayGround::PlayGround(ClientSocket* clientSocket,QWidget *parent) : Window(clie
 }
 
 void PlayGround::play() {
-    this->connectDataListener();
     connect(socket,&ClientSocket::connectionLost,this,&PlayGround::connectionLost);
     isZombie = Cookie::getInstance()->loggedInPlayer->getRole() == "zombie";
     if (isZombie) {
@@ -62,50 +61,53 @@ void PlayGround::play() {
         createPlantCards();
         setupPlayerPlantInfo();
     }
-    setupLayout();
+    this->setPlayerName();
+    this->setupRemainingTimeInfo();
+    this->setupLayout();
     this->setupGround();
     timer->start(1000);
 
-    // Set up timer to spawn SunBrain items
     sunBrainTimer = new QTimer(this);
     connect(sunBrainTimer, &QTimer::timeout, this, &PlayGround::spawnSunBrain);
-    sunBrainTimer->start(5000); // Spawn every 5 seconds
+    sunBrainTimer->start(5000);
 }
 
 void PlayGround::setupPlayerZombieInfo() {
-    playerZombieName = new QLabel("Zombie Player", this);
-    remainingZombieTime = new QLabel("Time: 03:30", this);
     brainBar = new QProgressBar(this);
     brainBar->setRange(0, 100);
     brainBar->setValue(0);
     brainBar->setFormat("%v");
 
     QFont font("Arial", 10, QFont::Bold);
-    playerZombieName->setFont(font);
-    remainingZombieTime->setFont(font);
     brainBar->setFont(font);
 
-    playerZombieName->setStyleSheet("QLabel { color : blue; }");
-    remainingZombieTime->setStyleSheet("QLabel { color : red; }");
     brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
 }
 
 void PlayGround::setupPlayerPlantInfo() {
-    playerPlantName = new QLabel("Plant Player", this);
-    remainingPlantTime = new QLabel("Time: 03:30", this);
     sunBar = new QProgressBar(this);
     sunBar->setRange(0, 100);
     sunBar->setValue(0);
     sunBar->setFormat("%v");
 
     QFont font("Arial", 10, QFont::Bold);
-    playerPlantName->setFont(font);
-    remainingPlantTime->setFont(font);
     sunBar->setFont(font);
 
-    playerPlantName->setStyleSheet("QLabel { color : blue; }");
-    remainingPlantTime->setStyleSheet("QLabel { color : red; }");
     sunBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: yellow; }");
+}
+
+void PlayGround::setPlayerName() {
+    playerName = new QLabel(Cookie::getInstance()->loggedInPlayer->getUsername(), this);
+    QFont font("Arial", 10, QFont::Bold);
+    playerName->setFont(font);
+    playerName->setStyleSheet("QLabel { color : blue; }");
+}
+
+void PlayGround::setupRemainingTimeInfo() {
+    remainingTime = new QLabel("Time: 03:30", this);
+    QFont font("Arial", 10, QFont::Bold);
+    remainingTime->setFont(font);
+    remainingTime->setStyleSheet("QLabel { color : red; }");
 }
 
 void PlayGround::setupGround() {
@@ -118,16 +120,13 @@ void PlayGround::setupLayout() {
     mainLayout = new QVBoxLayout(this);
 
     infoLayout = new QHBoxLayout(this);
+    infoLayout->addWidget(playerName);
     if (isZombie) {
-        infoLayout->addWidget(playerZombieName);
         infoLayout->addWidget(brainBar);
-        infoLayout->addWidget(remainingZombieTime);
     } else {
-        infoLayout->addWidget(playerPlantName);
         infoLayout->addWidget(sunBar);
-        infoLayout->addWidget(remainingPlantTime);
     }
-
+    infoLayout->addWidget(remainingTime);
     mainLayout->addLayout(infoLayout, 1);
     mainLayout->addWidget(graphicsView, 4);
 
@@ -147,7 +146,7 @@ void PlayGround::setupLayout() {
 
 void PlayGround::createZombieCards() {
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card(this->zombies.values()[i]);
+        auto* card = new Card(PlayGround::zombies.values()[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         zombieCards.push_back(card);
@@ -156,7 +155,7 @@ void PlayGround::createZombieCards() {
 
 void PlayGround::createPlantCards() {
     for(int i = 0; i < 6; i++) {
-        auto* card = new Card(this->plants.values()[i]);
+        auto* card = new Card(PlayGround::plants.values()[i]);
         card->setPos(i * 150, 0);
         QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         plantCards.push_back(card);
@@ -171,11 +170,8 @@ void PlayGround::updateTimer() {
         QString timeString = QString("Time: %1:%2")
                                  .arg(minutes, 2, 10, QLatin1Char('0'))
                                  .arg(seconds, 2, 10, QLatin1Char('0'));
-        if (isZombie) {
-            remainingZombieTime->setText(timeString);
-        } else {
-            remainingPlantTime->setText(timeString);
-        }
+
+        remainingTime->setText(timeString);
     } else {
         this->ranOutOfTime();
         timer->stop();
@@ -286,17 +282,7 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
     }
 
     if(data.value("state") == "add"){
-        GameEntity* newEntity;
-        QString entityName = data.value("entity").toString();
-        if(this->zombies.contains(entityName)){
-            newEntity = this->zombies.value(entityName)();
-        }else if(this->plants.contains(entityName)){
-            newEntity = this->plants.value(entityName)();
-        }else{
-            return;
-        }
-        newEntity->setPos(data.value("x").toInt(), data.value("y").toInt());
-        scene->addItem(newEntity);
+        this->addNewEntityFromServer(data);
     }
 }
 
@@ -309,10 +295,8 @@ void PlayGround::endTheGame() {
     sunBrainTimer->stop();
     delete infoLayout;
     delete mainLayout;
-    delete playerPlantName;
-    delete playerZombieName;
-    delete remainingPlantTime;
-    delete remainingZombieTime;
+    delete playerName;
+    delete remainingTime;
     delete brainBar;
     delete sunBar;
     emit this->goToDashboardPage(this);
@@ -339,4 +323,19 @@ void PlayGround::AZombieReachedTheEnd() {
 
 void PlayGround::ranOutOfTime() {
     qDebug() << "We ran out of time";
+}
+
+void PlayGround::addNewEntityFromServer(QJsonObject entityData){
+    GameEntity* newEntity;
+    QString entityName = entityData.value("entity").toString();
+
+    if(PlayGround::zombies.contains(entityName)){
+        newEntity = PlayGround::zombies.value(entityName)();
+    }else if(PlayGround::plants.contains(entityName)){
+        newEntity = PlayGround::plants.value(entityName)();
+    }else{
+        return;
+    }
+    newEntity->setPos(entityData.value("x").toInt(), entityData.value("y").toInt());
+    scene->addItem(newEntity);
 }

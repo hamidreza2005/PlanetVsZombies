@@ -40,10 +40,8 @@ private:
     QGraphicsScene* scene;
     QVector<Card*> zombieCards;
     QVector<Card*> plantCards;
-    QLabel* playerZombieName;
-    QLabel* playerPlantName;
-    QLabel* remainingZombieTime;
-    QLabel* remainingPlantTime;
+    QLabel* playerName;
+    QLabel* remainingTime;
     Ground* ground;
     QProgressBar* brainBar;
     QProgressBar* sunBar;
@@ -63,10 +61,12 @@ private:
     void setupPlayerPlantInfo();
     void setupGround();
     void setupLayout();
-
+    void setupRemainingTimeInfo();
+    void setPlayerName();
     bool isPositionOccupied(QPointF point);
     void endTheGame();
     void sendAddRequest(const QString& name,int x,int y);
+    void addNewEntityFromServer(QJsonObject entityData);
 
 public slots:
     void selectCard(Card* card);

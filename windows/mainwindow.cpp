@@ -33,31 +33,35 @@ MainWindow::~MainWindow() {
 void MainWindow::showRegisterWindow(Window* senderWindow) {
     if(senderWindow)
         senderWindow->disconnectDataListener();
+    registerWindow->connectDataListener();
     stackedWidget->setCurrentWidget(registerWindow);
 }
 
 void MainWindow::showLoginWindow(Window* senderWindow) {
     if(senderWindow)
         senderWindow->disconnectDataListener();
+    loginWindow->connectDataListener();
     stackedWidget->setCurrentWidget(loginWindow);
 }
 
 void MainWindow::showDashboardWindow(Window* senderWindow) {
     if (senderWindow)
         senderWindow->disconnectDataListener();
-    stackedWidget->setCurrentWidget(dashboardWindow);
     dashboardWindow->connectDataListener();
+    stackedWidget->setCurrentWidget(dashboardWindow);
 }
 
 void MainWindow::showResetPasswordWindow(Window *senderWindow) {
     if (senderWindow)
         senderWindow->disconnectDataListener();
+    resetPasswordWindow->connectDataListener();
     stackedWidget->setCurrentWidget(resetPasswordWindow);
 }
 
 void MainWindow::showPlaygroundWindow(Window *senderWindow) {
     if (senderWindow)
         senderWindow->disconnectDataListener();
+    playgroundWindow->connectDataListener();
     stackedWidget->setCurrentWidget(playgroundWindow);
     playgroundWindow->play();
 }
