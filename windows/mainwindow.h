@@ -32,7 +32,6 @@ private:
     UpdateCredentials* credentialsWindow;
     HostConnector* hostConnectorWindow;
     ClientSocket* socket;
-    MediaPlayer *mediaPlayer;
 
     void connectSignals();
     void createWindows();
@@ -48,6 +47,8 @@ public slots:
     void showHistoryWindow(Window* senderWindow = nullptr);
     void showCredentialsWindow(Window* senderWindow = nullptr);
     void showHostConnectorWindow(Window* senderWindow = nullptr);
+
+    void playAfterTheGameMusic(Window* senderWindow = nullptr);
 };
 
 #endif //PLANETVSZOMBIES_MAINWINDOW_H

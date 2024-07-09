@@ -42,7 +42,7 @@ QMap<QString,std::function<GameEntity*()>> PlayGround::plants = {
     };
 
 PlayGround::PlayGround(ClientSocket* clientSocket, QWidget *parent)
-    : Window(clientSocket, parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr), mediaPlayer(new MediaPlayer(this)) {
+    : Window(clientSocket, parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
     this->setFixedSize(1000, 700);
     graphicsView = new QGraphicsView(this);
     graphicsView->setFixedSize(1000, 500);
@@ -73,9 +73,6 @@ void PlayGround::play() {
     Window::showPopupMessage("Round " + Cookie::getInstance()->playingRound,1000);
     remainingSeconds = 210;
     timer->start(1000);
-
-    mediaPlayer->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
-
     sunBrainTimer = new QTimer(this);
     connect(sunBrainTimer, &QTimer::timeout, this, &PlayGround::spawnSunBrain);
     this->spawnSunBrain();
@@ -336,9 +333,9 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
         Window::showPopupMessage(data.value("message").toString(),2000,this);
         Cookie::getInstance()->playingRound = data.value("round").toString();
         Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
-        mediaPlayer->playRoundMusic(":/resources/musics/round2.mp3", ":/resources/musics/Grasswalk.mp3");
+        MediaPlayer::getInstance()->playRoundMusic(":/resources/musics/round2.mp3", ":/resources/musics/Grasswalk.mp3");
         QTimer::singleShot(2000,[this](){
-            mediaPlayer->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
+            MediaPlayer::getInstance()->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
             this->startARound();
         });
         return;
@@ -470,7 +467,7 @@ void PlayGround::checkCardStates() {
             card->setEnabled(false);
             card->setOpacity(0.5);
             if (selectedCard == card) {
-                card->unselect();
+                selectedCard->unselect();
                 selectedCard = nullptr;
             }
         } else {

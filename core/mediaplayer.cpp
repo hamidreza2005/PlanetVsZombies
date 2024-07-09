@@ -1,11 +1,17 @@
+// mediaplayer.cpp
 #include "mediaplayer.h"
+#include <QUrl>
+#include <QFile>
 
+MediaPlayer* MediaPlayer::instance = nullptr;
 MediaPlayer::MediaPlayer(QObject *parent)
-    : QObject(parent),
-    player(new QMediaPlayer(this)),
-    audioOutput(new QAudioOutput(this)) {
+        : QObject(parent),
+          player(new QMediaPlayer(this)),
+          audioOutput(new QAudioOutput(this)) {
     player->setAudioOutput(audioOutput);
-    audioOutput->setVolume(100.0);
+    audioOutput->setVolume(1.0);  // Set to maximum volume (1.0 = 100%)
+
+    connect(player, &QMediaPlayer::mediaStatusChanged, this, &MediaPlayer::handleMediaStatusChanged);
 }
 
 MediaPlayer::~MediaPlayer() {
@@ -13,10 +19,17 @@ MediaPlayer::~MediaPlayer() {
     delete audioOutput;
 }
 
-void MediaPlayer::playBackgroundMusic(const QString &filePath) {
-    player->setSource(QUrl::fromLocalFile(filePath));
+bool MediaPlayer::playBackgroundMusic(const QString &resourcePath) {
+    if (!checkResource(resourcePath)) {
+        return false;
+    }
+
+    QUrl resourceUrl("qrc" + resourcePath);
+    player->setSource(resourceUrl);
     player->setLoops(QMediaPlayer::Infinite);
     player->play();
+
+    return true;
 }
 
 void MediaPlayer::stopBackgroundMusic() {
@@ -27,13 +40,40 @@ QMediaPlayer* MediaPlayer::getMediaPlayer() {
     return player;
 }
 
-void MediaPlayer::playRoundMusic(const QString &roundMusic, const QString &backgroundMusic) {
-    player->setSource(QUrl::fromLocalFile(roundMusic));
+bool MediaPlayer::playRoundMusic(const QString &roundMusicResource, const QString &backgroundMusicResource) {
+
+    if (!checkResource(roundMusicResource)) {
+        return false;
+    }
+
+    QUrl resourceUrl("qrc" + roundMusicResource);
+    player->setSource(resourceUrl);
     player->setLoops(1);
     player->play();
-    connect(player, &QMediaPlayer::mediaStatusChanged, this, [this,backgroundMusic](QMediaPlayer::MediaStatus status) {
+
+
+    connect(player, &QMediaPlayer::mediaStatusChanged, this, [this, backgroundMusicResource](QMediaPlayer::MediaStatus status) {
         if (status == QMediaPlayer::EndOfMedia) {
-           this->playBackgroundMusic(backgroundMusic);
+            this->playBackgroundMusic(backgroundMusicResource);
         }
     });
+
+    return true;
+}
+
+void MediaPlayer::handleMediaStatusChanged(QMediaPlayer::MediaStatus status) {
+}
+
+bool MediaPlayer::checkResource(const QString &resourcePath) {
+    if (!QUrl("qrc" + resourcePath).isValid()) {
+        return false;
+    }
+    return true;
+}
+
+MediaPlayer *MediaPlayer::getInstance() {
+    if (!instance) {
+        instance = new MediaPlayer();
+    }
+    return instance;
 }

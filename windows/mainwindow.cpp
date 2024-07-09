@@ -3,8 +3,7 @@
 MainWindow::MainWindow(ClientSocket* clientSocket, QWidget *parent) :
     QMainWindow(parent),
     socket(clientSocket),
-    stackedWidget(new QStackedWidget(this)),
-    mediaPlayer(new MediaPlayer(this))
+    stackedWidget(new QStackedWidget(this))
 {
     this->createWindows();
     setCentralWidget(stackedWidget);
@@ -12,12 +11,10 @@ MainWindow::MainWindow(ClientSocket* clientSocket, QWidget *parent) :
     stackedWidget->setFixedSize(1000,700);
     this->connectSignals();
     this->setWindowIcon(QIcon(":/resources/images/icon.png"));
-    playMenuMusic();
     this->showHostConnectorWindow();
 }
 
 MainWindow::~MainWindow() {
-    delete mediaPlayer;
 }
 
 void MainWindow::showRegisterWindow(Window* senderWindow) {
@@ -32,7 +29,8 @@ void MainWindow::showLoginWindow(Window* senderWindow) {
         senderWindow->disconnectDataListener();
     loginWindow->connectDataListener();
     stackedWidget->setCurrentWidget(loginWindow);
-    mediaPlayer->playBackgroundMusic(":/resources/musics/menu.mp3");
+    this->playMenuMusic();
+//    mediaPlayer->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
 }
 
 void MainWindow::showDashboardWindow(Window* senderWindow) {
@@ -56,7 +54,7 @@ void MainWindow::showPlaygroundWindow(Window* senderWindow) {
     playgroundWindow->connectConnectionLostListener();
     stackedWidget->setCurrentWidget(playgroundWindow);
     playgroundWindow->play();
-    playRoundMusic(":/resources/musics/round1.mp3", ":/resources/musics/Grasswalk.mp3");
+    MediaPlayer::getInstance()->playRoundMusic(":/resources/musics/round1.mp3", ":/resources/musics/Grasswalk.mp3");
 }
 
 void MainWindow::showHistoryWindow(Window *senderWindow) {
@@ -91,6 +89,7 @@ void MainWindow::connectSignals() {
     connect(dashboardWindow, &Dashboard::goToHistoryPage, this, &MainWindow::showHistoryWindow);
     connect(dashboardWindow, &Dashboard::goToCredentialsPage, this, &MainWindow::showCredentialsWindow);
     connect(playgroundWindow, &PlayGround::goToDashboardPage, this, &MainWindow::showDashboardWindow);
+    connect(playgroundWindow, &PlayGround::goToDashboardPage, this, &MainWindow::playAfterTheGameMusic);
     connect(historyWindow, &History::goToDashboard, this, &MainWindow::showDashboardWindow);
     connect(credentialsWindow, &UpdateCredentials::goToDashboardPage, this, &MainWindow::showDashboardWindow);
     connect(hostConnectorWindow, &HostConnector::connectionIsEstablished, this, &MainWindow::showLoginWindow);
@@ -117,9 +116,13 @@ void MainWindow::createWindows() {
 }
 
 void MainWindow::playMenuMusic() {
-    mediaPlayer->playBackgroundMusic(":/resources/musics/menu.mp3");
+    MediaPlayer::getInstance()->playBackgroundMusic(":/resources/musics/menu.mp3");
 }
 
 void MainWindow::playRoundMusic(const QString& roundMusic, const QString& backgroundMusic) {
-    mediaPlayer->playRoundMusic(roundMusic, backgroundMusic);
+    MediaPlayer::getInstance()->playRoundMusic(roundMusic, backgroundMusic);
+}
+
+void MainWindow::playAfterTheGameMusic(Window *senderWindow) {
+    this->playMenuMusic();
 }

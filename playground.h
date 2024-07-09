@@ -63,7 +63,6 @@ private:
     int sunCount;
     Card* selectedCard;
     QGraphicsPixmapItem* rotatingItem;
-    MediaPlayer *mediaPlayer;
 
     void createCards();
     void setupPlayerZombieInfo();

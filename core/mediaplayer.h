@@ -1,24 +1,33 @@
+// mediaplayer.h
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
 #include <QObject>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QDebug>
 
 class MediaPlayer : public QObject {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     explicit MediaPlayer(QObject *parent = nullptr);
-    ~MediaPlayer();
+    ~MediaPlayer() override;
     QMediaPlayer* getMediaPlayer();
-    void playBackgroundMusic(const QString &filePath);
+    bool playBackgroundMusic(const QString &resourcePath);
     void stopBackgroundMusic();
-    void playRoundMusic(const QString &roundMusic, const QString &backgroundMusic);
+    bool playRoundMusic(const QString &roundMusicResource, const QString &backgroundMusicResource);
+    static MediaPlayer* getInstance();
 
+    MediaPlayer(MediaPlayer const&) = delete;
+    void operator=(MediaPlayer const&) = delete;
+private slots:
+    void handleMediaStatusChanged(QMediaPlayer::MediaStatus status);
 private:
+    static MediaPlayer* instance;
     QMediaPlayer *player;
     QAudioOutput *audioOutput;
+    bool checkResource(const QString &resourcePath);
 };
 
 #endif // MEDIAPLAYER_H
