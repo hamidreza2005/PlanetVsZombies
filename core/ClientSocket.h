@@ -9,11 +9,11 @@ class ClientSocket : public QObject
 {
     Q_OBJECT
 private:
-    const static int PORT;
-    const static QString HOST;
+    static int PORT;
+    static QString HOST;
     QTimer* reconnectTimer;
 protected:
-    void connectToHost();
+    void startSocket();
     void connectSiganlsToListeners();
 protected slots:
     void socket_connected();
@@ -30,6 +30,8 @@ public:
     void sendJson(const QString& route,const QJsonObject &json);
     void sendString(const QString &string);
     bool isConnected();
+    void connectToHost();
+    static void setHost(const QString& ip,int port);
 };
 
 

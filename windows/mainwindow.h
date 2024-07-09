@@ -11,6 +11,7 @@
 #include "../playground.h"
 #include "History/history.h"
 #include "UpdateCredentials/updatecredentials.h"
+#include "HostConnector/hostconnector.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -29,6 +30,7 @@ private:
     PlayGround* playgroundWindow;
     History* historyWindow;
     UpdateCredentials* credentialsWindow;
+    HostConnector* hostConnectorWindow;
     ClientSocket* socket;
 
     void connectSignals();
@@ -41,6 +43,7 @@ public slots:
     void showPlaygroundWindow(Window* senderWindow = nullptr);
     void showHistoryWindow(Window* senderWindow = nullptr);
     void showCredentialsWindow(Window* senderWindow = nullptr);
+    void showHostConnectorWindow(Window* senderWindow = nullptr);
 };
 
 

@@ -14,7 +14,7 @@ MainWindow::MainWindow(ClientSocket* clientSocket,QWidget *parent) :
     this->connectSignals();
     this->setWindowIcon(QIcon(":/resources/images/icon.png"));
     // Show the login window by default
-    showLoginWindow();
+    this->showHostConnectorWindow();
 }
 
 MainWindow::~MainWindow() {
@@ -72,6 +72,13 @@ void MainWindow::showCredentialsWindow(Window *senderWindow) {
     stackedWidget->setCurrentWidget(credentialsWindow);
 }
 
+void MainWindow::showHostConnectorWindow(Window *senderWindow) {
+    if (senderWindow)
+        senderWindow->disconnectDataListener();
+    hostConnectorWindow->connectDataListener();
+    stackedWidget->setCurrentWidget(hostConnectorWindow);
+}
+
 void MainWindow::connectSignals() {
     connect(loginWindow, &Login::goToRegisterPage, this, &MainWindow::showRegisterWindow);
     connect(loginWindow, &Login::goToDashboardPage, this, &MainWindow::showDashboardWindow);
@@ -85,6 +92,7 @@ void MainWindow::connectSignals() {
     connect(playgroundWindow, &PlayGround::goToDashboardPage, this, &MainWindow::showDashboardWindow);
     connect(historyWindow, &History::goToDashboard, this, &MainWindow::showDashboardWindow);
     connect(credentialsWindow, &UpdateCredentials::goToDashboardPage, this, &MainWindow::showDashboardWindow);
+    connect(hostConnectorWindow, &HostConnector::connectionIsEstablished, this, &MainWindow::showLoginWindow);
 }
 
 void MainWindow::createWindows() {
@@ -96,6 +104,7 @@ void MainWindow::createWindows() {
     this->playgroundWindow = new PlayGround(socket,this);
     this->historyWindow = new History(socket,this);
     this->credentialsWindow = new UpdateCredentials(socket,this);
+    this->hostConnectorWindow = new HostConnector(socket,this);
 
     stackedWidget->addWidget(loginWindow);
     stackedWidget->addWidget(registerWindow);
@@ -104,4 +113,5 @@ void MainWindow::createWindows() {
     stackedWidget->addWidget(playgroundWindow);
     stackedWidget->addWidget(historyWindow);
     stackedWidget->addWidget(credentialsWindow);
+    stackedWidget->addWidget(hostConnectorWindow);
 }

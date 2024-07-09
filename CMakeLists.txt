@@ -78,6 +78,9 @@ add_executable(PlanetVsZombies main.cpp
         windows/UpdateCredentials/updatecredentials.cpp
         windows/UpdateCredentials/updatecredentials.h
         windows/UpdateCredentials/updatecredentials.ui
+        windows/HostConnector/hostconnector.cpp
+        windows/HostConnector/hostconnector.h
+        windows/HostConnector/hostconnector.ui
 )
 
 target_link_libraries(PlanetVsZombies

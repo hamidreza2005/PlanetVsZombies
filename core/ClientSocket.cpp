@@ -4,20 +4,10 @@
 #include "exceptions/ConnectionIsLostException.h"
 #include "../playground.h"
 
-const int ClientSocket::PORT = 2000;
-const QString ClientSocket::HOST = "127.0.0.1";
+int ClientSocket::PORT;
+QString ClientSocket::HOST;
 
 ClientSocket::ClientSocket() {
-    this->connectToHost();
-    this->connectSiganlsToListeners();
-    this->reconnectTimer = new QTimer();
-    this->reconnectTimer->setInterval(5000);
-    connect(reconnectTimer, &QTimer::timeout, this, [this](){
-        qDebug() << "trying to connect to host one more time";
-        this->socket->connectToHost(HOST, PORT);
-    });
-
-    this->reconnectTimer->start();
 }
 
 ClientSocket::~ClientSocket() {
@@ -28,7 +18,10 @@ ClientSocket::~ClientSocket() {
     delete this->reconnectTimer;
 }
 
-void ClientSocket::connectToHost() {
+void ClientSocket::startSocket() {
+    if(socket){
+        delete socket;
+    }
     socket = new QTcpSocket();
     socket->connectToHost(HOST, PORT);
 }
@@ -77,4 +70,22 @@ void ClientSocket::connectSiganlsToListeners() {
     connect(socket, &QTcpSocket::readyRead, this, &ClientSocket::read);
 //    connect(socket, &QTcpSocket::bytesWritten, this, &MainWindow::socket_bytesWritten);
     connect(socket, &QTcpSocket::disconnected, this, &ClientSocket::socket_disconnected);
+}
+
+void ClientSocket::connectToHost() {
+    this->startSocket();
+    this->connectSiganlsToListeners();
+    this->reconnectTimer = new QTimer();
+    this->reconnectTimer->setInterval(5000);
+    connect(reconnectTimer, &QTimer::timeout, this, [this](){
+        qDebug() << "trying to connect to host one more time";
+        this->socket->connectToHost(HOST, PORT);
+    });
+
+    this->reconnectTimer->start();
+}
+
+void ClientSocket::setHost(const QString &ip, int port) {
+    ClientSocket::HOST = ip;
+    ClientSocket::PORT = port;
 }
