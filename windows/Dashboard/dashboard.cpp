@@ -12,6 +12,7 @@ Dashboard::Dashboard(ClientSocket* clientSocket,QWidget *parent) :
     connect(updateOnlineUsersTimer, &QTimer::timeout, this, [this](){
         this->getOnlineUsers();
     });
+    connect(ui->onlineClients, &QListWidget::itemClicked, this, &Dashboard::onOnlineUserClicked);
 }
 
 Dashboard::~Dashboard() {
@@ -47,6 +48,7 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
 void Dashboard::connectDataListener() {
     dataListener = connect(socket, &ClientSocket::dataReceived, this, &Dashboard::handleServerResponse);
     this->getOnlineUsers();
+    ui->welcomeText->setText("Hi " + Cookie::getInstance()->loggedInPlayer->getUsername());
 //    this->updateOnlineUsersTimer->start();
 }
 
@@ -71,12 +73,18 @@ void Dashboard::on_ready_clicked() {
 }
 
 void Dashboard::updateOnlineUsersBox(const QJsonArray &users) {
+    ui->onlineClients->clear(); // Clear the existing items
     int onlineUsersCount = users.size();
-    ui->onlineClients->setText("");
     ui->onlineClientsCount->setText(QString::number(onlineUsersCount));
-    for(auto &&onlineUser : users){
-        ui->onlineClients->setText(ui->onlineClients->text() + "\n" +onlineUser.toString());
+    for (const QJsonValue &onlineUser : users) {
+        QListWidgetItem *item = new QListWidgetItem(onlineUser.toString());
+        ui->onlineClients->addItem(item);
     }
+}
+
+void Dashboard::onOnlineUserClicked(QListWidgetItem *item){
+    QString ip = item->text();
+    ui->opponentIp->setText(ip);
 }
 
 void Dashboard::disconnectDataListener() {

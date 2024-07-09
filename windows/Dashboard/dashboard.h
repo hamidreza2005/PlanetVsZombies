@@ -4,6 +4,7 @@
 #include "../../core/ClientSocket.h"
 #include "../Window.h"
 #include "QTimer"
+#include <QListWidgetItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Dashboard; }
@@ -28,6 +29,7 @@ public slots:
     void on_refreshUsers_clicked();
     void on_history_clicked();
     void on_updateCredentials_clicked();
+    void onOnlineUserClicked(QListWidgetItem *item);
 signals:
     void startTheGame(Window* sender);
     void goToLoginPage(Window* sender);

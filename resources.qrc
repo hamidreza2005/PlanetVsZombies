@@ -27,5 +27,7 @@
         <file>resources/musics/round1.mp3</file>
         <file>resources/musics/round2.mp3</file>
         <file>resources/musics/menu.mp3</file>
+        <file>resources/images/backgrounds/background1.png</file>
+        <file>resources/images/backgrounds/background3.png</file>
     </qresource>
 </RCC>

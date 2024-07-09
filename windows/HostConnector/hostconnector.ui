@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>HostConnector</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QLineEdit" name="ip">
    <property name="geometry">
     <rect>
@@ -24,9 +27,15 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>12</pointsize>
+     <pointsize>13</pointsize>
      <bold>true</bold>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 85, 0);
+border:3px solid #068027;
+border-radius:5px;
+background-color: rgba(0, 0, 0,0.2);</string>
    </property>
    <property name="text">
     <string>127.0.0.1</string>
@@ -47,6 +56,9 @@
      <bold>true</bold>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0);</string>
+   </property>
    <property name="text">
     <string>Server Ip Address:</string>
    </property>
@@ -66,6 +78,9 @@
      <bold>true</bold>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0);</string>
+   </property>
    <property name="text">
     <string>Port:</string>
    </property>
@@ -81,9 +96,15 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>13</pointsize>
      <bold>true</bold>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 85, 0);
+border:3px solid #068027;
+border-radius:5px;
+background-color: rgba(0, 0, 0,0.2);</string>
    </property>
    <property name="maximum">
     <number>10000</number>
@@ -98,7 +119,7 @@
      <x>430</x>
      <y>290</y>
      <width>241</width>
-     <height>41</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="font">
@@ -110,10 +131,41 @@
    <property name="cursor">
     <cursorShape>PointingHandCursor</cursorShape>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 85, 0);
+border:3px solid #068027;
+border-radius:10px;</string>
+   </property>
    <property name="text">
     <string>Connect</string>
    </property>
   </widget>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>-1</y>
+     <width>1000</width>
+     <height>700</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#widget {
+    background-image: url(:/resources/images/backgrounds/background1.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}</string>
+   </property>
+  </widget>
+  <zorder>widget</zorder>
+  <zorder>ip</zorder>
+  <zorder>label</zorder>
+  <zorder>label_2</zorder>
+  <zorder>port</zorder>
+  <zorder>connect</zorder>
  </widget>
  <resources/>
  <connections/>
