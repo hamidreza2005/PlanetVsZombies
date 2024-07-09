@@ -15,7 +15,7 @@ find_package(Qt6 COMPONENTS
         Multimedia
         REQUIRED)
 
-add_executable(PlanetVsZombies main.cpp
+add_executable(PlanetVsZombies WIN32 main.cpp
     resources.qrc
     playground.h playground.cpp
         Card.cpp
@@ -131,3 +131,12 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
     endforeach (QT_LIB)
 endif ()
+
+# Add the custom command for Inno Setup
+add_custom_command(TARGET PlanetVsZombies POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Running Inno Setup..."
+        COMMAND "C:/Program Files (x86)/Inno Setup 6/ISCC.exe" "H:\\cpp\\AP\\PlanetVsZombies\\setup.iss"
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Creating installer using Inno Setup"
+        VERBATIM
+)
