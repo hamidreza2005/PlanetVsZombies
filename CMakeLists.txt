@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_PREFIX_PATH "C:\\Qt\\6.5.3\\mingw_64\\lib\\cmake")
+set(CMAKE_PREFIX_PATH "C:\\Qt\\6.7.0\\mingw_64\\lib\\cmake")
 
 find_package(Qt6 COMPONENTS
         Core
@@ -90,8 +90,9 @@ target_link_libraries(PlanetVsZombies
         Qt::Gui
         Qt::Widgets
         Qt6::Network
-        Qt::Multimedia
+        Qt6::Multimedia
 )
+
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(DEBUG_SUFFIX)
@@ -105,6 +106,16 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
             set(QT_INSTALL_PATH "${QT_INSTALL_PATH}/..")
         endif ()
     endif ()
+
+    # Ensure multimedia plugins are copied
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/multimedia/")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${QT_INSTALL_PATH}/plugins/multimedia"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/multimedia/")
+
     if (EXISTS "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E make_directory
@@ -114,7 +125,7 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
                 "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/platforms/")
     endif ()
-    foreach (QT_LIB Core Gui Widgets)
+    foreach (QT_LIB Core Gui Widgets Multimedia)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/bin/Qt6${QT_LIB}${DEBUG_SUFFIX}.dll"

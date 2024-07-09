@@ -13,7 +13,6 @@ MainWindow::MainWindow(ClientSocket* clientSocket, QWidget *parent) :
     this->connectSignals();
     this->setWindowIcon(QIcon(":/resources/images/icon.png"));
     playMenuMusic();
-    showLoginWindow();
     this->showHostConnectorWindow();
 }
 
@@ -33,7 +32,7 @@ void MainWindow::showLoginWindow(Window* senderWindow) {
         senderWindow->disconnectDataListener();
     loginWindow->connectDataListener();
     stackedWidget->setCurrentWidget(loginWindow);
-    // mediaPlayer->playBackgroundMusic(":/resources/musics/menu.mp3");
+    mediaPlayer->playBackgroundMusic(":/resources/musics/menu.mp3");
 }
 
 void MainWindow::showDashboardWindow(Window* senderWindow) {
@@ -99,7 +98,7 @@ void MainWindow::connectSignals() {
 
 void MainWindow::createWindows() {
     this->loginWindow = new Login(socket,this),
-        this->registerWindow = new Register(socket,this);
+    this->registerWindow = new Register(socket,this);
     this->dashboardWindow = new Dashboard(socket,this);
     this->resetPasswordWindow = new ResetPassword(socket,this);
     this->playgroundWindow = new PlayGround(socket,this);

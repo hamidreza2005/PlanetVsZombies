@@ -5,7 +5,7 @@ MediaPlayer::MediaPlayer(QObject *parent)
     player(new QMediaPlayer(this)),
     audioOutput(new QAudioOutput(this)) {
     player->setAudioOutput(audioOutput);
-    audioOutput->setVolume(50);
+    audioOutput->setVolume(100.0);
 }
 
 MediaPlayer::~MediaPlayer() {
@@ -31,9 +31,9 @@ void MediaPlayer::playRoundMusic(const QString &roundMusic, const QString &backg
     player->setSource(QUrl::fromLocalFile(roundMusic));
     player->setLoops(1);
     player->play();
-    connect(player, &QMediaPlayer::mediaStatusChanged, this, [=](QMediaPlayer::MediaStatus status) {
+    connect(player, &QMediaPlayer::mediaStatusChanged, this, [this,backgroundMusic](QMediaPlayer::MediaStatus status) {
         if (status == QMediaPlayer::EndOfMedia) {
-            playBackgroundMusic(backgroundMusic);
+           this->playBackgroundMusic(backgroundMusic);
         }
     });
 }
