@@ -11,7 +11,7 @@
 using namespace std;
 
 const int Bootstrap::PORT = 2000;
-const QString Bootstrap::HOST = "127.0.0.1";
+const QString Bootstrap::HOST = "0.0.0.0";
 Bootstrap* Bootstrap::instance = nullptr;
 Bootstrap::Bootstrap()
 {

@@ -1,8 +1,19 @@
+#include <QNetworkInterface>
 #include <QJsonArray>
 #include "GameController.h"
 #include "../bootstrap.h"
 #include "../Cache.h"
 #include "../Database/DB.h"
+
+QString getServerIp(){
+    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol &&
+            address != QHostAddress(QHostAddress::LocalHost)) {
+            return address.toString();
+        }
+    }
+    return "";
+}
 void GameController::getOnlineUsers(TcpSocket *socket, const QJsonObject &request) {
     auto allClients =  Bootstrap::getInstance()->getClients();
     auto it = std::find(allClients.begin(), allClients.end(),socket->getOriginalSocket());
@@ -16,6 +27,10 @@ void GameController::getOnlineUsers(TcpSocket *socket, const QJsonObject &reques
         if (clientSocket) {
             QString ipAddress = clientSocket->peerAddress().toString();
             ipAddress = ipAddress.split(":").last();
+            if(ipAddress == "127.0.0.1"){
+                auto deviceIp = getServerIp();
+                ipAddress = deviceIp != "" ? deviceIp : ipAddress;
+            }
             ipAddresses.append(ipAddress);
         }
     }
