@@ -25,7 +25,7 @@
   <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
     <rect>
-     <x>-10</x>
+     <x>0</x>
      <y>0</y>
      <width>1011</width>
      <height>701</height>
@@ -51,11 +51,12 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(62, 124, 0);
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
 border: 1px solid rgb(0, 170, 0);
 border-radius: 10px;
 padding:10px;
-color:rgb(0, 100, 100)</string>
+</string>
     </property>
     <property name="text">
      <string>Have you forgot your password?</string>
@@ -78,11 +79,11 @@ color:rgb(0, 100, 100)</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(62, 124, 0);
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
 border: 1px solid rgb(0, 170, 0);
 border-radius: 10px;
-padding:10px;
-color:rgb(0, 100, 100)</string>
+padding:10px;</string>
     </property>
     <property name="text">
      <string>Don't Have an account? Go to Register</string>
@@ -105,12 +106,11 @@ color:rgb(0, 100, 100)</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(62, 124, 0);
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
 border: 1px solid rgb(0, 170, 0);
 border-radius: 10px;
-padding:10px;
-color:rgb(0, 100, 100)
-</string>
+padding:10px;</string>
     </property>
     <property name="text">
      <string>Login</string>
@@ -132,7 +132,7 @@ color:rgb(0, 100, 100)
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(0, 100, 100);
+     <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(62, 124, 0);
 border: 1px solid rgb(0, 170, 0);
 border-radius: 10px;
@@ -158,7 +158,7 @@ padding:10px;</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(0, 100, 100);
+     <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(62, 124, 0);
 border: 1px solid rgb(0, 170, 0);
 border-radius: 10px;
@@ -184,9 +184,9 @@ padding:10px;</string>
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(62, 124, 0);
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
 border: 1px solid rgb(0, 170, 0);
-color: rgb(255,255,255);
 border-radius: 10px;
 padding:10px;</string>
     </property>
@@ -210,17 +210,43 @@ padding:10px;</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(62, 124, 0);
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
 border: 1px solid rgb(0, 170, 0);
 border-radius: 10px;
-padding:10px;
-color: rgb(0,100,100);
-</string>
+padding:10px;</string>
     </property>
     <property name="text">
      <string/>
     </property>
    </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>-20</x>
+      <y>-10</y>
+      <width>1031</width>
+      <height>711</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image:url(:/resources/images/background/b7.png)</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <zorder>frame</zorder>
+   <zorder>resetPassword</zorder>
+   <zorder>registerLink</zorder>
+   <zorder>submit</zorder>
+   <zorder>passwordLabel</zorder>
+   <zorder>usernameLabel</zorder>
+   <zorder>password</zorder>
+   <zorder>username</zorder>
   </widget>
  </widget>
  <resources/>

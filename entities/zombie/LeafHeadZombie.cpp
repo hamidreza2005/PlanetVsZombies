@@ -1,8 +1,13 @@
 #include "LeafHeadZombie.h"
 
-LeafHeadZombie::LeafHeadZombie():
-        Zombie(INITIAL_HEALTH,INITIAL_MOVEMENT_DELAY,INITIAL_ATTACK_POWER,INITIAL_FIRING_RATE,BRAIN_NEEDED_TO_CREATE)
-{
+LeafHeadZombie::LeafHeadZombie()
+    : Zombie(
+        INITIAL_HEALTH,
+        INITIAL_MOVEMENT_DELAY,
+        INITIAL_ATTACK_POWER,
+        INITIAL_FIRING_RATE,
+        BRAIN_NEEDED_TO_CREATE
+        ) {
     this->setImage();
 }
 
@@ -11,5 +16,13 @@ QString LeafHeadZombie::getPicturePath() const {
 }
 
 QString LeafHeadZombie::getName() {
-    return "Laef Head Zombie";
+    return "Leaf Head Zombie";
+}
+
+QString LeafHeadZombie::getMovementPicturePath() const {
+    return ":/resources/images/move/LeafHeadZombieMove.png";
+}
+
+QString LeafHeadZombie::getStayPicturePath() const {
+    return ":/resources/images/move/LeafHeadZombieStay.png";
 }
