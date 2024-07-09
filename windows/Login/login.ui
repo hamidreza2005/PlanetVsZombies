@@ -128,6 +128,7 @@ padding:10px;</string>
     <property name="font">
      <font>
       <pointsize>10</pointsize>
+      <italic>true</italic>
       <bold>true</bold>
      </font>
     </property>
@@ -154,6 +155,7 @@ padding:10px;</string>
     <property name="font">
      <font>
       <pointsize>10</pointsize>
+      <italic>true</italic>
       <bold>true</bold>
      </font>
     </property>
@@ -179,6 +181,11 @@ padding:10px;</string>
       <width>291</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="acceptDrops">
      <bool>false</bool>
