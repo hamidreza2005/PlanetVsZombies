@@ -12,13 +12,13 @@
 #include "History/history.h"
 #include "UpdateCredentials/updatecredentials.h"
 #include "HostConnector/hostconnector.h"
+#include "../core/mediaplayer.h"
 
 class MainWindow : public QMainWindow {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit MainWindow(ClientSocket* clientSocket,QWidget *parent = nullptr);
-
+    explicit MainWindow(ClientSocket* clientSocket, QWidget *parent = nullptr);
     ~MainWindow() override;
 
 private:
@@ -32,9 +32,13 @@ private:
     UpdateCredentials* credentialsWindow;
     HostConnector* hostConnectorWindow;
     ClientSocket* socket;
+    MediaPlayer *mediaPlayer;
 
     void connectSignals();
     void createWindows();
+    void playMenuMusic();
+    void playRoundMusic(const QString &roundMusic, const QString &backgroundMusic);
+
 public slots:
     void showLoginWindow(Window* senderWindow = nullptr);
     void showRegisterWindow(Window* senderWindow = nullptr);
@@ -45,6 +49,5 @@ public slots:
     void showCredentialsWindow(Window* senderWindow = nullptr);
     void showHostConnectorWindow(Window* senderWindow = nullptr);
 };
-
 
 #endif //PLANETVSZOMBIES_MAINWINDOW_H

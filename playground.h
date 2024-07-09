@@ -15,6 +15,7 @@
 #include "SunBrain.h"
 #include "windows/Window.h"
 #include "core/ClientSocket.h"
+#include "core/mediaplayer.h"
 
 class PlayGround : public Window {
     Q_OBJECT
@@ -62,6 +63,7 @@ private:
     int sunCount;
     Card* selectedCard;
     QGraphicsPixmapItem* rotatingItem;
+    MediaPlayer *mediaPlayer;
 
     void createCards();
     void setupPlayerZombieInfo();

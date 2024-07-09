@@ -23,6 +23,9 @@
         <file>resources/images/boomrang2.png</file>
         <file>resources/images/boomrang3.png</file>
         <file>resources/images/boomrang4.png</file>
+        <file>resources/musics/Grasswalk.mp3</file>
+        <file>resources/musics/round1.mp3</file>
+        <file>resources/musics/round2.mp3</file>
+        <file>resources/musics/menu.mp3</file>
     </qresource>
-    <qresource prefix="/im"/>
 </RCC>

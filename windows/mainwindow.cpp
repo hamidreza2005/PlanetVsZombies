@@ -1,24 +1,24 @@
 #include "mainwindow.h"
 
-
-MainWindow::MainWindow(ClientSocket* clientSocket,QWidget *parent) :
-        QMainWindow(parent),
-        socket(clientSocket),
-        stackedWidget(new QStackedWidget(this))
+MainWindow::MainWindow(ClientSocket* clientSocket, QWidget *parent) :
+    QMainWindow(parent),
+    socket(clientSocket),
+    stackedWidget(new QStackedWidget(this)),
+    mediaPlayer(new MediaPlayer(this))
 {
     this->createWindows();
     setCentralWidget(stackedWidget);
     this->setFixedSize(1000,700);
     stackedWidget->setFixedSize(1000,700);
-    // Connect signals to slots
     this->connectSignals();
     this->setWindowIcon(QIcon(":/resources/images/icon.png"));
-    // Show the login window by default
+    playMenuMusic();
+    showLoginWindow();
     this->showHostConnectorWindow();
 }
 
 MainWindow::~MainWindow() {
-
+    delete mediaPlayer;
 }
 
 void MainWindow::showRegisterWindow(Window* senderWindow) {
@@ -29,10 +29,11 @@ void MainWindow::showRegisterWindow(Window* senderWindow) {
 }
 
 void MainWindow::showLoginWindow(Window* senderWindow) {
-    if(senderWindow)
+    if (senderWindow)
         senderWindow->disconnectDataListener();
     loginWindow->connectDataListener();
     stackedWidget->setCurrentWidget(loginWindow);
+    // mediaPlayer->playBackgroundMusic(":/resources/musics/menu.mp3");
 }
 
 void MainWindow::showDashboardWindow(Window* senderWindow) {
@@ -49,13 +50,14 @@ void MainWindow::showResetPasswordWindow(Window *senderWindow) {
     stackedWidget->setCurrentWidget(resetPasswordWindow);
 }
 
-void MainWindow::showPlaygroundWindow(Window *senderWindow) {
+void MainWindow::showPlaygroundWindow(Window* senderWindow) {
     if (senderWindow)
         senderWindow->disconnectDataListener();
     playgroundWindow->connectDataListener();
     playgroundWindow->connectConnectionLostListener();
     stackedWidget->setCurrentWidget(playgroundWindow);
     playgroundWindow->play();
+    playRoundMusic(":/resources/musics/round1.mp3", ":/resources/musics/Grasswalk.mp3");
 }
 
 void MainWindow::showHistoryWindow(Window *senderWindow) {
@@ -96,9 +98,8 @@ void MainWindow::connectSignals() {
 }
 
 void MainWindow::createWindows() {
-
     this->loginWindow = new Login(socket,this),
-    this->registerWindow = new Register(socket,this);
+        this->registerWindow = new Register(socket,this);
     this->dashboardWindow = new Dashboard(socket,this);
     this->resetPasswordWindow = new ResetPassword(socket,this);
     this->playgroundWindow = new PlayGround(socket,this);
@@ -114,4 +115,12 @@ void MainWindow::createWindows() {
     stackedWidget->addWidget(historyWindow);
     stackedWidget->addWidget(credentialsWindow);
     stackedWidget->addWidget(hostConnectorWindow);
+}
+
+void MainWindow::playMenuMusic() {
+    mediaPlayer->playBackgroundMusic(":/resources/musics/menu.mp3");
+}
+
+void MainWindow::playRoundMusic(const QString& roundMusic, const QString& backgroundMusic) {
+    mediaPlayer->playRoundMusic(roundMusic, backgroundMusic);
 }

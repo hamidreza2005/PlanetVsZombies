@@ -5,13 +5,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_PREFIX_PATH "C:\\Qt\\6.7.0\\mingw_64\\lib\\cmake")
+set(CMAKE_PREFIX_PATH "C:\\Qt\\6.5.3\\mingw_64\\lib\\cmake")
 
 find_package(Qt6 COMPONENTS
         Core
         Gui
         Widgets
         Network
+        Multimedia
         REQUIRED)
 
 add_executable(PlanetVsZombies main.cpp
@@ -81,6 +82,7 @@ add_executable(PlanetVsZombies main.cpp
         windows/HostConnector/hostconnector.cpp
         windows/HostConnector/hostconnector.h
         windows/HostConnector/hostconnector.ui
+        core/mediaplayer.h core/mediaplayer.cpp
 )
 
 target_link_libraries(PlanetVsZombies
@@ -88,6 +90,7 @@ target_link_libraries(PlanetVsZombies
         Qt::Gui
         Qt::Widgets
         Qt6::Network
+        Qt::Multimedia
 )
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)

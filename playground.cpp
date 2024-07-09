@@ -24,25 +24,25 @@
 #include <QPropertyAnimation>
 
 QMap<QString,std::function<GameEntity*()>> PlayGround::zombies = {
-        {"Regular Zombie",[](){return new RegularZombie;}},
-        {"Bucket Head Zombie",[](){return new BucketHeadZombie;}},
-        {"Tall Zombie",[](){return new TallZombie;}},
-        {"Laef Head Zombie",[]() { return new LeafHeadZombie; }},
-        {"Purple Head Zombie",[](){return new PurpleHairZombie;}},
-        {"Astronaut Zombie",[](){return new AstronautZombie;}},
+    {"Regular Zombie",[](){return new RegularZombie;}},
+    {"Bucket Head Zombie",[](){return new BucketHeadZombie;}},
+    {"Tall Zombie",[](){return new TallZombie;}},
+    {"Laef Head Zombie",[]() { return new LeafHeadZombie; }},
+    {"Purple Head Zombie",[](){return new PurpleHairZombie;}},
+    {"Astronaut Zombie",[](){return new AstronautZombie;}},
     };
 
 QMap<QString,std::function<GameEntity*()>> PlayGround::plants = {
-        {"PeaShooter Plant",[]() { return new PeaShooter; }},
-        {"TwoPeaShooter Plant",[]() { return new TwoPeaShooter; }},
-        {"Walnut Plant",[]() { return new Walnut; }},
-        {"Boomerang Plant",[]() { return new Boomerang; }},
-        {"Jalapeno Plant",[](){return new Jalapeno;}},
-        {"Plum Mine Plant",[](){return new PlumMine;}},
+    {"PeaShooter Plant",[]() { return new PeaShooter; }},
+    {"TwoPeaShooter Plant",[]() { return new TwoPeaShooter; }},
+    {"Walnut Plant",[]() { return new Walnut; }},
+    {"Boomerang Plant",[]() { return new Boomerang; }},
+    {"Jalapeno Plant",[](){return new Jalapeno;}},
+    {"Plum Mine Plant",[](){return new PlumMine;}},
     };
 
 PlayGround::PlayGround(ClientSocket* clientSocket, QWidget *parent)
-    : Window(clientSocket, parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
+    : Window(clientSocket, parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr), mediaPlayer(new MediaPlayer(this)) {
     this->setFixedSize(1000, 700);
     graphicsView = new QGraphicsView(this);
     graphicsView->setFixedSize(1000, 500);
@@ -73,6 +73,8 @@ void PlayGround::play() {
     Window::showPopupMessage("Round " + Cookie::getInstance()->playingRound,1000);
     remainingSeconds = 210;
     timer->start(1000);
+
+    mediaPlayer->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
 
     sunBrainTimer = new QTimer(this);
     connect(sunBrainTimer, &QTimer::timeout, this, &PlayGround::spawnSunBrain);
@@ -334,7 +336,9 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
         Window::showPopupMessage(data.value("message").toString(),2000,this);
         Cookie::getInstance()->playingRound = data.value("round").toString();
         Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
+        mediaPlayer->playRoundMusic(":/resources/musics/round2.mp3", ":/resources/musics/Grasswalk.mp3");
         QTimer::singleShot(2000,[this](){
+            mediaPlayer->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
             this->startARound();
         });
         return;
