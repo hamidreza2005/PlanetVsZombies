@@ -27,10 +27,12 @@ public slots:
     void on_exit_clicked();
     void on_refreshUsers_clicked();
     void on_history_clicked();
+    void on_updateCredentials_clicked();
 signals:
     void startTheGame(Window* sender);
     void goToLoginPage(Window* sender);
     void goToHistoryPage(Window *sender);
+    void goToCredentialsPage(Window *sender);
 private:
     Ui::Dashboard *ui;
     QTimer* updateOnlineUsersTimer;

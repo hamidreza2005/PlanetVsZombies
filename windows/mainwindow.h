@@ -10,6 +10,7 @@
 #include "window.h"
 #include "../playground.h"
 #include "History/history.h"
+#include "UpdateCredentials/updatecredentials.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -27,6 +28,7 @@ private:
     ResetPassword *resetPasswordWindow;
     PlayGround* playgroundWindow;
     History* historyWindow;
+    UpdateCredentials* credentialsWindow;
     ClientSocket* socket;
 
     void connectSignals();
@@ -38,6 +40,7 @@ public slots:
     void showResetPasswordWindow(Window* senderWindow = nullptr);
     void showPlaygroundWindow(Window* senderWindow = nullptr);
     void showHistoryWindow(Window* senderWindow = nullptr);
+    void showCredentialsWindow(Window* senderWindow = nullptr);
 };
 
 

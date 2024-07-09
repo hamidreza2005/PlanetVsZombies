@@ -110,3 +110,7 @@ void Dashboard::on_refreshUsers_clicked() {
 void Dashboard::on_history_clicked() {
     emit this->goToHistoryPage(this);
 }
+
+void Dashboard::on_updateCredentials_clicked() {
+    emit this->goToCredentialsPage(this);
+}

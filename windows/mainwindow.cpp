@@ -7,12 +7,6 @@ MainWindow::MainWindow(ClientSocket* clientSocket,QWidget *parent) :
         stackedWidget(new QStackedWidget(this))
 {
     this->createWindows();
-    stackedWidget->addWidget(loginWindow);
-    stackedWidget->addWidget(registerWindow);
-    stackedWidget->addWidget(dashboardWindow);
-    stackedWidget->addWidget(resetPasswordWindow);
-    stackedWidget->addWidget(playgroundWindow);
-    stackedWidget->addWidget(historyWindow);
     setCentralWidget(stackedWidget);
     this->setFixedSize(1000,700);
     stackedWidget->setFixedSize(1000,700);
@@ -71,6 +65,13 @@ void MainWindow::showHistoryWindow(Window *senderWindow) {
     stackedWidget->setCurrentWidget(historyWindow);
 }
 
+void MainWindow::showCredentialsWindow(Window *senderWindow) {
+    if (senderWindow)
+        senderWindow->disconnectDataListener();
+    credentialsWindow->connectDataListener();
+    stackedWidget->setCurrentWidget(credentialsWindow);
+}
+
 void MainWindow::connectSignals() {
     connect(loginWindow, &Login::goToRegisterPage, this, &MainWindow::showRegisterWindow);
     connect(loginWindow, &Login::goToDashboardPage, this, &MainWindow::showDashboardWindow);
@@ -80,8 +81,10 @@ void MainWindow::connectSignals() {
     connect(dashboardWindow, &Dashboard::startTheGame, this, &MainWindow::showPlaygroundWindow);
     connect(dashboardWindow, &Dashboard::goToLoginPage, this, &MainWindow::showLoginWindow);
     connect(dashboardWindow, &Dashboard::goToHistoryPage, this, &MainWindow::showHistoryWindow);
+    connect(dashboardWindow, &Dashboard::goToCredentialsPage, this, &MainWindow::showCredentialsWindow);
     connect(playgroundWindow, &PlayGround::goToDashboardPage, this, &MainWindow::showDashboardWindow);
     connect(historyWindow, &History::goToDashboard, this, &MainWindow::showDashboardWindow);
+    connect(credentialsWindow, &UpdateCredentials::goToDashboardPage, this, &MainWindow::showDashboardWindow);
 }
 
 void MainWindow::createWindows() {
@@ -92,4 +95,13 @@ void MainWindow::createWindows() {
     this->resetPasswordWindow = new ResetPassword(socket,this);
     this->playgroundWindow = new PlayGround(socket,this);
     this->historyWindow = new History(socket,this);
+    this->credentialsWindow = new UpdateCredentials(socket,this);
+
+    stackedWidget->addWidget(loginWindow);
+    stackedWidget->addWidget(registerWindow);
+    stackedWidget->addWidget(dashboardWindow);
+    stackedWidget->addWidget(resetPasswordWindow);
+    stackedWidget->addWidget(playgroundWindow);
+    stackedWidget->addWidget(historyWindow);
+    stackedWidget->addWidget(credentialsWindow);
 }

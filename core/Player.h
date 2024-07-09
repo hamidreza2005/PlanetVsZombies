@@ -10,6 +10,7 @@ public:
     explicit Player(QString username);
 
     QString getUsername();
+    void setUsername(QString newUsername);
     QString& getRole();
 };
 

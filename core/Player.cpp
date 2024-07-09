@@ -11,3 +11,7 @@ QString Player::getUsername() {
 QString &Player::getRole() {
     return this->role;
 }
+
+void Player::setUsername(QString newUsername) {
+    this->username = newUsername;
+}

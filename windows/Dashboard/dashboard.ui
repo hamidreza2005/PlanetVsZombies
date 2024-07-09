@@ -76,6 +76,11 @@
    <property name="cursor">
     <cursorShape>PointingHandCursor</cursorShape>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 85, 0);
+border:3px solid #068027;
+border-radius:5px;</string>
+   </property>
    <property name="text">
     <string>Exit</string>
    </property>
@@ -99,7 +104,7 @@
     <string>Online Users</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="changeCredentials">
+  <widget class="QPushButton" name="updateCredentials">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -114,8 +119,13 @@
      <bold>true</bold>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 85, 0);
+border:3px solid #068027;
+border-radius:5px;</string>
+   </property>
    <property name="text">
-    <string>Change Credentials</string>
+    <string>Update Credentials</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="opponentIp">
@@ -288,7 +298,7 @@ border-radius:5px;</string>
   <zorder>label</zorder>
   <zorder>exit</zorder>
   <zorder>label_2</zorder>
-  <zorder>changeCredentials</zorder>
+  <zorder>updateCredentials</zorder>
   <zorder>opponentIp</zorder>
   <zorder>ready</zorder>
   <zorder>label_3</zorder>

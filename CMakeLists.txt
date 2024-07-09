@@ -75,6 +75,9 @@ add_executable(PlanetVsZombies main.cpp
         windows/History/history.cpp
         windows/History/history.h
         windows/History/history.ui
+        windows/UpdateCredentials/updatecredentials.cpp
+        windows/UpdateCredentials/updatecredentials.h
+        windows/UpdateCredentials/updatecredentials.ui
 )
 
 target_link_libraries(PlanetVsZombies
