@@ -9,7 +9,6 @@ class Zombie : public GameEntity{
 public:
     explicit Zombie(int health, float movementDelay, int attackPower, float firingRate,int brain);
 
-    // Getters and Setters
 
     float getMovementDelay() const;
     void setMovementDelay(float newMovementDelay);

@@ -374,7 +374,7 @@ void PlayGround::spawnSunBrain() {
     sunBrain->setPos(x, y);
 
     connect(sunBrain, &SunBrain::collected, this, &PlayGround::collectSunBrain);
-    connect(sunBrain, &SunBrain::landed, this, &PlayGround::handleLanded); // Handle when SunBrain lands
+    connect(sunBrain, &SunBrain::landed, this, &PlayGround::handleLanded);
     scene->addItem(sunBrain);
 }
 
@@ -445,18 +445,18 @@ void PlayGround::checkCardStates() {
     for (Card* card : cards) {
         if (card->getCost() > availablePoints) {
             card->setEnabled(false);
-            card->setOpacity(0.5); // Dim the card to show it's unavailable
+            card->setOpacity(0.5);
             if (selectedCard == card) {
                 card->unselect();
                 selectedCard = nullptr;
             }
         } else {
             card->setEnabled(true);
-            card->setOpacity(1.0); // Reset opacity to normal
+            card->setOpacity(1.0);
         }
     }
 }
 
 void PlayGround::handleLanded() {
-    sunBrainTimer->start(10000); // Restart the timer to spawn SunBrain after 10 seconds
+    sunBrainTimer->start(10000);
 }

@@ -21,12 +21,11 @@ QString PeaShooter::getName() {
 
 void PeaShooter::fire() {
     if (!scene()) {
-       // qDebug() << "PeaShooter is not in a scene";
         return;
     }
 
     Bullet* bullet = new Bullet(attackPower, 10);
-    bullet->setImage(":/resources/images/sun.png");
+    bullet->setImage(":/resources/images/bullet1.png");
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);
 }

@@ -5,10 +5,16 @@
 #include <QDebug>
 
 Boomerang::Boomerang() :
-    Plant(INITIAL_HEALTH,                 SUN_NEEDED_TO_CREATE
-            , INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER)
-{
+    Plant(INITIAL_HEALTH, SUN_NEEDED_TO_CREATE, INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER),
+    currentImageIndex(0) {
     this->setImage();
+    bulletImages << ":/resources/images/boomrang1.png"
+                 << ":/resources/images/boomrang2.png"
+                 << ":/resources/images/boomrang3.png"
+                 << ":/resources/images/boomrang4.png";
+    imageChangeTimer = new QTimer(this);
+    connect(imageChangeTimer, &QTimer::timeout, this, &Boomerang::changeBulletImage);
+    imageChangeTimer->start(1000);
 }
 
 QString Boomerang::getPicturePath() const {
@@ -21,12 +27,18 @@ QString Boomerang::getName() {
 
 void Boomerang::fire() {
     if (!scene()) {
-       // qDebug() << "Boomerang is not in a scene";
         return;
     }
 
     Bullet* bullet = new Bullet(attackPower, 10);
-    bullet->setImage(":/resources/images/sun.png");
+    bullet->setImage(bulletImages[currentImageIndex]);
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);
+
+    connect(this, &Boomerang::imageChanged, bullet, &Bullet::setImage);
+}
+
+void Boomerang::changeBulletImage() {
+    currentImageIndex = (currentImageIndex + 1) % bulletImages.size();
+    emit imageChanged(bulletImages[currentImageIndex]);
 }
