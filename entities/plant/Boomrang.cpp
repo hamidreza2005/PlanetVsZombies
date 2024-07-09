@@ -14,7 +14,7 @@ Boomerang::Boomerang() :
                  << ":/resources/images/boomrang4.png";
     imageChangeTimer = new QTimer(this);
     connect(imageChangeTimer, &QTimer::timeout, this, &Boomerang::changeBulletImage);
-    imageChangeTimer->start(1000);
+    imageChangeTimer->start(75);
 }
 
 QString Boomerang::getPicturePath() const {
@@ -30,7 +30,7 @@ void Boomerang::fire() {
         return;
     }
 
-    auto bullet = new Bullet(attackPower, 10, true);
+    auto bullet = new Bullet(attackPower, 10, true,40);
     bullet->setImage(bulletImages[currentImageIndex]);
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);

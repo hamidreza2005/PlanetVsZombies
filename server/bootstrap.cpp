@@ -125,11 +125,12 @@ void Bootstrap::sendEndGameSignals(QTcpSocket* exitedPlayer) {
     if (exitedPlayer == firstPlayer->socket->getOriginalSocket()){
         if(secondPlayer->socket->isConnected())
            secondPlayer->socket->write(response);
-
+        this->saveGameInHistory(secondPlayer,firstPlayer);
         Cache::getInstance()->endTheGame();
     }else if(exitedPlayer == secondPlayer->socket->getOriginalSocket()){
         if(firstPlayer->socket->isConnected())
             firstPlayer->socket->write(response);
+        this->saveGameInHistory(firstPlayer,secondPlayer);
         Cache::getInstance()->endTheGame();
     }
 }

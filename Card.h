@@ -11,11 +11,10 @@
 class Card : public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
 public:
-    explicit Card(std::function<GameEntity*()> entityFactory, int width = 100, int height = 100, int cost = 0, QGraphicsItem* parent = nullptr);
+    explicit Card(std::function<GameEntity*()> entityFactory, int width = 100, int height = 100, QGraphicsItem* parent = nullptr);
     std::function<GameEntity*()> getEntityFactory();
     void select();
     void unselect();
-    void setCost(int cost);
     int getCost() const;
 
 signals:
@@ -33,7 +32,8 @@ private:
     QGraphicsTextItem* costText;
     int width;
     int height;
-    int cost;
+
+    void addCostLabel();
 };
 
 #endif // PLANETVSZOMBIES_CARD_H

@@ -3,8 +3,8 @@
 #include <QGraphicsScene>
 #include <QList>
 
-Bullet::Bullet(int attackPower, int speed,bool canHitMultipleZombies, QGraphicsItem* parent)
-    : QObject(), QGraphicsPixmapItem(parent), attackPower(attackPower), speed(speed), canHitMultipleZombies(canHitMultipleZombies) {
+Bullet::Bullet(int attackPower, int speed,bool canHitMultipleZombies,int size, QGraphicsItem* parent)
+    : QObject(), QGraphicsPixmapItem(parent), attackPower(attackPower), speed(speed), size(size), canHitMultipleZombies(canHitMultipleZombies) {
     this->setImage(":/resources/images/bullet1.png");
     movementTimer = new QTimer(this);
     connect(movementTimer, &QTimer::timeout, this, &Bullet::move);
@@ -13,7 +13,7 @@ Bullet::Bullet(int attackPower, int speed,bool canHitMultipleZombies, QGraphicsI
 
 void Bullet::setImage(const QString& imagePath) {
     QPixmap image(imagePath);
-    QPixmap scaledImage = image.scaled(20, 20, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QPixmap scaledImage = image.scaled(this->size, this->size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     setPixmap(scaledImage);
 }
 

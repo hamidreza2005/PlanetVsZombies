@@ -71,7 +71,7 @@ private:
     void setupRemainingTimeInfo();
     void setPlayerName();
     bool isPositionOccupied(QPointF point);
-    void setupRotatingImage(const QString& imagePath, QGraphicsScene* cardScene);
+    void setupRotatingImage(const QString& imagePath);
     void endTheGame();
     void sendAddRequest(const QString& name,int x,int y);
     void addNewEntityFromServer(const QJsonObject &entityData);

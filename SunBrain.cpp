@@ -37,7 +37,7 @@ void SunBrain::calculateTargetPosition() {
 
 void SunBrain::fall() {
     if (y() < targetPosition.y()) {
-        setY(y() + 1);
+        setY(y() + 2);
     } else {
         fallTimer->stop();
         emit landed(); // Emit landed signal
@@ -66,7 +66,7 @@ void SunBrain::moveToTarget() {
 
     QPointF targetPos = QPointF(480, 490); // Updated to move to specific coordinates
     if (pos().x() < targetPos.x()) setX(x() + 3);
-    if (pos().y() < targetPos.y()) setY(y() + 3);
+    if (pos().y() < targetPos.y()) setY(y() + 10);
     if (pos().x() >= targetPos.x() && pos().y() >= targetPos.y()) {
         moveTimer->stop();
         disappear();

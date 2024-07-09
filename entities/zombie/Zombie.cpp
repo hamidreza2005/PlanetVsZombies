@@ -2,7 +2,7 @@
 #include "../plant/Plant.h"
 
 Zombie::Zombie(int health, float movementDelay, int attackPower,float firingRate,int brain):
-GameEntity(health),
+GameEntity(health,brain),
 movementDelay(movementDelay),
 attackPower(attackPower),
 firingRate(firingRate),

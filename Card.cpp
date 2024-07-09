@@ -19,12 +19,12 @@ void Card::setBorders() {
     border->setZValue(-1);
 }
 
-Card::Card(std::function<GameEntity*()> entityFactory, int width, int height, int cost, QGraphicsItem* parent)
-    : QGraphicsPixmapItem(parent), entityFactory(entityFactory), width(width), height(height), cost(cost) {
+Card::Card(std::function<GameEntity*()> entityFactory, int width, int height, QGraphicsItem* parent)
+    : QGraphicsPixmapItem(parent), entityFactory(entityFactory), width(width), height(height) {
     this->entity = entityFactory();
     this->setBorders();
     this->setImage();
-    this->setCost(cost);
+    this->addCostLabel();
 }
 
 void Card::mousePressEvent(QGraphicsSceneMouseEvent* event) {
@@ -46,9 +46,8 @@ void Card::select() {
     this->border->setPen(QPen(Qt::red, 4));
 }
 
-void Card::setCost(int cost) {
-    this->cost = cost;
-    costText = new QGraphicsTextItem(QString::number(cost), this);
+void Card::addCostLabel() {
+    costText = new QGraphicsTextItem(QString::number(this->getCost()), this);
     costText->setZValue(1);
     costText->setPos((this->width / 2 - costText->boundingRect().width() / 2) - 5, this->height);
     QFont font = costText->font();
@@ -57,5 +56,5 @@ void Card::setCost(int cost) {
 }
 
 int Card::getCost() const {
-    return cost;
+    return this->entity->getCost();
 }

@@ -8,11 +8,12 @@ class GameEntity: public QObject,public QGraphicsPixmapItem{
     Q_OBJECT
     Q_PROPERTY(qreal x READ x WRITE setX)
 public:
-    explicit GameEntity(int health);
+    explicit GameEntity(int health,int cost);
 
     int getHealth() const;
+    int getCost() const;
     void setHealth(int newHealth);
-
+    void setCost(int newCost);
     // Abstract Methods
     virtual QString getName() = 0;
     [[nodiscard]] virtual QString getPicturePath() const = 0;
@@ -20,7 +21,7 @@ public:
 
 protected:
     int health;
-
+    int cost;
     void setImage();
 };
 

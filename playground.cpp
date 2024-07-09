@@ -77,7 +77,7 @@ void PlayGround::play() {
     sunBrainTimer = new QTimer(this);
     connect(sunBrainTimer, &QTimer::timeout, this, &PlayGround::spawnSunBrain);
     this->spawnSunBrain();
-    sunBrainTimer->start(7000);
+    sunBrainTimer->start(5000);
     cardStateTimer->start(1000);
 }
 
@@ -150,9 +150,6 @@ void PlayGround::setupLayout() {
     mainLayout->addWidget(cardView, 1);
     setLayout(mainLayout);
 
-    for (auto* card : this->cards) {
-        cardsScene->addItem(card);
-    }
     int cardWidth = 100;
     int gapBetweenCards = 2;
 
@@ -161,7 +158,7 @@ void PlayGround::setupLayout() {
         cardsScene->addItem(cards[i]);
     }
 
-    setupRotatingImage(isZombie ? ":/resources/images/Brain.png" : ":/resources/images/sun.png", cardsScene);
+    setupRotatingImage(isZombie ? ":/resources/images/Brain.png" : ":/resources/images/sun.png");
 
     for (int i = 3; i < 6; ++i) {
         cards[i]->setPos((i + 1) * (cardWidth + gapBetweenCards), 0);
@@ -172,52 +169,7 @@ void PlayGround::setupLayout() {
 void PlayGround::createCards() {
     QList<std::function<GameEntity*()>> entites = isZombie ? PlayGround::zombies.values() : PlayGround::plants.values();
     for(int i = 0; i < 6; i++) {
-        int cost;
-        if(isZombie){
-            switch (i) {
-                case 0:
-                    cost = 100;
-                    break;
-                case 1:
-                    cost = 200;
-                    break;
-                case 2:
-                    cost = 150;
-                    break;
-                case 3:
-                    cost = 120;
-                    break;
-                case 4:
-                    cost = 180;
-                    break;
-                default:
-                    cost = 200;
-                    break;
-            }
-        }else{
-            switch (i) {
-                case 0: // PeaShooter
-                    cost = 100;
-                    break;
-                case 1: // TwoPeaShooter
-                    cost = 200;
-                    break;
-                case 2: // Walnut
-                    cost = 50;
-                    break;
-                case 3: // Boomerang
-                    cost = 125;
-                    break;
-                case 4: // Jalapeno
-                    cost = 150;
-                    break;
-                default:
-                    cost = 175;
-                    break;
-            }
-
-        }
-        auto *card = new Card(entites[i],100,100,cost);
+        auto *card = new Card(entites[i],100,100);
         connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         cards.push_back(card);
     }
@@ -313,8 +265,7 @@ bool PlayGround::isPositionOccupied(QPointF point) {
 
 void PlayGround::spawnSunBrain() {
     QString imagePath = isZombie ? ":/resources/images/Brain.png" : ":/resources/images/sun.png";
-    int value = 50;
-    SunBrain *sunBrain = new SunBrain(imagePath, value, isZombie ? brainBar : sunBar, isZombie, rotatingItem);
+    SunBrain *sunBrain = new SunBrain(imagePath, 50, isZombie ? brainBar : sunBar, isZombie, rotatingItem);
 
     int x = QRandomGenerator::global()->bounded(isZombie ? 485 : 30, isZombie ? 750 : 490);
     int y = -100;
@@ -326,7 +277,7 @@ void PlayGround::spawnSunBrain() {
     scene->addItem(sunBrain);
 }
 
-void PlayGround::setupRotatingImage(const QString& imagePath, QGraphicsScene* cardScene) {
+void PlayGround::setupRotatingImage(const QString& imagePath) {
     rotatingItem = new QGraphicsPixmapItem(QPixmap(imagePath).scaled(100, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     rotatingItem->setTransformOriginPoint(rotatingItem->boundingRect().center());
     rotatingItem->setZValue(10);
@@ -340,7 +291,7 @@ void PlayGround::setupRotatingImage(const QString& imagePath, QGraphicsScene* ca
     rotation->setAxis(Qt::YAxis);
     rotation->setOrigin(QVector3D(rotatingItem->boundingRect().center().x(), rotatingItem->boundingRect().center().y(), 0));
     rotatingItem->setTransformations({rotation});
-    cardScene->addItem(rotatingItem);
+    cardsScene->addItem(rotatingItem);
 
     auto rotationAnimation = new QPropertyAnimation(rotation, "angle");
     rotationAnimation->setDuration(2000);

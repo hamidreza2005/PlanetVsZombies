@@ -2,7 +2,7 @@
 #include <QGraphicsScene>
 
 Plant::Plant(int health, int sun, float firingRate, int attackPower) :
-    GameEntity(health),
+    GameEntity(health,sun),
     sun(sun),
     firingRate(firingRate),
     attackPower(attackPower)

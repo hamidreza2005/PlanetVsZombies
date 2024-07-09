@@ -9,7 +9,7 @@ class Bullet : public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
 
 public:
-    Bullet(int attackPower, int speed,bool canHitMultipleZombies = false, QGraphicsItem* parent = nullptr);
+    Bullet(int attackPower, int speed,bool canHitMultipleZombies = false,int size = 20, QGraphicsItem* parent = nullptr);
     ~Bullet() override;
 
     void setImage(const QString& imagePath);
@@ -19,6 +19,7 @@ public slots:
 private:
     int attackPower;
     int speed;
+    int size;
     bool canHitMultipleZombies;
     QTimer* movementTimer;
 
