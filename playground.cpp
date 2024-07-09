@@ -20,7 +20,6 @@
 #include "core/Cookie.h"
 #include "QMap"
 #include <QGraphicsRotation>
-#include <QGraphicsItemAnimation>
 #include <QTimeLine>
 #include <QPropertyAnimation>
 
@@ -77,7 +76,8 @@ void PlayGround::play() {
 
     sunBrainTimer = new QTimer(this);
     connect(sunBrainTimer, &QTimer::timeout, this, &PlayGround::spawnSunBrain);
-    sunBrainTimer->start(10000);
+    this->spawnSunBrain();
+    sunBrainTimer->start(7000);
     cardStateTimer->start(1000);
 }
 
@@ -155,7 +155,6 @@ void PlayGround::setupLayout() {
     }
     int cardWidth = 100;
     int gapBetweenCards = 2;
-    int rotatingImageSize = 100;
 
     for (int i = 0; i < 3; ++i) {
         cards[i]->setPos(i * (cardWidth + gapBetweenCards), 0);
@@ -218,8 +217,8 @@ void PlayGround::createCards() {
             }
 
         }
-        auto *card = new Card(entites[i]);
-        QObject::connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
+        auto *card = new Card(entites[i],100,100,cost);
+        connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
         cards.push_back(card);
     }
 }

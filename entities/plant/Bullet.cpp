@@ -13,7 +13,7 @@ Bullet::Bullet(int attackPower, int speed,bool canHitMultipleZombies, QGraphicsI
 
 void Bullet::setImage(const QString& imagePath) {
     QPixmap image(imagePath);
-    QPixmap scaledImage = image.scaled(30, 30, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QPixmap scaledImage = image.scaled(20, 20, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     setPixmap(scaledImage);
 }
 
