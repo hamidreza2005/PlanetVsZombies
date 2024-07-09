@@ -19,7 +19,7 @@
 class PlayGround : public Window {
     Q_OBJECT
 public:
-    explicit PlayGround(ClientSocket* clientSocket,QWidget *parent = nullptr);
+    explicit PlayGround(ClientSocket* clientSocket, QWidget *parent = nullptr);
     void play();
     void connectDataListener() override;
     void handleServerResponse(const QJsonObject &data) override;
@@ -36,6 +36,8 @@ private slots:
     void updateSunCount(int amount);
     void spawnSunBrain();
     void collectSunBrain(int value);
+    void checkCardStates();
+    void handleLanded();
 
 private:
     QGraphicsView* graphicsView;
@@ -54,10 +56,12 @@ private:
     bool isZombie;
     QTimer* timer;
     QTimer* sunBrainTimer;
+    QTimer* cardStateTimer;
     int remainingSeconds;
     int brainCount;
     int sunCount;
     Card* selectedCard;
+    QGraphicsPixmapItem* rotatingItem;
 
     void createCards();
     void setupPlayerZombieInfo();
@@ -67,6 +71,7 @@ private:
     void setupRemainingTimeInfo();
     void setPlayerName();
     bool isPositionOccupied(QPointF point);
+    void setupRotatingImage(const QString& imagePath, QGraphicsScene* cardScene);
     void endTheGame();
     void sendAddRequest(const QString& name,int x,int y);
     void addNewEntityFromServer(const QJsonObject &entityData);

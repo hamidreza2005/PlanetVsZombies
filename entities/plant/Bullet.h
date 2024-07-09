@@ -12,6 +12,7 @@ public:
     Bullet(int attackPower, int speed,bool canHitMultipleZombies = false, QGraphicsItem* parent = nullptr);
     ~Bullet() override;
 
+    void setImage(const QString& imagePath);
 public slots:
     void move();
 
@@ -21,7 +22,6 @@ private:
     bool canHitMultipleZombies;
     QTimer* movementTimer;
 
-    void setImage(const QString& imagePath);
 };
 
 #endif // PLANETVSZOMBIES_BULLET_H

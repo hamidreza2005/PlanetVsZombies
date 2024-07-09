@@ -17,5 +17,12 @@
         <file>resources/images/zombies/tall zombie.png</file>
         <file>resources/images/background.png</file>
         <file>resources/images/icon.png</file>
+        <file>resources/images/bullet1.png</file>
+        <file>resources/images/bullet2.png</file>
+        <file>resources/images/boomrang1.png</file>
+        <file>resources/images/boomrang2.png</file>
+        <file>resources/images/boomrang3.png</file>
+        <file>resources/images/boomrang4.png</file>
     </qresource>
+    <qresource prefix="/im"/>
 </RCC>

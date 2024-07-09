@@ -1,7 +1,3 @@
-//
-// Created by hrhas on 6/11/2024.
-//
-
 #ifndef PLANETVSZOMBIES_PURPLEHAIRZOMBIE_H
 #define PLANETVSZOMBIES_PURPLEHAIRZOMBIE_H
 #include "Zombie.h"

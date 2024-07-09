@@ -10,9 +10,6 @@ void Card::setImage() {
     QPixmap Scaled_image_ground = image_ground.scaled(this->width, this->height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     setPixmap(Scaled_image_ground);
     this->setCursor(Qt::PointingHandCursor);
-//    QGraphicsColorizeEffect* colorize = new QGraphicsColorizeEffect();
-//    colorize->setColor(Qt::darkRed); // Set the desired color
-//    this->setGraphicsEffect(colorize);
 }
 
 void Card::setBorders() {
@@ -53,8 +50,12 @@ void Card::setCost(int cost) {
     this->cost = cost;
     costText = new QGraphicsTextItem(QString::number(cost), this);
     costText->setZValue(1);
-    costText->setPos(this->width / 2 - costText->boundingRect().width() / 2, this->height);
+    costText->setPos((this->width / 2 - costText->boundingRect().width() / 2) - 5, this->height);
     QFont font = costText->font();
     font.setPointSize(14);
     costText->setFont(font);
+}
+
+int Card::getCost() const {
+    return cost;
 }

@@ -5,7 +5,7 @@
 
 Bullet::Bullet(int attackPower, int speed,bool canHitMultipleZombies, QGraphicsItem* parent)
     : QObject(), QGraphicsPixmapItem(parent), attackPower(attackPower), speed(speed), canHitMultipleZombies(canHitMultipleZombies) {
-    this->setImage(":/resources/images/sun.png");
+    this->setImage(":/resources/images/bullet1.png");
     movementTimer = new QTimer(this);
     connect(movementTimer, &QTimer::timeout, this, &Bullet::move);
     movementTimer->start(50);
