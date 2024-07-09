@@ -26,4 +26,6 @@ void Controller::initializeRoutes() {
     Controller::addRoute("verifyReady",GameController::verifyBeingReady);
     Controller::addRoute("gameRoom",GameController::gameRoom);
     Controller::addRoute("getHistory",GameController::getHistory);
+    Controller::addRoute("updateCredentials",AuthorizationController::changeCredentials);
+    Controller::addRoute("getUserData",AuthorizationController::getUserData);
 }

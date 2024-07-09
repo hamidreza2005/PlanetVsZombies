@@ -23,7 +23,6 @@ void AuthorizationController::login(TcpSocket *socket, const QJsonObject &reques
         });
         response["status"] = "200";
         response["user"] = user;
-//        socket->getOriginalSocket()->setObjectName(user["username"].toString());
         socket->write(response);
     }catch(const ModelNotFoundException &e){
         socket->sendValidationError("username","Username Or Password is Incorrect",404);
@@ -114,4 +113,89 @@ void AuthorizationController::resetPassword(TcpSocket *socket, const QJsonObject
     }catch(ModelNotFoundException &e){
         socket->sendValidationError("phoneNumber","phoneNumber does not exist",404);
     }
+}
+
+void AuthorizationController::changeCredentials(TcpSocket *socket, const QJsonObject &request) {
+    QJsonObject req = request;
+    Validator validator;
+    validator.validate(req,{
+            {"email",{"email"}},
+            {"phoneNumber",{"phoneNumber"}},
+            {"password",{}},
+            {"name",{}},
+            {"username",{}},
+            {"currentUsername",{}},
+    });
+    if (!validator.successfull()){
+        socket->sendValidationError(validator.getErrorsAsJsonValue());
+        return;
+    }
+    if (req.value("password").toString() == ""){
+        req.remove("password");
+    }else{
+        req["password"] = AuthorizationController::hashString(req["password"].toString());
+    }
+
+    QString currentUsername = req["currentUsername"].toString();
+    req.remove("currentUsername");
+    auto currentUser = DB::getInstance()->findUser({{"username",currentUsername}});
+
+    auto uniqueErrors = AuthorizationController::checkIfUserNewDataIsUnique(req,currentUser);
+
+    if (!uniqueErrors.isEmpty()){
+        socket->sendValidationError(QJsonValue(uniqueErrors));
+        return;
+    }
+
+    QJsonObject response;
+    DB::getInstance()->updateUser({{"username",currentUsername}},req);
+    response["status"] = "200";
+    response["user"] = QJsonObject{{"username",req["username"].toString()}};
+    socket->write(response);
+}
+
+void AuthorizationController::getUserData(TcpSocket *socket, const QJsonObject &request) {
+    Validator validator;
+    validator.validate(request,{
+            {"username",{}},
+    });
+    if (!validator.successfull()){
+        socket->sendValidationError(validator.getErrorsAsJsonValue());
+        return;
+    }
+
+    QJsonObject response;
+    try{
+        auto user = DB::getInstance()->findUser({{"username",request["username"].toString()}});
+        response["status"] = "200";
+        response["currentUser"] = user;
+        socket->write(response);
+    }catch (const ModelNotFoundException& e){
+        socket->sendValidationError("username","Username Or Password is Incorrect",404);
+    }
+
+}
+
+QJsonObject AuthorizationController::checkIfUserNewDataIsUnique(QJsonObject &request,const QJsonObject& currentUser) {
+    QJsonObject data = {
+            {"email",request["email"]},
+            {"username",request["username"]},
+            {"phoneNumber",request["phoneNumber"]},
+    };
+
+    if(request["email"] == currentUser["email"]){
+        request.remove("email");
+        data.remove("email");
+    }
+
+    if(request["username"] == currentUser["username"]){
+        request.remove("username");
+        data.remove("username");
+    }
+
+    if(request["phoneNumber"] == currentUser["phoneNumber"]){
+        request.remove("phoneNumber");
+        data.remove("phoneNumber");
+    }
+    return AuthorizationController::userUniqueDataErrors(data);
 }
