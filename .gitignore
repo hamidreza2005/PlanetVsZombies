@@ -1,11 +1,11 @@
-cmake-build-debug
+cmake-build-*
 build
 CMakeLists.txt.user
 *.exe
 .idea
 resources.qrc.autosave
 CMakeLists.txt
-server/cmake-build-debug
+server/cmake-build-*
 server/build
 server/.idea
 server/db.json

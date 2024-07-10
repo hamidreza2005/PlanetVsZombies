@@ -12,9 +12,10 @@ public:
     explicit AstronautZombie();
     QString getPicturePath() const override;
     QString getName() override;
+    QString getMovementPicturePath() const override;
+    QString getStayPicturePath() const override;
 protected:
     void move() override;
 };
-
 
 #endif //PLANETVSZOMBIES_ASTRONAUTZOMBIE_H
