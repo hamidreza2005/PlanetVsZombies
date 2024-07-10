@@ -28,8 +28,8 @@ public:
     void disconnectConnectionLostListener();
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
-    static QMap<QString,std::function<GameEntity*()>> zombies;
-    static QMap<QString,std::function<GameEntity*()>> plants;
+    static QMap<QString, std::function<GameEntity*()>> zombies;
+    static QMap<QString, std::function<GameEntity*()>> plants;
 
 private slots:
     void updateTimer();
@@ -57,7 +57,6 @@ private:
     bool isZombie;
     QTimer* timer;
     QTimer* sunBrainTimer;
-    QTimer* cardStateTimer;
     int remainingSeconds;
     int brainCount;
     int sunCount;
@@ -74,7 +73,7 @@ private:
     bool isPositionOccupied(QPointF point);
     void setupRotatingImage(const QString& imagePath);
     void endTheGame();
-    void sendAddRequest(const QString& name,int x,int y);
+    void sendAddRequest(const QString& name, int x, int y);
     void addNewEntityFromServer(const QJsonObject &entityData);
     void cleanThePlayground();
     void startARound();

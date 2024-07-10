@@ -88,9 +88,9 @@ void Zombie::move() {
 }
 
 void Zombie::setUpTimers() {
-    this->attackTimer = new QTimer();
-    this->movementTimer = new QTimer();
-    this->imageSwitchTimer = new QTimer();
+    this->attackTimer = new QTimer(this);
+    this->movementTimer = new QTimer(this);
+    this->imageSwitchTimer = new QTimer(this);
 
     connect(attackTimer, &QTimer::timeout, this, &Zombie::attack);
     connect(movementTimer, &QTimer::timeout, this, &Zombie::move);

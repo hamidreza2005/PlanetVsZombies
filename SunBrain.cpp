@@ -40,7 +40,7 @@ void SunBrain::fall() {
         setY(y() + 2);
     } else {
         fallTimer->stop();
-        emit landed(); // Emit landed signal
+        emit landed();
         disappearTimer->start(5000);
         colorizeTimer->start(2000);
     }
@@ -64,7 +64,7 @@ void SunBrain::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 void SunBrain::moveToTarget() {
     if (!isCollected) return;
 
-    QPointF targetPos = QPointF(480, 490); // Updated to move to specific coordinates
+    QPointF targetPos = QPointF(480, 490);
     if (pos().x() < targetPos.x()) setX(x() + 3);
     if (pos().y() < targetPos.y()) setY(y() + 10);
     if (pos().x() >= targetPos.x() && pos().y() >= targetPos.y()) {

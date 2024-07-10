@@ -33,10 +33,10 @@ private:
     int attackPower;
     float firingRate;
     int brain;
-    QTimer *attackTimer;
-    QTimer *movementTimer;
-    QTimer *imageSwitchTimer;
-    QPropertyAnimation *movementAnimation;
+    QTimer* attackTimer;
+    QTimer* movementTimer;
+    QTimer* imageSwitchTimer;
+    QPropertyAnimation* movementAnimation;
     bool isMovingImage;
 
     void setUpTimers();
