@@ -15,7 +15,6 @@
 #include "SunBrain.h"
 #include "windows/Window.h"
 #include "core/ClientSocket.h"
-#include "core/mediaplayer.h"
 
 class PlayGround : public Window {
     Q_OBJECT

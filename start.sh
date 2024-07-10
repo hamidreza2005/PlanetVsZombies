@@ -10,4 +10,4 @@ startxfce4 &
 x11vnc -display :1 -forever -nopw -listen 0.0.0.0 -xkb &
 
 # Start the application
-/app/build/PlanetVsZombies
+wine ./build/PlanetVsZombies.exe

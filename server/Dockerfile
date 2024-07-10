@@ -1,6 +1,5 @@
 # Use the official Ubuntu base image with MinGW for Qt6
 FROM stateoftheartio/qt6:6.7-mingw-aqt
-#USER root
 # Set environment variables for Qt and MinGW
 ENV QT_QPA_PLATFORM offscreen
 ENV PATH /qt/6.7.0/mingw_64/bin:/qt/Tools/mingw1120_64/bin:$PATH
@@ -16,8 +15,6 @@ RUN sudo apt-get update && \
 
 # Set a working directory
 WORKDIR /app
-# Switch to the non-root user
-#RUN chown -R root:root /home/user/.wine
 
 # Copy the src directory contents into the container
 COPY . /app
