@@ -26,3 +26,7 @@ QString LeafHeadZombie::getMovementPicturePath() const {
 QString LeafHeadZombie::getStayPicturePath() const {
     return ":/resources/images/move/LeafHeadZombieStay.png";
 }
+
+QString LeafHeadZombie::getCardPicturePath() const {
+    return ":/resources/images/cards/leafheadcard.png";
+}

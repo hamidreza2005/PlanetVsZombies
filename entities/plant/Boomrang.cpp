@@ -42,3 +42,7 @@ void Boomerang::changeBulletImage() {
     currentImageIndex = (currentImageIndex + 1) % bulletImages.size();
     emit imageChanged(bulletImages[currentImageIndex]);
 }
+
+QString Boomerang::getCardPicturePath() const {
+    return ":/resources/images/cards/boomerangcard.png";
+}

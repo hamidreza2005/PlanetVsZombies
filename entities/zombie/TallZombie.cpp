@@ -26,3 +26,7 @@ QString TallZombie::getMovementPicturePath() const {
 QString TallZombie::getStayPicturePath() const {
     return ":/resources/images/move/TallZombieStay.png";
 }
+
+QString TallZombie::getCardPicturePath() const {
+    return ":/resources/images/cards/tallcard.png";
+}

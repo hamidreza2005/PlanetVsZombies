@@ -26,3 +26,7 @@ QString PurpleHairZombie::getMovementPicturePath() const {
 QString PurpleHairZombie::getStayPicturePath() const {
     return ":/resources/images/move/PurpleHairZombieStay.png";
 }
+
+QString PurpleHairZombie::getCardPicturePath() const {
+    return ":/resources/images/cards/purplehearpng.png";
+}

@@ -34,3 +34,7 @@ void AstronautZombie::move() {
     }
     Zombie::move();
 }
+
+QString AstronautZombie::getCardPicturePath() const {
+    return ":/resources/images/cards/astronautcard.png";
+}

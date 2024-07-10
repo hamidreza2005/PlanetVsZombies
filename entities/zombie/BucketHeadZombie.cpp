@@ -26,3 +26,7 @@ QString BucketHeadZombie::getMovementPicturePath() const {
 QString BucketHeadZombie::getStayPicturePath() const {
     return ":/resources/images/move/BucketHeadZombieStay.png";
 }
+
+QString BucketHeadZombie::getCardPicturePath() const {
+    return ":/resources/images/cards/bucketheadcard.png";
+}

@@ -41,3 +41,7 @@ void Jalapeno::fire() {
     scene()->removeItem(this);
     delete this;
 }
+
+QString Jalapeno::getCardPicturePath() const {
+    return ":/resources/images/cards/jalapenocard.png";
+}

@@ -15,6 +15,8 @@ public:
     QString getPicturePath() const override;
     QString getName() override;
     void fire() override;
+    QString getCardPicturePath() const override;
+
 };
 
 #endif // PLANETVSZOMBIES_WALNUT_H

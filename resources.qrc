@@ -55,12 +55,12 @@
         <file>resources/images/cards/bucketheadcard.png</file>
         <file>resources/images/cards/jalapenocard.png</file>
         <file>resources/images/cards/leafheadcard.png</file>
-        <file>resources/images/cards/peashootercard.jpg</file>
-        <file>resources/images/cards/plumminecard.jpg</file>
         <file>resources/images/cards/purplehearpng.png</file>
         <file>resources/images/cards/regularcard.png</file>
         <file>resources/images/cards/tallcard.png</file>
-        <file>resources/images/cards/twopeashootercard.jpg</file>
-        <file>resources/images/cards/walnutcard.jpg</file>
+        <file>resources/images/cards/twopeashootercard.png</file>
+        <file>resources/images/cards/walnutcard.png</file>
+        <file>resources/images/cards/peashootercard.png</file>
+        <file>resources/images/cards/plumminecard.png</file>
     </qresource>
 </RCC>

@@ -41,3 +41,7 @@ void PlumMine::fire() {
     scene()->removeItem(this);
     delete this;
 }
+
+QString PlumMine::getCardPicturePath() const {
+    return ":/resources/images/cards/plumminecard.png";
+}

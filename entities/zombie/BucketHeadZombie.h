@@ -15,6 +15,8 @@ public:
     QString getName() override;
     QString getMovementPicturePath() const override;
     QString getStayPicturePath() const override;
+    QString getCardPicturePath() const override;
+
 };
 
 #endif //PLANETVSZOMBIES_BUCKETHEADZOMBIE_H

@@ -2,11 +2,10 @@
 #include <QGraphicsScene>
 
 Plant::Plant(int health, int sun, float firingRate, int attackPower) :
-    GameEntity(health,sun),
+    GameEntity(health, sun),
     sun(sun),
     firingRate(firingRate),
-    attackPower(attackPower)
-{
+    attackPower(attackPower) {
     this->setUpTimers();
 }
 

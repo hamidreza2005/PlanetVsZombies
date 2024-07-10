@@ -6,7 +6,7 @@
 #include <QGraphicsColorizeEffect>
 
 void Card::setImage() {
-    QPixmap image_ground(this->entity->getPicturePath());
+    QPixmap image_ground(this->entity->getCardPicturePath());
     QPixmap Scaled_image_ground = image_ground.scaled(this->width, this->height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     setPixmap(Scaled_image_ground);
     this->setCursor(Qt::PointingHandCursor);

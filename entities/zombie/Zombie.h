@@ -20,6 +20,7 @@ public:
 
     virtual QString getMovementPicturePath() const = 0;
     virtual QString getStayPicturePath() const = 0;
+    [[nodiscard]] virtual QString getCardPicturePath() const override = 0;
 
     virtual ~Zombie();
 protected slots:
@@ -49,4 +50,4 @@ signals:
     void zombieReachedToTheEnd();
 };
 
-#endif
+#endif //PLANETVSZOMBIES_ZOMBIE_H

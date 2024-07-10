@@ -28,3 +28,7 @@ void PeaShooter::fire() {
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);
 }
+
+QString PeaShooter::getCardPicturePath() const {
+    return ":/resources/images/cards/peashootercard.png";
+}

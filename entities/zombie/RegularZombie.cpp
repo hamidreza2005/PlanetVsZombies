@@ -20,3 +20,8 @@ QString RegularZombie::getMovementPicturePath() const {
 QString RegularZombie::getStayPicturePath() const {
     return ":/resources/images/move/RegularZombieStay.png";
 }
+
+
+QString RegularZombie::getCardPicturePath() const {
+    return ":/resources/images/cards/regularcard.png";
+}
