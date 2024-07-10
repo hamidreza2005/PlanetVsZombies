@@ -1,13 +1,13 @@
 #include "Zombie.h"
 #include "../plant/Plant.h"
 
-Zombie::Zombie(int health, float movementDelay, int attackPower,float firingRate,int brain):
-GameEntity(health,brain),
-movementDelay(movementDelay),
-attackPower(attackPower),
-firingRate(firingRate),
-brain(brain)
-{
+Zombie::Zombie(int health, float movementDelay, int attackPower, float firingRate, int brain)
+    : GameEntity(health, brain),
+    movementDelay(movementDelay),
+    attackPower(attackPower),
+    firingRate(firingRate),
+    brain(brain),
+    isMovingImage(true) {
     this->setZValue(10);
     this->setUpTimers();
     this->setUpAnimations();
@@ -16,6 +16,7 @@ brain(brain)
 float Zombie::getMovementDelay() const {
     return movementDelay;
 }
+
 void Zombie::setMovementDelay(float newMovementDelay) {
     movementDelay = newMovementDelay;
 }
@@ -40,8 +41,8 @@ void Zombie::reduceHealth(int amount) {
     this->health -= amount;
 }
 
-void Zombie::attack(){
-    if (!this->isThereAPlantInWay()){
+void Zombie::attack() {
+    if (!this->isThereAPlantInWay()) {
         this->activateMovementMode();
         return;
     }
@@ -53,7 +54,7 @@ void Zombie::attack(){
             continue;
         }
         plant->setHealth(plant->getHealth() - this->attackPower);
-        if(plant->getHealth() < 0){
+        if (plant->getHealth() < 0) {
             delete plant;
         }
     }
@@ -62,18 +63,20 @@ void Zombie::attack(){
 Zombie::~Zombie() {
     this->movementTimer->stop();
     this->attackTimer->stop();
+    this->imageSwitchTimer->stop();
     this->movementAnimation->stop();
     delete this->movementTimer;
     delete this->attackTimer;
+    delete this->imageSwitchTimer;
     delete this->movementAnimation;
 }
 
 void Zombie::move() {
-    if (this->isThereAPlantInWay()){
+    if (this->isThereAPlantInWay()) {
         this->activateAttackMode();
         return;
     }
-    if(this->hasReachedTheEndOfTheGround()){
+    if (this->hasReachedTheEndOfTheGround()) {
         emit this->zombieReachedToTheEnd();
         delete this;
         return;
@@ -87,9 +90,14 @@ void Zombie::move() {
 void Zombie::setUpTimers() {
     this->attackTimer = new QTimer();
     this->movementTimer = new QTimer();
-    connect(attackTimer,&QTimer::timeout,this,&Zombie::attack);
-    connect(movementTimer,&QTimer::timeout,this,&Zombie::move);
+    this->imageSwitchTimer = new QTimer();
+
+    connect(attackTimer, &QTimer::timeout, this, &Zombie::attack);
+    connect(movementTimer, &QTimer::timeout, this, &Zombie::move);
+    connect(imageSwitchTimer, &QTimer::timeout, this, &Zombie::switchImage);
+
     this->movementTimer->start(this->movementDelay * 1000);
+    this->imageSwitchTimer->start(100); // Switch image every 100 ms
 }
 
 void Zombie::setUpAnimations() {
@@ -121,4 +129,13 @@ void Zombie::activateMovementMode() {
 
 bool Zombie::hasReachedTheEndOfTheGround() {
     return this->x() < -150;
+}
+
+void Zombie::switchImage() {
+    if (isMovingImage) {
+        setPixmap(QPixmap(getStayPicturePath()).scaled(75, 75, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    } else {
+        setPixmap(QPixmap(getMovementPicturePath()).scaled(75, 75, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    }
+    isMovingImage = !isMovingImage;
 }

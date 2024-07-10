@@ -113,10 +113,7 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
         return;
     }
 
-    if (request["state"] == "add"){
-//        if (GameController::isPlayerAllowedToAddEntity(isSentByFirstPlayer,firstPlayer,secondPlayer,request["entity"].toString())){
-//          return;
-//        }
+    if (request["state"] == "add" || request["state"] == "chat"){
         QJsonObject response = request;
         if(requestIsSentByFirstPlayer){
             secondPlayer->socket->write(response);
@@ -124,11 +121,6 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
             firstPlayer->socket->write(response);
         }
     }
-}
-
-bool GameController::isPlayerAllowedToAddEntity(bool isSentByFirstPlayer,Player* player1,Player* player2,QString entityName) {
-    return (isSentByFirstPlayer && player1->getRole() != entityName)
-           || (!isSentByFirstPlayer && player2->getRole() != entityName);
 }
 
 void GameController::handleEndOfTheGame(const QString &winnerRole) {

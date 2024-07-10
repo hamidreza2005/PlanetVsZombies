@@ -1,14 +1,13 @@
 #include "AstronautZombie.h"
 
-AstronautZombie::AstronautZombie():
-        Zombie(
-                INITIAL_HEALTH,
-                INITIAL_MOVEMENT_DELAY,
-                INITIAL_ATTACK_POWER,
-                INITIAL_FIRING_RATE,
-                BRAIN_NEEDED_TO_CREATE
-        )
-{
+AstronautZombie::AstronautZombie()
+    : Zombie(
+        INITIAL_HEALTH,
+        INITIAL_MOVEMENT_DELAY,
+        INITIAL_ATTACK_POWER,
+        INITIAL_FIRING_RATE,
+        BRAIN_NEEDED_TO_CREATE
+        ) {
     this->setImage();
 }
 
@@ -20,8 +19,16 @@ QString AstronautZombie::getName() {
     return "Astronaut Zombie";
 }
 
+QString AstronautZombie::getMovementPicturePath() const {
+    return ":/resources/images/move/AstronautZombieMove.png";
+}
+
+QString AstronautZombie::getStayPicturePath() const {
+    return ":/resources/images/move/AstronautZombieStay.png";
+}
+
 void AstronautZombie::move() {
-    if(this->getHealth() <= 100){
+    if (this->getHealth() <= 100) {
         this->setMovementDelay(0.5);
         this->setFiringRate(0.5);
     }

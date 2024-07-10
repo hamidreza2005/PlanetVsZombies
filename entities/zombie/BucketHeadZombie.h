@@ -13,7 +13,8 @@ public:
     explicit BucketHeadZombie();
     QString getPicturePath() const override;
     QString getName() override;
+    QString getMovementPicturePath() const override;
+    QString getStayPicturePath() const override;
 };
-
 
 #endif //PLANETVSZOMBIES_BUCKETHEADZOMBIE_H

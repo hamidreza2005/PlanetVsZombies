@@ -2,8 +2,7 @@
 #define PLANETVSZOMBIES_TALLZOMBIE_H
 #include "Zombie.h"
 
-class TallZombie : public Zombie
-{
+class TallZombie : public Zombie {
     static const int INITIAL_HEALTH = 500;
     static const int INITIAL_MOVEMENT_DELAY = 1;
     static const int INITIAL_ATTACK_POWER = 30;
@@ -13,7 +12,8 @@ public:
     explicit TallZombie();
     QString getPicturePath() const override;
     QString getName() override;
+    QString getMovementPicturePath() const override;
+    QString getStayPicturePath() const override;
 };
-
 
 #endif //PLANETVSZOMBIES_TALLZOMBIE_H

@@ -6,97 +6,346 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>563</width>
-    <height>396</height>
+    <width>1000</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Register</string>
   </property>
-  <widget class="QWidget" name="formLayoutWidget">
+  <property name="styleSheet">
+   <string notr="true">background-image:url(:/resources/images/background/b8.png)</string>
+  </property>
+  <widget class="QLineEdit" name="name">
    <property name="geometry">
     <rect>
-     <x>89</x>
-     <y>50</y>
-     <width>381</width>
-     <height>271</height>
+     <x>640</x>
+     <y>90</y>
+     <width>150</width>
+     <height>35</height>
     </rect>
    </property>
-   <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="nameLabel">
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="name">
-      <property name="clearButtonEnabled">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="usernameLabel">
-      <property name="text">
-       <string>Username</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="username"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="emailLabel">
-      <property name="text">
-       <string>email</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="email"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="phoneNumberLabel">
-      <property name="text">
-       <string>Phone Number</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="phone"/>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="passwordLabel">
-      <property name="text">
-       <string>Password </string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="password">
-      <property name="echoMode">
-       <enum>QLineEdit::EchoMode::Password</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QPushButton" name="submit">
-      <property name="text">
-       <string>Register</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QPushButton" name="loginLink">
-      <property name="text">
-       <string>Already Have an account? Login</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <property name="font">
+    <font>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="clearButtonEnabled">
+    <bool>true</bool>
+   </property>
   </widget>
+  <widget class="QLabel" name="nameLabel">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>90</y>
+     <width>90</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="text">
+    <string>Name</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="username">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>160</y>
+     <width>280</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="usernameLabel">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>160</y>
+     <width>130</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="text">
+    <string>Username</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="email">
+   <property name="geometry">
+    <rect>
+     <x>640</x>
+     <y>220</y>
+     <width>230</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="emailLabel">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>220</y>
+     <width>90</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="text">
+    <string>email</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="phone">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>280</y>
+     <width>231</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="phoneNumberLabel">
+   <property name="geometry">
+    <rect>
+     <x>439</x>
+     <y>280</y>
+     <width>141</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="text">
+    <string>Phone Number</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="password">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>330</y>
+     <width>300</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="passwordLabel">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>330</y>
+     <width>100</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="text">
+    <string>Password </string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="loginLink">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>10</y>
+     <width>350</width>
+     <height>45</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="text">
+    <string>Already Have an account? Login</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="submit">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>380</y>
+     <width>100</width>
+     <height>45</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+   </property>
+   <property name="text">
+    <string>Register</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>-1</x>
+     <y>-1</y>
+     <width>1001</width>
+     <height>701</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image:url(:/resources/images/background/b8.png)</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+  </widget>
+  <zorder>frame</zorder>
+  <zorder>name</zorder>
+  <zorder>nameLabel</zorder>
+  <zorder>username</zorder>
+  <zorder>usernameLabel</zorder>
+  <zorder>email</zorder>
+  <zorder>emailLabel</zorder>
+  <zorder>phone</zorder>
+  <zorder>phoneNumberLabel</zorder>
+  <zorder>password</zorder>
+  <zorder>passwordLabel</zorder>
+  <zorder>loginLink</zorder>
+  <zorder>submit</zorder>
  </widget>
  <resources/>
  <connections/>

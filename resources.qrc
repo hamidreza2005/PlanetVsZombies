@@ -29,5 +29,26 @@
         <file>resources/musics/menu.mp3</file>
         <file>resources/images/backgrounds/background1.png</file>
         <file>resources/images/backgrounds/background3.png</file>
+        <file>resources/images/move/AstronautZombieMove.png</file>
+        <file>resources/images/move/AstronautZombieStay.png</file>
+        <file>resources/images/move/BucketHeadZombieMove.png</file>
+        <file>resources/images/move/BucketHeadZombieStay.png</file>
+        <file>resources/images/move/LeafHeadZombieMove.png</file>
+        <file>resources/images/move/LeafHeadZombieStay.png</file>
+        <file>resources/images/move/PurpleHairZombieMove.png</file>
+        <file>resources/images/move/PurpleHairZombieStay.png</file>
+        <file>resources/images/move/RegularZombieMove.png</file>
+        <file>resources/images/move/RegularZombieStay.png</file>
+        <file>resources/images/move/TallZombieMove.png</file>
+        <file>resources/images/move/TallZombieStay.png</file>
+        <file>resources/images/background/b7.png</file>
+        <file>resources/images/background/b8.png</file>
+        <file>resources/images/background/b9.png</file>
+        <file>resources/images/background/b6.png</file>
+        <file>resources/images/background/b1.png</file>
+        <file>resources/images/background/b2.png</file>
+        <file>resources/images/background/b3.png</file>
+        <file>resources/images/background/b4.png</file>
+        <file>resources/images/background/b5.png</file>
     </qresource>
 </RCC>
