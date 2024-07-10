@@ -16,6 +16,7 @@
 #include "windows/Window.h"
 #include "core/ClientSocket.h"
 #include "core/mediaplayer.h"
+#include "Chat.h"
 
 class PlayGround : public Window {
     Q_OBJECT
@@ -39,7 +40,7 @@ private slots:
     void collectSunBrain(int value);
     void checkCardStates();
     void handleLanded();
-
+    void sendMessageToOpponent(const QString &message);
 private:
     QGraphicsView* graphicsView;
     QGraphicsScene* scene;
@@ -53,6 +54,8 @@ private:
     QProgressBar* sunBar;
     QHBoxLayout* infoLayout;
     QVBoxLayout* mainLayout;
+    QVBoxLayout* chatLayout;
+    QHBoxLayout* containerLayout;
     QMetaObject::Connection connectionLostListener;
     bool isZombie;
     QTimer* timer;
@@ -63,7 +66,9 @@ private:
     int sunCount;
     Card* selectedCard;
     QGraphicsPixmapItem* rotatingItem;
+    Chat* chatHandler;
 
+    void setUpChatBox();
     void createCards();
     void setupPlayerZombieInfo();
     void setupPlayerPlantInfo();

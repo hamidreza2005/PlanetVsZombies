@@ -22,6 +22,7 @@
 #include <QGraphicsRotation>
 #include <QTimeLine>
 #include <QPropertyAnimation>
+#include <QPushButton>
 
 QMap<QString,std::function<GameEntity*()>> PlayGround::zombies = {
     {"Regular Zombie",[](){return new RegularZombie;}},
@@ -43,7 +44,7 @@ QMap<QString,std::function<GameEntity*()>> PlayGround::plants = {
 
 PlayGround::PlayGround(ClientSocket* clientSocket, QWidget *parent)
     : Window(clientSocket, parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
-    this->setFixedSize(1000, 700);
+    this->setFixedSize(1200, 700);
     graphicsView = new QGraphicsView(this);
     graphicsView->setFixedSize(1000, 500);
     scene = new QGraphicsScene(this);
@@ -61,7 +62,6 @@ PlayGround::PlayGround(ClientSocket* clientSocket, QWidget *parent)
 
 void PlayGround::play() {
     isZombie = Cookie::getInstance()->loggedInPlayer->getRole() == "zombie";
-    this->createCards();
     if (isZombie) {
         setupPlayerZombieInfo();
     } else {
@@ -128,9 +128,9 @@ void PlayGround::setupGround() {
 }
 
 void PlayGround::setupLayout() {
-    mainLayout = new QVBoxLayout(this);
-
-    infoLayout = new QHBoxLayout(this);
+    mainLayout = new QVBoxLayout();
+    this->setUpChatBox();
+    infoLayout = new QHBoxLayout();
     infoLayout->addWidget(playerName);
     if (isZombie) {
         infoLayout->addWidget(brainBar);
@@ -141,13 +141,35 @@ void PlayGround::setupLayout() {
     mainLayout->addLayout(infoLayout, 1);
     mainLayout->addWidget(graphicsView, 4);
 
-    cardView = new QGraphicsView(this);
+    cardView = new QGraphicsView();
     cardsScene = new QGraphicsScene(this);
     cardView->setScene(cardsScene);
     cardView->setFixedHeight(150);
-
+    cardView->setFixedWidth(1000);
     mainLayout->addWidget(cardView, 1);
-    setLayout(mainLayout);
+
+    containerLayout = new QHBoxLayout(this);
+    containerLayout->addLayout(mainLayout, 4);
+    containerLayout->addLayout(chatLayout, 1);
+
+    setLayout(containerLayout);
+
+    this->createCards();
+}
+
+void PlayGround::setUpChatBox() {
+    chatLayout = new QVBoxLayout();
+    this->chatHandler = new Chat(chatLayout);
+    connect(chatHandler,&Chat::sendMessageToOpponent,this,&PlayGround::sendMessageToOpponent);
+}
+
+void PlayGround::createCards() {
+    QList<std::function<GameEntity*()>> entites = isZombie ? PlayGround::zombies.values() : PlayGround::plants.values();
+    for(int i = 0; i < 6; i++) {
+        auto *card = new Card(entites[i],100,100);
+        connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
+        cards.push_back(card);
+    }
 
     int cardWidth = 100;
     int gapBetweenCards = 2;
@@ -162,15 +184,6 @@ void PlayGround::setupLayout() {
     for (int i = 3; i < 6; ++i) {
         cards[i]->setPos((i + 1) * (cardWidth + gapBetweenCards), 0);
         cardsScene->addItem(cards[i]);
-    }
-}
-
-void PlayGround::createCards() {
-    QList<std::function<GameEntity*()>> entites = isZombie ? PlayGround::zombies.values() : PlayGround::plants.values();
-    for(int i = 0; i < 6; i++) {
-        auto *card = new Card(entites[i],100,100);
-        connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
-        cards.push_back(card);
     }
 }
 
@@ -329,6 +342,11 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
         return;
     }
 
+    if(data.value("state") == "chat"){
+        this->chatHandler->addIconToChatBox(data.value("message").toString(),data.value("username").toString());
+        return;
+    }
+
     if(data.value("state") == "roundWinner"){
         Window::showPopupMessage(data.value("message").toString(),2000,this);
         Cookie::getInstance()->playingRound = data.value("round").toString();
@@ -369,6 +387,9 @@ void PlayGround::cleanThePlayground() {
     Cookie::getInstance()->zombiesCountThatReachedTheEnd = 0;
     delete infoLayout;
     delete mainLayout;
+    delete chatLayout;
+    delete chatHandler;
+    delete containerLayout;
     delete playerName;
     delete remainingTime;
     this->removeAllCards();
@@ -479,4 +500,8 @@ void PlayGround::checkCardStates() {
 
 void PlayGround::handleLanded() {
     sunBrainTimer->start(10000);
+}
+
+void PlayGround::sendMessageToOpponent(const QString &message) {
+    this->sendOverSocket({{"state","chat"},{"message",message},{"username",Cookie::getInstance()->loggedInPlayer->getUsername()}});
 }

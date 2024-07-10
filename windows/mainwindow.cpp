@@ -7,8 +7,8 @@ MainWindow::MainWindow(ClientSocket* clientSocket, QWidget *parent) :
 {
     this->createWindows();
     setCentralWidget(stackedWidget);
-    this->setFixedSize(1000,700);
-    stackedWidget->setFixedSize(1000,700);
+    this->setFixedSize(1200,700);
+    stackedWidget->setFixedSize(1200,700);
     this->connectSignals();
     this->setWindowIcon(QIcon(":/resources/images/icon.png"));
     this->showHostConnectorWindow();

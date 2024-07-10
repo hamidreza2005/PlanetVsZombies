@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="cursor">
-   <cursorShape>PointingHandCursor</cursorShape>
+   <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
    <string>Dashboard</string>
@@ -43,7 +43,7 @@
     </font>
    </property>
    <property name="layoutDirection">
-    <enum>Qt::LayoutDirection::LeftToRight</enum>
+    <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
     <string notr="true">margin:0 auto;
@@ -220,14 +220,22 @@ border-radius:5px;</string>
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0);
-border-radius:10px;</string>
+    <string notr="true">color: rgb(0, 85, 0);
+background-color: rgba(0, 0, 0,0.2);
+border:3px solid #068027;
+border-radius:5px;</string>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
     <iconset theme="emblem-synchronized"/>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>25</width>
+     <height>25</height>
+    </size>
    </property>
   </widget>
   <widget class="QPushButton" name="exit">
@@ -344,8 +352,6 @@ border-radius:5px;</string>
   <zorder>opponentIp</zorder>
   <zorder>updateCredentials</zorder>
  </widget>
- <resources>
-  <include location="../../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
