@@ -31,9 +31,6 @@
      <height>701</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">background-image: url(:/resources/images/background/b7.jpg);</string>
-   </property>
    <widget class="QPushButton" name="resetPassword">
     <property name="geometry">
      <rect>
