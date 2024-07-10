@@ -39,6 +39,7 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
     }
     if (data.contains("state") && data.value("state") == "startTheGame"){
         Cookie::getInstance()->playingRound = data.value("round").toString();
+        Cookie::getInstance()->opponentUsername = data.value("opponent").toString();
         Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
         emit this->startTheGame(this);
         return;

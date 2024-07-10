@@ -12,6 +12,9 @@ QMap<QString,QString> Chat::allEmoji = {
 
 Chat::Chat(QVBoxLayout* chatLayout):layout(chatLayout) {
     resignButton = new QPushButton("Resign");
+    connect(resignButton,&QPushButton::clicked, this ,[this]() {
+        emit this->playerResigned();
+    });
     messageBox = new QListWidget();
     messageBox->setStyleSheet(
             "QListWidget::item {"

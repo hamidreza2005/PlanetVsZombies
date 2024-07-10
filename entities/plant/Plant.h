@@ -19,7 +19,7 @@ protected:
     float firingRate;
     int attackPower;
     QTimer *fireTimer;
-
+    virtual bool isThereAZombieInTheRow();
 private:
     void setUpTimers();
 };

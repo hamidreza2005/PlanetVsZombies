@@ -108,7 +108,8 @@ void PlayGround::setupPlayerPlantInfo() {
 }
 
 void PlayGround::setPlayerName() {
-    playerName = new QLabel(Cookie::getInstance()->loggedInPlayer->getUsername(), this);
+    playerName = new QLabel(this);
+    playerName->setText(Cookie::getInstance()->loggedInPlayer->getUsername() + " Vs " + Cookie::getInstance()->opponentUsername);
     QFont font("Arial", 10, QFont::Bold);
     playerName->setFont(font);
     playerName->setStyleSheet("QLabel { color : blue; }");
@@ -161,6 +162,7 @@ void PlayGround::setUpChatBox() {
     chatLayout = new QVBoxLayout();
     this->chatHandler = new Chat(chatLayout);
     connect(chatHandler,&Chat::sendMessageToOpponent,this,&PlayGround::sendMessageToOpponent);
+    connect(chatHandler,&Chat::playerResigned,this,&PlayGround::playerWantsToResign);
 }
 
 void PlayGround::createCards() {
@@ -504,4 +506,13 @@ void PlayGround::handleLanded() {
 
 void PlayGround::sendMessageToOpponent(const QString &message) {
     this->sendOverSocket({{"state","chat"},{"message",message},{"username",Cookie::getInstance()->loggedInPlayer->getUsername()}});
+}
+
+void PlayGround::playerWantsToResign() {
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Confirm" , "Are You Sure that You Want To Resign?",
+                                  QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes){
+        this->sendOverSocket({{"state","playerResigned"}});
+    }
 }

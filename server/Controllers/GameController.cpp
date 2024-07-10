@@ -76,10 +76,12 @@ void GameController::verifyBeingReady(TcpSocket *socket, const QJsonObject &requ
     response["state"] = "startTheGame";
     response["round"] = "1";
     response["role"] = firstPlayerRole;
+    response["opponent"] = Cache::getInstance()->secondPlayer->getUsername();
     Cache::getInstance()->firstPlayer->setRole(firstPlayerRole);
     Cache::getInstance()->firstPlayer->socket->write(response);
 
     response["role"] = secondPlayerRole;
+    response["opponent"] = Cache::getInstance()->firstPlayer->getUsername();
     Cache::getInstance()->secondPlayer->setRole(secondPlayerRole);
     Cache::getInstance()->secondPlayer->socket->write(response);
 }
@@ -97,6 +99,30 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
 
     if (!requestIsSentByFirstPlayer && !requestIsSentBySecondPlayer){
         socket->sendValidationError("game","you can't interfere in the game");
+        return;
+    }
+    if (request["state"] == "playerResigned"){
+        QJsonObject res;
+        res["state"] = "GameEnded";
+        res["result"] = "win";
+        Player* winner;
+        if (requestIsSentByFirstPlayer){
+            winner = secondPlayer;
+            res["winner"] = secondPlayer->getUsername();
+        }else{
+            winner = firstPlayer;
+            res["winner"] = firstPlayer->getUsername();
+        }
+        DB::getInstance()->saveInToHistory({
+           {"firstPlayer",firstPlayer->getUsername()},
+           {"secondPlayer",secondPlayer->getUsername()},
+           {"firstRoundWinner",winner->getUsername()},
+           {"secondRoundWinner",winner->getUsername()},
+           {"result","win"},
+        });
+
+        firstPlayer->socket->write(res);
+        secondPlayer->socket->write(res);
         return;
     }
 

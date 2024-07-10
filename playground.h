@@ -41,6 +41,7 @@ private slots:
     void checkCardStates();
     void handleLanded();
     void sendMessageToOpponent(const QString &message);
+    void playerWantsToResign();
 private:
     QGraphicsView* graphicsView;
     QGraphicsScene* scene;

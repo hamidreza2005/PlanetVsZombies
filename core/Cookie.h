@@ -9,6 +9,7 @@ public:
     Cookie() = default;
     static Cookie* getInstance();
     Player* loggedInPlayer = nullptr;
+    QString opponentUsername = "";
     QString playingRound = "0";
     int zombiesCountThatReachedTheEnd = 0;
 };

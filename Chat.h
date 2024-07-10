@@ -19,6 +19,7 @@ public:
     void addIconToChatBox(QString iconName,QString senderUsername);
 signals:
     void sendMessageToOpponent(const QString &message);
+    void playerResigned();
 };
 
 
