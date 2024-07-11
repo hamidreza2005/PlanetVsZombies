@@ -34,8 +34,6 @@ protected:
 
 private slots:
     void updateTimer();
-//    void updateBrainCount(int amount);
-//    void updateSunCount(int amount);
     void updatePoint(int amount);
     void spawnSunBrain();
     void collectSunBrain(int value);

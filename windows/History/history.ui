@@ -33,17 +33,17 @@
 }</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::Raised</enum>
    </property>
    <widget class="QTableWidget" name="table">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>70</y>
-      <width>1191</width>
+      <y>80</y>
+      <width>1201</width>
       <height>541</height>
      </rect>
     </property>
@@ -62,7 +62,7 @@ border-radius:10px;</string>
      <bool>true</bool>
     </property>
     <property name="gridStyle">
-     <enum>Qt::PenStyle::SolidLine</enum>
+     <enum>Qt::SolidLine</enum>
     </property>
     <property name="sortingEnabled">
      <bool>false</bool>
@@ -156,7 +156,7 @@ border-radius:10px;</string>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>560</x>
       <y>10</y>
       <width>111</width>
       <height>51</height>
@@ -169,7 +169,7 @@ border-radius:10px;</string>
      </font>
     </property>
     <property name="layoutDirection">
-     <enum>Qt::LayoutDirection::LeftToRight</enum>
+     <enum>Qt::LeftToRight</enum>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(0, 85, 0);
@@ -186,8 +186,8 @@ border-radius:10px;</string>
    <widget class="QPushButton" name="dashboardLink">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>640</y>
+      <x>540</x>
+      <y>630</y>
       <width>151</width>
       <height>41</height>
      </rect>

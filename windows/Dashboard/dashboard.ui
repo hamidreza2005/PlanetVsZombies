@@ -27,46 +27,6 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <widget class="QPushButton" name="refreshUsers">
-   <property name="geometry">
-    <rect>
-     <x>700</x>
-     <y>600</y>
-     <width>41</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="cursor">
-    <cursorShape>PointingHandCursor</cursorShape>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(0, 85, 0);
-background-color: rgba(0, 0, 0,0.2);
-border:3px solid #068027;
-border-radius:5px;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset theme="emblem-synchronized"/>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>25</width>
-     <height>25</height>
-    </size>
-   </property>
-  </widget>
   <widget class="QPushButton" name="exit">
    <property name="geometry">
     <rect>
@@ -105,7 +65,7 @@ border-radius:5px;</string>
    </property>
    <property name="styleSheet">
     <string notr="true">#widget{
-    background-image: url(':/resources/images/backgrounds/background1.png');
+    background-image: url(':/resources/images/backgrounds/background.png');
     background-repeat: no-repeat;
     background-position: center;
 }</string>
@@ -351,9 +311,48 @@ border-radius:5px;</string>
      <string>Update Credentials</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="refreshUsers">
+    <property name="geometry">
+     <rect>
+      <x>870</x>
+      <y>610</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 85, 0);
+background-color: rgba(0, 0, 0,0.2);
+border:3px solid #068027;
+border-radius:5px;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset theme="emblem-synchronized"/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>25</width>
+      <height>25</height>
+     </size>
+    </property>
+   </widget>
   </widget>
   <zorder>widget</zorder>
-  <zorder>refreshUsers</zorder>
   <zorder>exit</zorder>
  </widget>
  <resources/>

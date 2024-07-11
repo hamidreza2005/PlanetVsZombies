@@ -15,7 +15,6 @@
         <file>resources/images/zombies/purple hair zombie.png</file>
         <file>resources/images/zombies/regular zombie.png</file>
         <file>resources/images/zombies/tall zombie.png</file>
-        <file>resources/images/background.png</file>
         <file>resources/images/icon.png</file>
         <file>resources/images/bullet1.png</file>
         <file>resources/images/bullet2.png</file>
@@ -28,7 +27,6 @@
         <file>resources/musics/round2.mp3</file>
         <file>resources/musics/menu.mp3</file>
         <file>resources/images/backgrounds/background1.png</file>
-        <file>resources/images/backgrounds/background3.png</file>
         <file>resources/images/move/AstronautZombieMove.png</file>
         <file>resources/images/move/AstronautZombieStay.png</file>
         <file>resources/images/move/BucketHeadZombieMove.png</file>
@@ -44,11 +42,7 @@
         <file>resources/images/background/b7.png</file>
         <file>resources/images/background/b8.png</file>
         <file>resources/images/background/b6.png</file>
-        <file>resources/images/background/b1.png</file>
-        <file>resources/images/background/b2.png</file>
         <file>resources/images/background/b3.png</file>
-        <file>resources/images/background/b4.png</file>
-        <file>resources/images/background/b5.png</file>
         <file>resources/images/emoji/HeartEyesEmoji.png</file>
         <file>resources/images/emoji/NeutralFaceEmoji.png</file>
         <file>resources/images/emoji/PoopEmoji.png</file>
@@ -68,5 +62,6 @@
         <file>resources/images/cards/walnutcard.png</file>
         <file>resources/images/cards/peashootercard.png</file>
         <file>resources/images/cards/plumminecard.png</file>
+        <file>resources/images/backgrounds/background.png</file>
     </qresource>
 </RCC>
