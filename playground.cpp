@@ -181,14 +181,19 @@ void PlayGround::updateTimer() {
 }
 
 void PlayGround::updatePoint(int amount) {
-    points += amount;
-    pointsBar->setValue(points);
-    pointsBar->setFormat(QString(isZombie ? "Brains: %1" : "Sun: %1").arg(points));
-    checkCardStates();
+    this->points += amount;
+    pointsBar->setValue(this->points);
+    pointsBar->setFormat(QString(isZombie ? "Brains: %1" : "Sun: %1").arg(this->points));
+    this->checkCardStates();
 }
 
 void PlayGround::selectCard(Card *card) {
-    this->checkCardStates();
+//    this->checkCardStates();
+    qDebug() << this->points;
+    if(card->getCost() > this->points){
+        return;
+    }
+
     if (this->selectedCard == card) {
         this->selectedCard->unselect();
         this->selectedCard = nullptr;
@@ -224,13 +229,13 @@ void PlayGround::addEntity(QPointF point) {
     }
 
     auto* newEntity = selectedCard->getEntityFactory()();
+    this->updatePoint(-1 * selectedCard->getCost());
+    this->checkCardStates();
     newEntity->setPos(finalX, finalY);
     scene->addItem(newEntity);
     if (auto zombie = dynamic_cast<Zombie*>(newEntity)) {
         connect(zombie, &Zombie::zombieReachedToTheEnd, this, &PlayGround::AZombieReachedTheEnd);
     }
-    this->updatePoint(-1 * selectedCard->getCost());
-    checkCardStates();
     this->sendAddRequest(newEntity->getName(), finalX, finalY);
 }
 
@@ -316,10 +321,9 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
         Window::showPopupMessage(data.value("message").toString(),2000,this);
         Cookie::getInstance()->playingRound = data.value("round").toString();
         Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
-        MediaPlayer::getInstance()->playRoundMusic(":/resources/musics/round2.mp3", ":/resources/musics/Grasswalk.mp3");
         QTimer::singleShot(2000, [this]() {
-            MediaPlayer::getInstance()->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
             this->startARound();
+            MediaPlayer::getInstance()->playRoundMusic(":/resources/musics/round2.mp3", ":/resources/musics/Grasswalk.mp3");
         });
         return;
     }
@@ -450,9 +454,9 @@ void PlayGround::sendOverSocket(const QJsonObject &response) {
 void PlayGround::checkCardStates() {
     for (auto card : this->cards) {
         if (card->getCost() > this->points) {
-            if (selectedCard == card) {
-                selectedCard->unselect();
-                selectedCard = nullptr;
+            if (this->selectedCard == card) {
+                this->selectedCard->unselect();
+                this->selectedCard = nullptr;
             }
             card->disable();
         } else {

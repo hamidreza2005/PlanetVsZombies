@@ -83,7 +83,7 @@ void Zombie::move() {
     }
     this->movementAnimation->stop();
     this->movementAnimation->setStartValue(this->x());
-    this->movementAnimation->setEndValue(this->x() - 20);
+    this->movementAnimation->setEndValue(this->x() - 27.5);
     this->movementAnimation->start();
 }
 
