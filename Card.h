@@ -18,6 +18,7 @@ public:
     int getCost() const;
     void disable();
     void enable();
+    ~Card() override;
 signals:
     void selectEntity(Card* card);
 
@@ -33,7 +34,7 @@ private:
     QGraphicsTextItem* costText;
     int width;
     int height;
-
+    int cost;
     void addCostLabel();
 };
 

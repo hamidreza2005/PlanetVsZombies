@@ -72,6 +72,10 @@ Zombie::~Zombie() {
 }
 
 void Zombie::move() {
+    if(!scene()){
+        return;
+    }
+
     if (this->isThereAPlantInWay()) {
         this->activateAttackMode();
         return;

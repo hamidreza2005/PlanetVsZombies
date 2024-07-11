@@ -41,9 +41,9 @@
    <widget class="QTableWidget" name="table">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>7</x>
       <y>80</y>
-      <width>1201</width>
+      <width>1187</width>
       <height>541</height>
      </rect>
     </property>
@@ -67,6 +67,9 @@ border-radius:10px;</string>
     <property name="sortingEnabled">
      <bool>false</bool>
     </property>
+    <property name="rowCount">
+     <number>5</number>
+    </property>
     <property name="columnCount">
      <number>5</number>
     </property>
@@ -76,8 +79,11 @@ border-radius:10px;</string>
     <attribute name="horizontalHeaderCascadingSectionResizes">
      <bool>false</bool>
     </attribute>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>38</number>
+    </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>232</number>
+     <number>220</number>
     </attribute>
     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
      <bool>false</bool>
@@ -91,12 +97,23 @@ border-radius:10px;</string>
     <attribute name="verticalHeaderCascadingSectionResizes">
      <bool>true</bool>
     </attribute>
+    <attribute name="verticalHeaderMinimumSectionSize">
+     <number>27</number>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>39</number>
+    </attribute>
     <attribute name="verticalHeaderShowSortIndicator" stdset="0">
      <bool>false</bool>
     </attribute>
     <attribute name="verticalHeaderStretchLastSection">
      <bool>false</bool>
     </attribute>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
     <column>
      <property name="text">
       <string>Player One</string>

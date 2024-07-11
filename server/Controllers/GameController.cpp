@@ -44,7 +44,11 @@ void GameController::ready(TcpSocket *socket, const QJsonObject &request) {
     auto allClients =  Bootstrap::getInstance()->getClients();
     auto it = std::find_if(allClients.begin(), allClients.end(),[request,socket](auto clientSocket){
         QString ip = clientSocket->peerAddress().toString().split(":").last();
-        return  ip == request["opponentIp"].toString() && clientSocket != socket->getOriginalSocket();
+        QString opponentIp = request["opponentIp"].toString();
+        if(opponentIp == getServerIp()){
+            opponentIp = "127.0.0.1";
+        }
+        return  ip == opponentIp && clientSocket != socket->getOriginalSocket();
     });
 
     if (it == allClients.end()) {

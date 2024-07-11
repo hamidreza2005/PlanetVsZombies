@@ -188,8 +188,7 @@ void PlayGround::updatePoint(int amount) {
 }
 
 void PlayGround::selectCard(Card *card) {
-//    this->checkCardStates();
-    qDebug() << this->points;
+    this->checkCardStates();
     if(card->getCost() > this->points){
         return;
     }
@@ -357,8 +356,8 @@ void PlayGround::cleanThePlayground() {
     Cookie::getInstance()->zombiesCountThatReachedTheEnd = 0;
     delete infoLayout;
     delete mainLayout;
-    delete chatLayout;
     delete chatHandler;
+    delete chatLayout;
     delete containerLayout;
     delete playerName;
     delete remainingTime;
@@ -366,6 +365,7 @@ void PlayGround::cleanThePlayground() {
     delete cardsScene;
     delete cardView;
     delete pointsBar;
+    delete sunBrainTimer;
 }
 
 void PlayGround::connectionLost() {
@@ -452,7 +452,9 @@ void PlayGround::sendOverSocket(const QJsonObject &response) {
 }
 
 void PlayGround::checkCardStates() {
+    qDebug() << "checking cards state";
     for (auto card : this->cards) {
+        qDebug() << card->getCost();
         if (card->getCost() > this->points) {
             if (this->selectedCard == card) {
                 this->selectedCard->unselect();
@@ -460,6 +462,7 @@ void PlayGround::checkCardStates() {
             }
             card->disable();
         } else {
+            qDebug() << "Card can be enabled";
             card->enable();
         }
     }

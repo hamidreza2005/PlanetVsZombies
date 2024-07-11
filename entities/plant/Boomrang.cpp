@@ -30,7 +30,7 @@ void Boomerang::fire() {
         return;
     }
 
-    auto bullet = new Bullet(attackPower, 10, true,40);
+    auto bullet = new Bullet(attackPower, 15, true,40);
     bullet->setImage(bulletImages[currentImageIndex]);
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);

@@ -22,6 +22,7 @@ void Card::setBorders() {
 Card::Card(std::function<GameEntity*()> entityFactory, int width, int height, QGraphicsItem* parent)
     : QGraphicsPixmapItem(parent), entityFactory(entityFactory), width(width), height(height) {
     this->entity = entityFactory();
+    this->cost = this->entity->getCost();
     this->setBorders();
     this->setImage();
     this->addCostLabel();
@@ -56,7 +57,7 @@ void Card::addCostLabel() {
 }
 
 int Card::getCost() const {
-    return this->entity->getCost();
+    return this->cost;
 }
 
 void Card::disable() {
@@ -67,4 +68,10 @@ void Card::disable() {
 void Card::enable() {
     this->setEnabled(true);
     this->setOpacity(1.0);
+}
+
+Card::~Card() {
+    delete entity;
+    delete border;
+    delete costText;
 }

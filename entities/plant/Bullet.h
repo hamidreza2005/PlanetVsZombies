@@ -10,7 +10,7 @@ class Bullet : public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
 
 public:
-    Bullet(int attackPower, int speed,bool canHitMultipleZombies = false,int size = 20, QGraphicsItem* parent = nullptr);
+    Bullet(int attackPower, int speed = 15,bool canHitMultipleZombies = false,int size = 20, QGraphicsItem* parent = nullptr);
     ~Bullet() override;
 
     void setImage(const QString& imagePath);
