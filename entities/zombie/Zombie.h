@@ -20,6 +20,7 @@ public:
 
     virtual QString getMovementPicturePath() const = 0;
     virtual QString getStayPicturePath() const = 0;
+    [[nodiscard]] virtual QString getCardPicturePath() const override = 0;
 
     virtual ~Zombie();
 protected slots:
@@ -33,10 +34,10 @@ private:
     int attackPower;
     float firingRate;
     int brain;
-    QTimer *attackTimer;
-    QTimer *movementTimer;
-    QTimer *imageSwitchTimer;
-    QPropertyAnimation *movementAnimation;
+    QTimer* attackTimer;
+    QTimer* movementTimer;
+    QTimer* imageSwitchTimer;
+    QPropertyAnimation* movementAnimation;
     bool isMovingImage;
 
     void setUpTimers();
@@ -49,4 +50,4 @@ signals:
     void zombieReachedToTheEnd();
 };
 
-#endif
+#endif //PLANETVSZOMBIES_ZOMBIE_H

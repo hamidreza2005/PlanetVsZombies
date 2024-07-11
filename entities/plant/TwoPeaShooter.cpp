@@ -29,3 +29,7 @@ void TwoPeaShooter::fire() {
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);
 }
+
+QString TwoPeaShooter::getCardPicturePath() const {
+    return ":/resources/images/cards/twopeashootercard.png";
+}

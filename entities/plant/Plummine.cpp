@@ -43,8 +43,11 @@ void PlumMine::fire() {
 }
 
 bool PlumMine::isThereAZombieInTheRow() {
-    if (!scene()){
+    if (!scene()) {
         return false;
     }
     return true;
+}
+QString PlumMine::getCardPicturePath() const {
+    return ":/resources/images/cards/plumminecard.png";
 }

@@ -17,6 +17,7 @@ public:
     void fire() override;
 protected:
     bool isThereAZombieInTheRow() override;
+    QString getCardPicturePath() const override;
 };
 
 #endif // PLANETVSZOMBIES_PLUMMINE_H

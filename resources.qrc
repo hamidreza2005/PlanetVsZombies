@@ -43,7 +43,6 @@
         <file>resources/images/move/TallZombieStay.png</file>
         <file>resources/images/background/b7.png</file>
         <file>resources/images/background/b8.png</file>
-        <file>resources/images/background/b9.png</file>
         <file>resources/images/background/b6.png</file>
         <file>resources/images/background/b1.png</file>
         <file>resources/images/background/b2.png</file>
@@ -56,5 +55,18 @@
         <file>resources/images/emoji/SunglassesEmoji.png</file>
         <file>resources/images/emoji/TearsofJoyEmoji.png</file>
         <file>resources/images/emoji/VeryAngryEmoji.png</file>
+        <file>resources/images/background/b9.png</file>
+        <file>resources/images/cards/astronautcard.png</file>
+        <file>resources/images/cards/boomerangcard.png</file>
+        <file>resources/images/cards/bucketheadcard.png</file>
+        <file>resources/images/cards/jalapenocard.png</file>
+        <file>resources/images/cards/leafheadcard.png</file>
+        <file>resources/images/cards/purplehearpng.png</file>
+        <file>resources/images/cards/regularcard.png</file>
+        <file>resources/images/cards/tallcard.png</file>
+        <file>resources/images/cards/twopeashootercard.png</file>
+        <file>resources/images/cards/walnutcard.png</file>
+        <file>resources/images/cards/peashootercard.png</file>
+        <file>resources/images/cards/plumminecard.png</file>
     </qresource>
 </RCC>

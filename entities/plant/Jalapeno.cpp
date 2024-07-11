@@ -43,8 +43,12 @@ void Jalapeno::fire() {
 }
 
 bool Jalapeno::isThereAZombieInTheRow() {
-    if (!scene()){
+    if (!scene()) {
         return false;
     }
     return true;
+}
+
+QString Jalapeno::getCardPicturePath() const {
+    return ":/resources/images/cards/jalapenocard.png";
 }
