@@ -37,6 +37,12 @@ void Dashboard::handleServerResponse(const QJsonObject &data) {
         this->verifyCurrentClientIsReadyToPlay(data.value("username").toString());
         return;
     }
+
+    if (data.contains("state") && data.value("state") == "invitationDeclined"){
+        QMessageBox::information(this,"Message",data.value("username").toString() + " Declined Your Invitation");
+        return;
+    }
+
     if (data.contains("state") && data.value("state") == "startTheGame"){
         Cookie::getInstance()->playingRound = data.value("round").toString();
         Cookie::getInstance()->opponentUsername = data.value("opponent").toString();
@@ -103,12 +109,16 @@ void Dashboard::verifyCurrentClientIsReadyToPlay(const QString & opponentUsernam
     QString message = opponentUsername + " Wants to play with you. Do you want to do it?";
     reply = QMessageBox::question(this, "Ready Check", message,
                                   QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes){
-        try{
-            this->socket->sendJson("verifyReady", {{"username",Cookie::getInstance()->loggedInPlayer->getUsername()}});
-        }catch (...){
-            Window::showConnectionLostError(this);
+    QJsonObject response;
+    response["username"] = Cookie::getInstance()->loggedInPlayer->getUsername();
+    try{
+        if (reply == QMessageBox::Yes){
+            this->socket->sendJson("verifyReady", response);
+        }else{
+            this->socket->sendJson("declineInvite", response);
         }
+    }catch(...){
+        Window::showConnectionLostError(this);
     }
 }
 

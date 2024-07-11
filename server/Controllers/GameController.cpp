@@ -214,3 +214,14 @@ void GameController::getHistory(TcpSocket *socket, const QJsonObject &request) {
     response["history"] = history;
     socket->write(response);
 }
+
+void GameController::declineInvite(TcpSocket* socket,const QJsonObject& request){
+    if (!Cache::getInstance()->firstPlayer){
+        socket->sendValidationError("invitation","there is no invitation to decline",404);
+        return;
+    }
+    QJsonObject response;
+    response["username"] = request.value("username");
+    response["state"] = "invitationDeclined";
+    Cache::getInstance()->firstPlayer->socket->write(response);
+}
