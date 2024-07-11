@@ -24,8 +24,12 @@ void TwoPeaShooter::fire() {
         return;
     }
 
-    Bullet* bullet = new Bullet(attackPower, 10);
+    Bullet* bullet = new Bullet(attackPower);
     bullet->setImage(":/resources/images/bullet2.png");
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);
+}
+
+QString TwoPeaShooter::getCardPicturePath() const {
+    return ":/resources/images/cards/twopeashootercard.png";
 }

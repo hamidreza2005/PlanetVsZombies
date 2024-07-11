@@ -2,7 +2,7 @@
 #define PLANETVSZOMBIES_PURPLEHAIRZOMBIE_H
 #include "Zombie.h"
 
-class PurpleHairZombie : public Zombie{
+class PurpleHairZombie : public Zombie {
     static const int INITIAL_HEALTH = 4000;
     static const int INITIAL_MOVEMENT_DELAY = 1;
     static const int INITIAL_ATTACK_POWER = 75;
@@ -12,7 +12,10 @@ public:
     explicit PurpleHairZombie();
     QString getPicturePath() const override;
     QString getName() override;
-};
+    QString getMovementPicturePath() const override;
+    QString getStayPicturePath() const override;
+    QString getCardPicturePath() const override;
 
+};
 
 #endif //PLANETVSZOMBIES_PURPLEHAIRZOMBIE_H

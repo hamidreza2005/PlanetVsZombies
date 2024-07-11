@@ -44,7 +44,11 @@ void GameController::ready(TcpSocket *socket, const QJsonObject &request) {
     auto allClients =  Bootstrap::getInstance()->getClients();
     auto it = std::find_if(allClients.begin(), allClients.end(),[request,socket](auto clientSocket){
         QString ip = clientSocket->peerAddress().toString().split(":").last();
-        return  ip == request["opponentIp"].toString() && clientSocket != socket->getOriginalSocket();
+        QString opponentIp = request["opponentIp"].toString();
+        if(opponentIp == getServerIp()){
+            opponentIp = "127.0.0.1";
+        }
+        return  ip == opponentIp && clientSocket != socket->getOriginalSocket();
     });
 
     if (it == allClients.end()) {
@@ -76,10 +80,12 @@ void GameController::verifyBeingReady(TcpSocket *socket, const QJsonObject &requ
     response["state"] = "startTheGame";
     response["round"] = "1";
     response["role"] = firstPlayerRole;
+    response["opponent"] = Cache::getInstance()->secondPlayer->getUsername();
     Cache::getInstance()->firstPlayer->setRole(firstPlayerRole);
     Cache::getInstance()->firstPlayer->socket->write(response);
 
     response["role"] = secondPlayerRole;
+    response["opponent"] = Cache::getInstance()->firstPlayer->getUsername();
     Cache::getInstance()->secondPlayer->setRole(secondPlayerRole);
     Cache::getInstance()->secondPlayer->socket->write(response);
 }
@@ -99,6 +105,30 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
         socket->sendValidationError("game","you can't interfere in the game");
         return;
     }
+    if (request["state"] == "playerResigned"){
+        QJsonObject res;
+        res["state"] = "GameEnded";
+        res["result"] = "win";
+        Player* winner;
+        if (requestIsSentByFirstPlayer){
+            winner = secondPlayer;
+            res["winner"] = secondPlayer->getUsername();
+        }else{
+            winner = firstPlayer;
+            res["winner"] = firstPlayer->getUsername();
+        }
+        DB::getInstance()->saveInToHistory({
+           {"firstPlayer",firstPlayer->getUsername()},
+           {"secondPlayer",secondPlayer->getUsername()},
+           {"firstRoundWinner",winner->getUsername()},
+           {"secondRoundWinner",winner->getUsername()},
+           {"result","win"},
+        });
+
+        firstPlayer->socket->write(res);
+        secondPlayer->socket->write(res);
+        return;
+    }
 
     if (request["state"] == "zombieReachedTheEnd"){
         if ((requestIsSentByFirstPlayer && firstPlayer->getRole() == "zombie") || (requestIsSentBySecondPlayer && secondPlayer->getRole() == "zombie")){
@@ -113,10 +143,7 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
         return;
     }
 
-    if (request["state"] == "add"){
-//        if (GameController::isPlayerAllowedToAddEntity(isSentByFirstPlayer,firstPlayer,secondPlayer,request["entity"].toString())){
-//          return;
-//        }
+    if (request["state"] == "add" || request["state"] == "chat"){
         QJsonObject response = request;
         if(requestIsSentByFirstPlayer){
             secondPlayer->socket->write(response);
@@ -124,11 +151,6 @@ void GameController::gameRoom(TcpSocket *socket, const QJsonObject &request) {
             firstPlayer->socket->write(response);
         }
     }
-}
-
-bool GameController::isPlayerAllowedToAddEntity(bool isSentByFirstPlayer,Player* player1,Player* player2,QString entityName) {
-    return (isSentByFirstPlayer && player1->getRole() != entityName)
-           || (!isSentByFirstPlayer && player2->getRole() != entityName);
 }
 
 void GameController::handleEndOfTheGame(const QString &winnerRole) {
@@ -195,4 +217,15 @@ void GameController::getHistory(TcpSocket *socket, const QJsonObject &request) {
     response["status"] = "200";
     response["history"] = history;
     socket->write(response);
+}
+
+void GameController::declineInvite(TcpSocket* socket,const QJsonObject& request){
+    if (!Cache::getInstance()->firstPlayer){
+        socket->sendValidationError("invitation","there is no invitation to decline",404);
+        return;
+    }
+    QJsonObject response;
+    response["username"] = request.value("username");
+    response["state"] = "invitationDeclined";
+    Cache::getInstance()->firstPlayer->socket->write(response);
 }

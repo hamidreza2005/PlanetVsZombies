@@ -6,7 +6,7 @@
 #include <QGraphicsColorizeEffect>
 
 void Card::setImage() {
-    QPixmap image_ground(this->entity->getPicturePath());
+    QPixmap image_ground(this->entity->getCardPicturePath());
     QPixmap Scaled_image_ground = image_ground.scaled(this->width, this->height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     setPixmap(Scaled_image_ground);
     this->setCursor(Qt::PointingHandCursor);
@@ -22,6 +22,7 @@ void Card::setBorders() {
 Card::Card(std::function<GameEntity*()> entityFactory, int width, int height, QGraphicsItem* parent)
     : QGraphicsPixmapItem(parent), entityFactory(entityFactory), width(width), height(height) {
     this->entity = entityFactory();
+    this->cost = this->entity->getCost();
     this->setBorders();
     this->setImage();
     this->addCostLabel();
@@ -56,5 +57,21 @@ void Card::addCostLabel() {
 }
 
 int Card::getCost() const {
-    return this->entity->getCost();
+    return this->cost;
+}
+
+void Card::disable() {
+    this->setEnabled(false);
+    this->setOpacity(0.5);
+}
+
+void Card::enable() {
+    this->setEnabled(true);
+    this->setOpacity(1.0);
+}
+
+Card::~Card() {
+    delete entity;
+    delete border;
+    delete costText;
 }

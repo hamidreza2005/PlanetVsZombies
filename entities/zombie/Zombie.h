@@ -5,11 +5,10 @@
 #include <QPropertyAnimation>
 #include "../GameEntity.h"
 
-class Zombie : public GameEntity{
+class Zombie : public GameEntity {
     Q_OBJECT
 public:
-    explicit Zombie(int health, float movementDelay, int attackPower, float firingRate,int brain);
-
+    explicit Zombie(int health, float movementDelay, int attackPower, float firingRate, int brain);
 
     float getMovementDelay() const;
     void setMovementDelay(float newMovementDelay);
@@ -17,13 +16,17 @@ public:
     void setAttackPower(int newAttackPower);
     float getFiringRate() const;
     void setFiringRate(float newFiringRate);
-
     void reduceHealth(int amount);
+
+    virtual QString getMovementPicturePath() const = 0;
+    virtual QString getStayPicturePath() const = 0;
+    [[nodiscard]] virtual QString getCardPicturePath() const override = 0;
 
     virtual ~Zombie();
 protected slots:
     void attack();
     virtual void move();
+    void switchImage();
 protected:
 private:
     int health;
@@ -31,9 +34,11 @@ private:
     int attackPower;
     float firingRate;
     int brain;
-    QTimer *attackTimer;
-    QTimer *movementTimer;
-    QPropertyAnimation *movementAnimation;
+    QTimer* attackTimer;
+    QTimer* movementTimer;
+    QTimer* imageSwitchTimer;
+    QPropertyAnimation* movementAnimation;
+    bool isMovingImage;
 
     void setUpTimers();
     void setUpAnimations();
@@ -45,5 +50,4 @@ signals:
     void zombieReachedToTheEnd();
 };
 
-
-#endif
+#endif //PLANETVSZOMBIES_ZOMBIE_H

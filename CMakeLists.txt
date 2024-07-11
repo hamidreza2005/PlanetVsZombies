@@ -83,6 +83,8 @@ add_executable(PlanetVsZombies WIN32 main.cpp
         windows/HostConnector/hostconnector.h
         windows/HostConnector/hostconnector.ui
         core/mediaplayer.h core/mediaplayer.cpp
+        Chat.cpp
+        Chat.h
 )
 
 target_link_libraries(PlanetVsZombies

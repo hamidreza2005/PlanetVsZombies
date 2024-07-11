@@ -1,6 +1,6 @@
 #ifndef PLAYGROUND_H
 #define PLAYGROUND_H
-
+#define INITIAL_POINTS 0
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QVBoxLayout>
@@ -16,6 +16,7 @@
 #include "windows/Window.h"
 #include "core/ClientSocket.h"
 #include "core/mediaplayer.h"
+#include "Chat.h"
 
 class PlayGround : public Window {
     Q_OBJECT
@@ -28,18 +29,18 @@ public:
     void disconnectConnectionLostListener();
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
-    static QMap<QString,std::function<GameEntity*()>> zombies;
-    static QMap<QString,std::function<GameEntity*()>> plants;
+    static QMap<QString, std::function<GameEntity*()>> zombies;
+    static QMap<QString, std::function<GameEntity*()>> plants;
 
 private slots:
     void updateTimer();
-    void updateBrainCount(int amount);
-    void updateSunCount(int amount);
+    void updatePoint(int amount);
     void spawnSunBrain();
     void collectSunBrain(int value);
     void checkCardStates();
     void handleLanded();
-
+    void sendMessageToOpponent(const QString &message);
+    void playerWantsToResign();
 private:
     QGraphicsView* graphicsView;
     QGraphicsScene* scene;
@@ -49,24 +50,24 @@ private:
     QLabel* playerName;
     QLabel* remainingTime;
     Ground* ground;
-    QProgressBar* brainBar;
-    QProgressBar* sunBar;
+    QProgressBar* pointsBar;
     QHBoxLayout* infoLayout;
     QVBoxLayout* mainLayout;
+    QVBoxLayout* chatLayout;
+    QHBoxLayout* containerLayout;
     QMetaObject::Connection connectionLostListener;
     bool isZombie;
     QTimer* timer;
     QTimer* sunBrainTimer;
-    QTimer* cardStateTimer;
     int remainingSeconds;
-    int brainCount;
-    int sunCount;
+    int points;
     Card* selectedCard;
     QGraphicsPixmapItem* rotatingItem;
+    Chat* chatHandler;
 
+    void setUpChatBox();
     void createCards();
-    void setupPlayerZombieInfo();
-    void setupPlayerPlantInfo();
+    void setUpPointsBar();
     void setupGround();
     void setupLayout();
     void setupRemainingTimeInfo();
@@ -74,7 +75,7 @@ private:
     bool isPositionOccupied(QPointF point);
     void setupRotatingImage(const QString& imagePath);
     void endTheGame();
-    void sendAddRequest(const QString& name,int x,int y);
+    void sendAddRequest(const QString& name, int x, int y);
     void addNewEntityFromServer(const QJsonObject &entityData);
     void cleanThePlayground();
     void startARound();

@@ -28,4 +28,5 @@ void Controller::initializeRoutes() {
     Controller::addRoute("getHistory",GameController::getHistory);
     Controller::addRoute("updateCredentials",AuthorizationController::changeCredentials);
     Controller::addRoute("getUserData",AuthorizationController::getUserData);
+    Controller::addRoute("declineInvite",GameController::declineInvite);
 }

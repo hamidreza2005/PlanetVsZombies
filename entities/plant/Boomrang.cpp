@@ -30,7 +30,7 @@ void Boomerang::fire() {
         return;
     }
 
-    auto bullet = new Bullet(attackPower, 10, true,40);
+    auto bullet = new Bullet(attackPower, 15, true,40);
     bullet->setImage(bulletImages[currentImageIndex]);
     bullet->setPos(x() + 30, y() + 15);
     scene()->addItem(bullet);
@@ -41,4 +41,8 @@ void Boomerang::fire() {
 void Boomerang::changeBulletImage() {
     currentImageIndex = (currentImageIndex + 1) % bulletImages.size();
     emit imageChanged(bulletImages[currentImageIndex]);
+}
+
+QString Boomerang::getCardPicturePath() const {
+    return ":/resources/images/cards/boomerangcard.png";
 }

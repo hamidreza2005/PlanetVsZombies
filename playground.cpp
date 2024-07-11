@@ -22,28 +22,29 @@
 #include <QGraphicsRotation>
 #include <QTimeLine>
 #include <QPropertyAnimation>
+#include <QPushButton>
 
-QMap<QString,std::function<GameEntity*()>> PlayGround::zombies = {
-    {"Regular Zombie",[](){return new RegularZombie;}},
-    {"Bucket Head Zombie",[](){return new BucketHeadZombie;}},
-    {"Tall Zombie",[](){return new TallZombie;}},
-    {"Laef Head Zombie",[]() { return new LeafHeadZombie; }},
-    {"Purple Head Zombie",[](){return new PurpleHairZombie;}},
-    {"Astronaut Zombie",[](){return new AstronautZombie;}},
-    };
+QMap<QString, std::function<GameEntity*()>> PlayGround::zombies = {
+    {"Regular Zombie", []() { return new RegularZombie; }},
+    {"Bucket Head Zombie", []() { return new BucketHeadZombie; }},
+    {"Tall Zombie", []() { return new TallZombie; }},
+    {"Leaf Head Zombie", []() { return new LeafHeadZombie; }},
+    {"Purple Hair Zombie", []() { return new PurpleHairZombie; }},
+    {"Astronaut Zombie", []() { return new AstronautZombie; }},
+};
 
-QMap<QString,std::function<GameEntity*()>> PlayGround::plants = {
-    {"PeaShooter Plant",[]() { return new PeaShooter; }},
-    {"TwoPeaShooter Plant",[]() { return new TwoPeaShooter; }},
-    {"Walnut Plant",[]() { return new Walnut; }},
-    {"Boomerang Plant",[]() { return new Boomerang; }},
-    {"Jalapeno Plant",[](){return new Jalapeno;}},
-    {"Plum Mine Plant",[](){return new PlumMine;}},
-    };
+QMap<QString, std::function<GameEntity*()>> PlayGround::plants = {
+    {"PeaShooter Plant", []() { return new PeaShooter; }},
+    {"TwoPeaShooter Plant", []() { return new TwoPeaShooter; }},
+    {"Walnut Plant", []() { return new Walnut; }},
+    {"Boomerang Plant", []() { return new Boomerang; }},
+    {"Jalapeno Plant", []() { return new Jalapeno; }},
+    {"Plum Mine Plant", []() { return new PlumMine; }},
+};
 
 PlayGround::PlayGround(ClientSocket* clientSocket, QWidget *parent)
-    : Window(clientSocket, parent), remainingSeconds(210), brainCount(0), sunCount(0), selectedCard(nullptr) {
-    this->setFixedSize(1000, 700);
+    : Window(clientSocket, parent), remainingSeconds(210), points(INITIAL_POINTS), selectedCard(nullptr) {
+    this->setFixedSize(1200, 700);
     graphicsView = new QGraphicsView(this);
     graphicsView->setFixedSize(1000, 500);
     scene = new QGraphicsScene(this);
@@ -54,61 +55,39 @@ PlayGround::PlayGround(ClientSocket* clientSocket, QWidget *parent)
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PlayGround::updateTimer);
-
-    cardStateTimer = new QTimer(this);
-    connect(cardStateTimer, &QTimer::timeout, this, &PlayGround::checkCardStates);
 }
 
 void PlayGround::play() {
     isZombie = Cookie::getInstance()->loggedInPlayer->getRole() == "zombie";
-    this->createCards();
-    if (isZombie) {
-        setupPlayerZombieInfo();
-    } else {
-        setupPlayerPlantInfo();
-    }
+    this->setUpPointsBar();
     this->setPlayerName();
     this->setupRemainingTimeInfo();
     this->setupLayout();
-    Window::showPopupMessage("Round " + Cookie::getInstance()->playingRound,1000);
+    Window::showPopupMessage("Round " + Cookie::getInstance()->playingRound, 1000);
     remainingSeconds = 210;
     timer->start(1000);
     sunBrainTimer = new QTimer(this);
     connect(sunBrainTimer, &QTimer::timeout, this, &PlayGround::spawnSunBrain);
     this->spawnSunBrain();
     sunBrainTimer->start(5000);
-    cardStateTimer->start(1000);
 }
 
-void PlayGround::setupPlayerZombieInfo() {
-    brainBar = new QProgressBar(this);
-    brainBar->setRange(0, 1000);
-    brainBar->setValue(0);
-    brainBar->setFormat("%v");
+void PlayGround::setUpPointsBar() {
+    pointsBar = new QProgressBar(this);
+    pointsBar->setRange(0, 2000);
+    pointsBar->setValue(0);
+    pointsBar->setFormat("%v");
 
     QFont font("Arial", 10, QFont::Bold);
-    brainBar->setFont(font);
-    brainBar->setFixedHeight(20);
-    brainBar->setFixedWidth(200);
-    brainBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
-}
-
-void PlayGround::setupPlayerPlantInfo() {
-    sunBar = new QProgressBar(this);
-    sunBar->setRange(0, 1000);
-    sunBar->setValue(0);
-    sunBar->setFormat("%v");
-
-    QFont font("Arial", 10, QFont::Bold);
-    sunBar->setFont(font);
-
-    sunBar->setFixedHeight(20);
-    sunBar->setFixedWidth(200);
-    sunBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: yellow; }");
+    pointsBar->setFont(font);
+    pointsBar->setFixedHeight(20);
+    pointsBar->setFixedWidth(200);
+    pointsBar->setStyleSheet("QProgressBar { text-align: center; } QProgressBar::chunk { background-color: red; }");
 }
 
 void PlayGround::setPlayerName() {
-    playerName = new QLabel(Cookie::getInstance()->loggedInPlayer->getUsername(), this);
+    playerName = new QLabel(this);
+    playerName->setText(Cookie::getInstance()->loggedInPlayer->getUsername() + " Vs " + Cookie::getInstance()->opponentUsername);
     QFont font("Arial", 10, QFont::Bold);
     playerName->setFont(font);
     playerName->setStyleSheet("QLabel { color : blue; }");
@@ -128,26 +107,46 @@ void PlayGround::setupGround() {
 }
 
 void PlayGround::setupLayout() {
-    mainLayout = new QVBoxLayout(this);
-
-    infoLayout = new QHBoxLayout(this);
+    mainLayout = new QVBoxLayout();
+    this->setUpChatBox();
+    infoLayout = new QHBoxLayout();
     infoLayout->addWidget(playerName);
-    if (isZombie) {
-        infoLayout->addWidget(brainBar);
-    } else {
-        infoLayout->addWidget(sunBar);
-    }
+    infoLayout->addWidget(pointsBar);
     infoLayout->addWidget(remainingTime);
     mainLayout->addLayout(infoLayout, 1);
     mainLayout->addWidget(graphicsView, 4);
 
-    cardView = new QGraphicsView(this);
+    cardView = new QGraphicsView();
     cardsScene = new QGraphicsScene(this);
     cardView->setScene(cardsScene);
     cardView->setFixedHeight(150);
-
+    cardView->setFixedWidth(1000);
     mainLayout->addWidget(cardView, 1);
-    setLayout(mainLayout);
+
+    containerLayout = new QHBoxLayout(this);
+    containerLayout->addLayout(mainLayout, 4);
+    containerLayout->addLayout(chatLayout, 1);
+
+    setLayout(containerLayout);
+
+    this->createCards();
+}
+
+void PlayGround::setUpChatBox() {
+    chatLayout = new QVBoxLayout();
+    this->chatHandler = new Chat(chatLayout);
+    connect(chatHandler,&Chat::sendMessageToOpponent,this,&PlayGround::sendMessageToOpponent);
+    connect(chatHandler,&Chat::playerResigned,this,&PlayGround::playerWantsToResign);
+}
+
+void PlayGround::createCards() {
+    QList<std::function<GameEntity*()>> entites = isZombie ? PlayGround::zombies.values() : PlayGround::plants.values();
+    for(int i = 0; i < 6; i++) {
+        auto *card = new Card(entites[i],100,100);
+        connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
+        card->disable();
+        cards.push_back(card);
+    }
 
     int cardWidth = 100;
     int gapBetweenCards = 2;
@@ -162,15 +161,6 @@ void PlayGround::setupLayout() {
     for (int i = 3; i < 6; ++i) {
         cards[i]->setPos((i + 1) * (cardWidth + gapBetweenCards), 0);
         cardsScene->addItem(cards[i]);
-    }
-}
-
-void PlayGround::createCards() {
-    QList<std::function<GameEntity*()>> entites = isZombie ? PlayGround::zombies.values() : PlayGround::plants.values();
-    for(int i = 0; i < 6; i++) {
-        auto *card = new Card(entites[i],100,100);
-        connect(card, &Card::selectEntity, this, &PlayGround::selectCard);
-        cards.push_back(card);
     }
 }
 
@@ -190,19 +180,19 @@ void PlayGround::updateTimer() {
     }
 }
 
-void PlayGround::updateBrainCount(int amount) {
-    brainCount += amount;
-    brainBar->setValue(brainCount);
-    brainBar->setFormat(QString("Brains: %1").arg(brainCount));
-}
-
-void PlayGround::updateSunCount(int amount) {
-    sunCount += amount;
-    sunBar->setValue(sunCount);
-    sunBar->setFormat(QString("Sun: %1").arg(sunCount));
+void PlayGround::updatePoint(int amount) {
+    this->points += amount;
+    pointsBar->setValue(this->points);
+    pointsBar->setFormat(QString(isZombie ? "Brains: %1" : "Sun: %1").arg(this->points));
+    this->checkCardStates();
 }
 
 void PlayGround::selectCard(Card *card) {
+    this->checkCardStates();
+    if(card->getCost() > this->points){
+        return;
+    }
+
     if (this->selectedCard == card) {
         this->selectedCard->unselect();
         this->selectedCard = nullptr;
@@ -224,7 +214,7 @@ bool PlayGround::eventFilter(QObject* obj, QEvent* event) {
 }
 
 void PlayGround::addEntity(QPointF point) {
-    if (!selectedCard || ground->isOutOfGround(isZombie,&point)) {
+    if (!selectedCard || ground->isOutOfGround(isZombie, &point)) {
         return;
     }
 
@@ -238,18 +228,14 @@ void PlayGround::addEntity(QPointF point) {
     }
 
     auto* newEntity = selectedCard->getEntityFactory()();
+    this->updatePoint(-1 * selectedCard->getCost());
+    this->checkCardStates();
     newEntity->setPos(finalX, finalY);
     scene->addItem(newEntity);
-    if(auto zombie = dynamic_cast<Zombie*>(newEntity)){
-        connect(zombie,&Zombie::zombieReachedToTheEnd,this,&PlayGround::AZombieReachedTheEnd);
+    if (auto zombie = dynamic_cast<Zombie*>(newEntity)) {
+        connect(zombie, &Zombie::zombieReachedToTheEnd, this, &PlayGround::AZombieReachedTheEnd);
     }
-    if(isZombie){
-        updateBrainCount(-selectedCard->getCost());
-    }else{
-        updateSunCount(-selectedCard->getCost());
-    }
-    checkCardStates();
-    this->sendAddRequest(newEntity->getName(),finalX,finalY);
+    this->sendAddRequest(newEntity->getName(), finalX, finalY);
 }
 
 bool PlayGround::isPositionOccupied(QPointF point) {
@@ -264,7 +250,7 @@ bool PlayGround::isPositionOccupied(QPointF point) {
 
 void PlayGround::spawnSunBrain() {
     QString imagePath = isZombie ? ":/resources/images/Brain.png" : ":/resources/images/sun.png";
-    SunBrain *sunBrain = new SunBrain(imagePath, 50, isZombie ? brainBar : sunBar, isZombie, rotatingItem);
+    SunBrain* sunBrain = new SunBrain(imagePath, 100, pointsBar, isZombie, rotatingItem);
 
     int x = QRandomGenerator::global()->bounded(isZombie ? 485 : 30, isZombie ? 750 : 490);
     int y = -100;
@@ -301,11 +287,7 @@ void PlayGround::setupRotatingImage(const QString& imagePath) {
 }
 
 void PlayGround::collectSunBrain(int value) {
-    if (isZombie) {
-        updateBrainCount(value);
-    } else {
-        updateSunCount(value);
-    }
+    this->updatePoint(value);
 }
 
 void PlayGround::connectDataListener() {
@@ -324,8 +306,13 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
         return;
     }
 
-    if(data.value("state") == "add"){
+    if (data.value("state") == "add") {
         this->addNewEntityFromServer(data);
+        return;
+    }
+
+    if(data.value("state") == "chat"){
+        this->chatHandler->addIconToChatBox(data.value("message").toString(),data.value("username").toString());
         return;
     }
 
@@ -333,22 +320,21 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
         Window::showPopupMessage(data.value("message").toString(),2000,this);
         Cookie::getInstance()->playingRound = data.value("round").toString();
         Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
-        MediaPlayer::getInstance()->playRoundMusic(":/resources/musics/round2.mp3", ":/resources/musics/Grasswalk.mp3");
-        QTimer::singleShot(2000,[this](){
-            MediaPlayer::getInstance()->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
+        QTimer::singleShot(2000, [this]() {
             this->startARound();
+            MediaPlayer::getInstance()->playRoundMusic(":/resources/musics/round2.mp3", ":/resources/musics/Grasswalk.mp3");
         });
         return;
     }
 
-    if (data.value("state") == "GameEnded"){
+    if (data.value("state") == "GameEnded") {
         QString message = data.value("result").toString() + "\n";
-        if (data.contains("winner")){
+        if (data.contains("winner")) {
             message += data.value("winner").toString() + " Won the Game";
         }
-        Window::showPopupMessage(message,2000,this);
+        Window::showPopupMessage(message, 2000, this);
         Cookie::getInstance()->playingRound = "0";
-        QTimer::singleShot(2000,[this](){
+        QTimer::singleShot(2000, [this]() {
             this->endTheGame();
         });
         return;
@@ -357,9 +343,10 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
 
 void PlayGround::cleanThePlayground() {
     this->selectedCard = nullptr;
+    this->points = INITIAL_POINTS;
     QList<QGraphicsItem*> items = scene->items();
     for (QGraphicsItem* item : items) {
-        if (dynamic_cast<Ground*>(item)){
+        if (dynamic_cast<Ground*>(item)) {
             continue;
         }
         delete item;
@@ -369,11 +356,16 @@ void PlayGround::cleanThePlayground() {
     Cookie::getInstance()->zombiesCountThatReachedTheEnd = 0;
     delete infoLayout;
     delete mainLayout;
+    delete chatHandler;
+    delete chatLayout;
+    delete containerLayout;
     delete playerName;
     delete remainingTime;
     this->removeAllCards();
     delete cardsScene;
     delete cardView;
+    delete pointsBar;
+    delete sunBrainTimer;
 }
 
 void PlayGround::connectionLost() {
@@ -382,7 +374,7 @@ void PlayGround::connectionLost() {
     this->endTheGame();
 }
 
-void PlayGround::sendAddRequest(const QString& name,int x,int y) {
+void PlayGround::sendAddRequest(const QString& name, int x, int y) {
     QJsonObject response;
     response["state"] = "add";
     response["entity"] = name;
@@ -392,7 +384,7 @@ void PlayGround::sendAddRequest(const QString& name,int x,int y) {
 }
 
 void PlayGround::AZombieReachedTheEnd() {
-    if(Cookie::getInstance()->zombiesCountThatReachedTheEnd > 1){
+    if (Cookie::getInstance()->zombiesCountThatReachedTheEnd > 1) {
         return;
     }
     QJsonObject response;
@@ -408,11 +400,11 @@ void PlayGround::ranOutOfTime() {
 }
 
 void PlayGround::connectConnectionLostListener() {
-    connectionLostListener = connect(socket,&ClientSocket::connectionLost,this,&PlayGround::connectionLost);
+    connectionLostListener = connect(socket, &ClientSocket::connectionLost, this, &PlayGround::connectionLost);
 }
 
 void PlayGround::disconnectConnectionLostListener() {
-    if(connectionLostListener){
+    if (connectionLostListener) {
         disconnect(connectionLostListener);
     }
 }
@@ -429,54 +421,66 @@ void PlayGround::endTheGame() {
 }
 
 void PlayGround::removeAllCards() {
-    for(auto card : this->cards) {
+    for (auto card : this->cards) {
         cardsScene->removeItem(card);
         delete card;
     }
-    this->cards.erase(this->cards.begin(),this->cards.end());
+    this->cards.erase(this->cards.begin(), this->cards.end());
 }
 
-void PlayGround::addNewEntityFromServer(const QJsonObject &entityData){
+void PlayGround::addNewEntityFromServer(const QJsonObject &entityData) {
     GameEntity* newEntity;
     QString entityName = entityData.value("entity").toString();
 
-    if(PlayGround::zombies.contains(entityName)){
+    if (PlayGround::zombies.contains(entityName)) {
         newEntity = PlayGround::zombies.value(entityName)();
-    }else if(PlayGround::plants.contains(entityName)){
+    } else if (PlayGround::plants.contains(entityName)) {
         newEntity = PlayGround::plants.value(entityName)();
-    }else{
+    } else {
         return;
     }
     newEntity->setPos(entityData.value("x").toInt(), entityData.value("y").toInt());
     scene->addItem(newEntity);
+    checkCardStates();
 }
 
 void PlayGround::sendOverSocket(const QJsonObject &response) {
     try {
         this->socket->sendJson("gameRoom", response);
     } catch (...) {
-
     }
 }
 
 void PlayGround::checkCardStates() {
-    int availablePoints = isZombie ? brainCount : sunCount;
-
+    qDebug() << "checking cards state";
     for (auto card : this->cards) {
-        if (card->getCost() > availablePoints) {
-            card->setEnabled(false);
-            card->setOpacity(0.5);
-            if (selectedCard == card) {
-                selectedCard->unselect();
-                selectedCard = nullptr;
+        qDebug() << card->getCost();
+        if (card->getCost() > this->points) {
+            if (this->selectedCard == card) {
+                this->selectedCard->unselect();
+                this->selectedCard = nullptr;
             }
+            card->disable();
         } else {
-            card->setEnabled(true);
-            card->setOpacity(1.0);
+            qDebug() << "Card can be enabled";
+            card->enable();
         }
     }
 }
 
 void PlayGround::handleLanded() {
     sunBrainTimer->start(10000);
+}
+
+void PlayGround::sendMessageToOpponent(const QString &message) {
+    this->sendOverSocket({{"state","chat"},{"message",message},{"username",Cookie::getInstance()->loggedInPlayer->getUsername()}});
+}
+
+void PlayGround::playerWantsToResign() {
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Confirm" , "Are You Sure that You Want To Resign?",
+                                  QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes){
+        this->sendOverSocket({{"state","playerResigned"}});
+    }
 }

@@ -18,6 +18,8 @@ public:
     QString getPicturePath() const override;
     QString getName() override;
     void fire() override;
+    QString getCardPicturePath() const override;
+
 
 signals:
     void imageChanged(const QString& newImagePath);

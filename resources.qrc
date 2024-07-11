@@ -15,7 +15,6 @@
         <file>resources/images/zombies/purple hair zombie.png</file>
         <file>resources/images/zombies/regular zombie.png</file>
         <file>resources/images/zombies/tall zombie.png</file>
-        <file>resources/images/background.png</file>
         <file>resources/images/icon.png</file>
         <file>resources/images/bullet1.png</file>
         <file>resources/images/bullet2.png</file>
@@ -28,6 +27,41 @@
         <file>resources/musics/round2.mp3</file>
         <file>resources/musics/menu.mp3</file>
         <file>resources/images/backgrounds/background1.png</file>
-        <file>resources/images/backgrounds/background3.png</file>
+        <file>resources/images/move/AstronautZombieMove.png</file>
+        <file>resources/images/move/AstronautZombieStay.png</file>
+        <file>resources/images/move/BucketHeadZombieMove.png</file>
+        <file>resources/images/move/BucketHeadZombieStay.png</file>
+        <file>resources/images/move/LeafHeadZombieMove.png</file>
+        <file>resources/images/move/LeafHeadZombieStay.png</file>
+        <file>resources/images/move/PurpleHairZombieMove.png</file>
+        <file>resources/images/move/PurpleHairZombieStay.png</file>
+        <file>resources/images/move/RegularZombieMove.png</file>
+        <file>resources/images/move/RegularZombieStay.png</file>
+        <file>resources/images/move/TallZombieMove.png</file>
+        <file>resources/images/move/TallZombieStay.png</file>
+        <file>resources/images/background/b7.png</file>
+        <file>resources/images/background/b8.png</file>
+        <file>resources/images/background/b6.png</file>
+        <file>resources/images/background/b3.png</file>
+        <file>resources/images/emoji/HeartEyesEmoji.png</file>
+        <file>resources/images/emoji/NeutralFaceEmoji.png</file>
+        <file>resources/images/emoji/PoopEmoji.png</file>
+        <file>resources/images/emoji/SunglassesEmoji.png</file>
+        <file>resources/images/emoji/TearsofJoyEmoji.png</file>
+        <file>resources/images/emoji/VeryAngryEmoji.png</file>
+        <file>resources/images/background/b9.png</file>
+        <file>resources/images/cards/astronautcard.png</file>
+        <file>resources/images/cards/boomerangcard.png</file>
+        <file>resources/images/cards/bucketheadcard.png</file>
+        <file>resources/images/cards/jalapenocard.png</file>
+        <file>resources/images/cards/leafheadcard.png</file>
+        <file>resources/images/cards/purplehearpng.png</file>
+        <file>resources/images/cards/regularcard.png</file>
+        <file>resources/images/cards/tallcard.png</file>
+        <file>resources/images/cards/twopeashootercard.png</file>
+        <file>resources/images/cards/walnutcard.png</file>
+        <file>resources/images/cards/peashootercard.png</file>
+        <file>resources/images/cards/plumminecard.png</file>
+        <file>resources/images/backgrounds/background.png</file>
     </qresource>
 </RCC>

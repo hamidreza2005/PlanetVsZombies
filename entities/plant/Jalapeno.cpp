@@ -41,3 +41,14 @@ void Jalapeno::fire() {
     scene()->removeItem(this);
     delete this;
 }
+
+bool Jalapeno::isThereAZombieInTheRow() {
+    if (!scene()) {
+        return false;
+    }
+    return true;
+}
+
+QString Jalapeno::getCardPicturePath() const {
+    return ":/resources/images/cards/jalapenocard.png";
+}

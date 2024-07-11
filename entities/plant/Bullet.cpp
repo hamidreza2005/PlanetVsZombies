@@ -6,6 +6,7 @@
 Bullet::Bullet(int attackPower, int speed,bool canHitMultipleZombies,int size, QGraphicsItem* parent)
     : QObject(), QGraphicsPixmapItem(parent), attackPower(attackPower), speed(speed), size(size), canHitMultipleZombies(canHitMultipleZombies) {
     this->setImage(":/resources/images/bullet1.png");
+    this->hitZombies = new QList<Zombie*>();
     movementTimer = new QTimer(this);
     connect(movementTimer, &QTimer::timeout, this, &Bullet::move);
     movementTimer->start(50);
@@ -28,8 +29,16 @@ void Bullet::move() {
         if (!zombie) {
             continue;
         }
+        if (hitZombies->contains(zombie)){
+            continue;
+        }
 
         zombie->setHealth(zombie->getHealth() - attackPower);
+
+        if (this->canHitMultipleZombies){
+            hitZombies->append(zombie);
+        }
+
         if(zombie->getHealth() < 0){
             scene()->removeItem(zombie);
             delete zombie;
@@ -53,5 +62,7 @@ void Bullet::move() {
 }
 
 Bullet::~Bullet() {
+    delete hitZombies;
+    movementTimer->stop();
     delete movementTimer;
 }

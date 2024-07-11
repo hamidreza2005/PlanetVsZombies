@@ -1,6 +1,7 @@
 [Setup]
 AppName=PlanetVsZombies
 AppVersion=1.0
+AppPublisher= HRH & Kazi
 DefaultDirName={pf}\PlanetVsZombies
 DefaultGroupName=PlanetVsZombies
 OutputDir=.

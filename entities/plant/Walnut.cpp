@@ -18,3 +18,7 @@ QString Walnut::getName() {
 
 void Walnut::fire() {
 }
+
+QString Walnut::getCardPicturePath() const {
+    return ":/resources/images/cards/walnutcard.png";
+}

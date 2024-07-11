@@ -41,3 +41,13 @@ void PlumMine::fire() {
     scene()->removeItem(this);
     delete this;
 }
+
+bool PlumMine::isThereAZombieInTheRow() {
+    if (!scene()) {
+        return false;
+    }
+    return true;
+}
+QString PlumMine::getCardPicturePath() const {
+    return ":/resources/images/cards/plumminecard.png";
+}
