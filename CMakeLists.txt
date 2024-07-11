@@ -68,7 +68,7 @@ add_executable(PlanetVsZombies main.cpp
         entities/plant/TwoPeaShooter.h
         entities/plant/TwoPeaShooter.cpp
         entities/plant/Walnut.h entities/plant/Walnut.cpp
-        entities/plant/Plummine.h entities/plant/Plummine.cpp
+        entities/plant/PlumMine.h entities/plant/PlumMine.cpp
         entities/plant/Jalapeno.h entities/plant/Jalapeno.cpp
         entities/plant/Boomrang.h entities/plant/Boomrang.cpp
         entities/plant/Bullet.h entities/plant/Bullet.cpp

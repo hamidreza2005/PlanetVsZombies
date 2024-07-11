@@ -15,7 +15,7 @@
 #include "../../entities/plant/Boomrang.h"
 #include "../../entities/plant/Jalapeno.h"
 #include "../../entities/plant/Walnut.h"
-#include "../../entities/plant/Plummine.h"
+#include "../../entities/plant/PlumMine.h"
 #include <QRandomGenerator>
 #include "../../core/Cookie.h"
 #include "QMap"

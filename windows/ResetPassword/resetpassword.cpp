@@ -1,6 +1,6 @@
 #include <QMessageBox>
 #include "resetpassword.h"
-#include "ui_ResetPassword.h"
+#include "ui_resetpassword.h"
 #include "../../core/exceptions/ConnectionIsLostException.h"
 
 ResetPassword::ResetPassword(ClientSocket* clientSocket,QWidget *parent) :

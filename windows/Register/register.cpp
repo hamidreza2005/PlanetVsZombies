@@ -1,5 +1,5 @@
 #include "register.h"
-#include "ui_Register.h"
+#include "ui_register.h"
 #include "QMessageBox"
 
 Register::Register(ClientSocket* clientSocket,QWidget *parent) :

@@ -2,7 +2,7 @@
 #define PLANETVSZOMBIES_LOGIN_H
 
 #include "../../core/ClientSocket.h"
-#include "../window.h"
+#include "../Window.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class Login; }
 QT_END_NAMESPACE

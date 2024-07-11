@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "../../core/ClientSocket.h"
-#include "../window.h"
+#include "../Window.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Register; }

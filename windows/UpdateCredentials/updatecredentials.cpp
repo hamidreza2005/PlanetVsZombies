@@ -1,6 +1,6 @@
 #include <QMessageBox>
 #include "updatecredentials.h"
-#include "ui_UpdateCredentials.h"
+#include "ui_updatecredentials.h"
 #include "../../core/Cookie.h"
 
 UpdateCredentials::UpdateCredentials(ClientSocket* clientSocket,QWidget *parent) :

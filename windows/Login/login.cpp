@@ -1,7 +1,7 @@
 #include <QMessageBox>
 #include "login.h"
-#include "ui_Login.h"
-#include "../window.h"
+#include "ui_login.h"
+#include "../Window.h"
 #include "../../core/Cookie.h"
 
 Login::Login(ClientSocket* clientSocket,QWidget *parent) :
