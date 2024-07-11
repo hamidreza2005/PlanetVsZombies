@@ -15,6 +15,8 @@ public:
     QString getPicturePath() const override;
     QString getName() override;
     void fire() override;
+protected:
+    bool isThereAZombieInTheRow() override;
 };
 
 #endif // PLANETVSZOMBIES_JALAPENO_H

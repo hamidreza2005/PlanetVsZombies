@@ -377,6 +377,8 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
 
 void PlayGround::cleanThePlayground() {
     this->selectedCard = nullptr;
+    this->brainCount = 0;
+    this->sunCount = 0;
     QList<QGraphicsItem*> items = scene->items();
     for (QGraphicsItem* item : items) {
         if (dynamic_cast<Ground*>(item)){
