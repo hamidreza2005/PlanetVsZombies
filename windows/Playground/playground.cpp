@@ -287,6 +287,7 @@ void PlayGround::setupRotatingImage(const QString& imagePath) {
 }
 
 void PlayGround::collectSunBrain(int value) {
+    this->selectedCard = nullptr;
     this->updatePoint(value);
 }
 
@@ -330,7 +331,9 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
     if (data.value("state") == "GameEnded") {
         QString message = data.value("result").toString() + "\n";
         if (data.contains("winner")) {
-            message += data.value("winner").toString() + " Won the Game";
+            QString winnerUsername = data.value("winner").toString();
+            message +=  winnerUsername + " Won the Game\n";
+            message +=  Cookie::getInstance()->loggedInPlayer->getUsername() == winnerUsername ? "You Won" : "You Lost";
         }
         Window::showPopupMessage(message, 2000, this);
         Cookie::getInstance()->playingRound = "0";
@@ -466,7 +469,7 @@ void PlayGround::checkCardStates() {
 }
 
 void PlayGround::handleLanded() {
-    sunBrainTimer->start(10000);
+    sunBrainTimer->start(5000);
 }
 
 void PlayGround::sendMessageToOpponent(const QString &message) {

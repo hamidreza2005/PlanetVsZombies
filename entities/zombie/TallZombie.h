@@ -17,8 +17,6 @@ public:
     QString getCardPicturePath() const override;
 protected:
     bool isThereAPlantInWay() override;
-private:
-    bool hasRisen;
 };
 
 #endif //PLANETVSZOMBIES_TALLZOMBIE_H

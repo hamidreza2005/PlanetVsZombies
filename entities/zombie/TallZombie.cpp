@@ -37,17 +37,8 @@ bool TallZombie::isThereAPlantInWay() {
     QList<QGraphicsItem*> collidingItems = this->collidingItems();
     for (QGraphicsItem* item : collidingItems) {
         auto plant = dynamic_cast<Plant*>(item);
-        auto isWalnut = (bool) dynamic_cast<Walnut*>(item);
-        if (isWalnut){
-            if (!this->hasRisen) {
-                this->setY(y() - 78);
-                this->hasRisen = true;
-            }
+        if (dynamic_cast<Walnut*>(plant) ){
             return false;
-        }
-        if (this->hasRisen){
-            this->setY(y() + 78);
-            this->hasRisen = false;
         }
         if (plant) {
             return true;
