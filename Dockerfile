@@ -24,8 +24,10 @@ ENV QT_X11_NO_MITSHM=1
 WORKDIR /app
 # Copy your Qt application into the container
 COPY . /app
-
+RUN rm -r ./build/*
+#RUN mkdir -p /home/hamidreza/Qt/6.7.2/gcc_64/lib/cmake/
+#COPY /home/hamidreza/Qt/6.7.2/gcc_64/lib/cmake/* /home/hamidreza/Qt/6.7.2/gcc_64/lib/cmake/*
 # RUN cmake -Bbuild -H. && cmake --build build --config Release
-RUN cmake -Bbuild -H. && cmake --build build --config Release
+RUN cmake -G "Ninja" -Bbuild -H. && cmake --build build --config Release
 # Run the Qt application
 CMD ["./build/PlanetVsZombies"]

@@ -15,7 +15,6 @@
 #include "SunBrain.h"
 #include "../Window.h"
 #include "../../core/ClientSocket.h"
-#include "../../core/mediaplayer.h"
 #include "Chat.h"
 
 class PlayGround : public Window {

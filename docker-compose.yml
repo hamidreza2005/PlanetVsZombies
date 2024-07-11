@@ -1,0 +1,30 @@
+# Run `xhost +local:docker` before starting the container
+version: '3.8'
+
+services:
+  planet-vs-zombies-client:
+    image: planet-vs-zombies-client
+    container_name: planet-vs-zombies-client
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    networks:
+      - pvz-network
+    stdin_open: true
+    tty: true
+
+  planet-vs-zombies-server:
+    image: planet-vs-zombies-server
+    container_name: planet-vs-zombies-server
+    ports:
+      - "2000:2000"
+    networks:
+      - pvz-network
+    stdin_open: true
+    tty: true
+
+networks:
+  pvz-network:
+    driver: bridge

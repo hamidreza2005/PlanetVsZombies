@@ -12,7 +12,6 @@
 #include "History/history.h"
 #include "UpdateCredentials/updatecredentials.h"
 #include "HostConnector/hostconnector.h"
-#include "../core/mediaplayer.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT

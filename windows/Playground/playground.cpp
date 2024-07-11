@@ -322,7 +322,6 @@ void PlayGround::handleServerResponse(const QJsonObject &data) {
         Cookie::getInstance()->loggedInPlayer->getRole() = data.value("role").toString();
         QTimer::singleShot(2000, [this]() {
             this->startARound();
-            MediaPlayer::getInstance()->playRoundMusic(":/resources/musics/round2.mp3", ":/resources/musics/Grasswalk.mp3");
         });
         return;
     }

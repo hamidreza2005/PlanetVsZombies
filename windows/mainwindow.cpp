@@ -30,7 +30,6 @@ void MainWindow::showLoginWindow(Window* senderWindow) {
     loginWindow->connectDataListener();
     stackedWidget->setCurrentWidget(loginWindow);
     this->playMenuMusic();
-//    mediaPlayer->playBackgroundMusic(":/resources/musics/Grasswalk.mp3");
 }
 
 void MainWindow::showDashboardWindow(Window* senderWindow) {
@@ -54,7 +53,6 @@ void MainWindow::showPlaygroundWindow(Window* senderWindow) {
     playgroundWindow->connectConnectionLostListener();
     stackedWidget->setCurrentWidget(playgroundWindow);
     playgroundWindow->play();
-    MediaPlayer::getInstance()->playRoundMusic(":/resources/musics/round1.mp3", ":/resources/musics/Grasswalk.mp3");
 }
 
 void MainWindow::showHistoryWindow(Window *senderWindow) {
@@ -117,11 +115,9 @@ void MainWindow::createWindows() {
 }
 
 void MainWindow::playMenuMusic() {
-    MediaPlayer::getInstance()->playBackgroundMusic(":/resources/musics/menu.mp3");
 }
 
 void MainWindow::playRoundMusic(const QString& roundMusic, const QString& backgroundMusic) {
-    MediaPlayer::getInstance()->playRoundMusic(roundMusic, backgroundMusic);
 }
 
 void MainWindow::playAfterTheGameMusic(Window *senderWindow) {
