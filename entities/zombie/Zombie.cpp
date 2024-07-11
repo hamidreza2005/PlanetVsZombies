@@ -97,7 +97,7 @@ void Zombie::setUpTimers() {
     connect(imageSwitchTimer, &QTimer::timeout, this, &Zombie::switchImage);
 
     this->movementTimer->start(this->movementDelay * 1000);
-    this->imageSwitchTimer->start(100); // Switch image every 100 ms
+    this->imageSwitchTimer->start(1000);
 }
 
 void Zombie::setUpAnimations() {
