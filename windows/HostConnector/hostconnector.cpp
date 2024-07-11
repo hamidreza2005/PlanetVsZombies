@@ -1,6 +1,6 @@
 #include <QMessageBox>
 #include "hostconnector.h"
-#include "ui_HostConnector.h"
+#include "ui_hostConnector.h"
 
 
 HostConnector::HostConnector(ClientSocket* clientSocket,QWidget *parent) :

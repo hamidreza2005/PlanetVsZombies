@@ -1,6 +1,6 @@
 #include <QMessageBox>
 #include "login.h"
-#include "ui_Login.h"
+#include "ui_login.h"
 #include "../window.h"
 #include "../../playground.h"
 #include "../../core/Cookie.h"

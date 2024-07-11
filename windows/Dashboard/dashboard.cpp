@@ -1,7 +1,7 @@
 #include <QJsonArray>
 #include <QMessageBox>
 #include "dashboard.h"
-#include "ui_Dashboard.h"
+#include "ui_dashboard.h"
 #include "../../core/Cookie.h"
 
 Dashboard::Dashboard(ClientSocket* clientSocket,QWidget *parent) :

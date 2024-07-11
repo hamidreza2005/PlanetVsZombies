@@ -1,6 +1,6 @@
 #include <QJsonArray>
 #include "history.h"
-#include "ui_History.h"
+#include "ui_history.h"
 #include "../../core/Cookie.h"
 
 
