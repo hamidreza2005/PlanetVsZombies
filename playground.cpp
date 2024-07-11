@@ -452,9 +452,7 @@ void PlayGround::sendOverSocket(const QJsonObject &response) {
 }
 
 void PlayGround::checkCardStates() {
-    qDebug() << "checking cards state";
     for (auto card : this->cards) {
-        qDebug() << card->getCost();
         if (card->getCost() > this->points) {
             if (this->selectedCard == card) {
                 this->selectedCard->unselect();
@@ -462,7 +460,6 @@ void PlayGround::checkCardStates() {
             }
             card->disable();
         } else {
-            qDebug() << "Card can be enabled";
             card->enable();
         }
     }

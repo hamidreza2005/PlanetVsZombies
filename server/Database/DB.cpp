@@ -4,7 +4,7 @@
 #include "QJsonDocument"
 #include "QFile"
 #include "../exceptions/ModelNotFoundException.h"
-
+#include <QDateTime>
 const QString DB::usersDbPath = "./db.json";
 const QString DB::historyDbPath = "./history.json";
 DB* DB::instance = nullptr;
@@ -145,6 +145,10 @@ void DB::writeToDB(QJsonArray &data,QFile* file) {
 
 void DB::saveInToHistory(QJsonObject data) {
     QJsonArray jsonArray = this->getHistory();
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+
+    QString formattedDateTime = currentDateTime.toString("yyyy-MM-dd HH:mm:ss");
+    data["played_on"] = formattedDateTime;
     jsonArray.append(data);
 
     this->writeToDB(jsonArray,this->historyFile);
