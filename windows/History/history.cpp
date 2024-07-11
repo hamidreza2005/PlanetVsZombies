@@ -33,6 +33,7 @@ void History::handleServerResponse(const QJsonObject &data) {
             ui->table->setItem(i, 2, new QTableWidgetItem(firstRoundWinner));
             ui->table->setItem(i, 3, new QTableWidgetItem(secondRoundWinner));
             ui->table->setItem(i, 4, new QTableWidgetItem(winner));
+            ui->table->setItem(i, 5, new QTableWidgetItem(historyItem["played_on"].toString()));
         }
         return;
     }

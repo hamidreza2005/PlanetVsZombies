@@ -28,6 +28,7 @@ protected slots:
     virtual void move();
     void switchImage();
 protected:
+    virtual bool isThereAPlantInWay();
 private:
     int health;
     float movementDelay;
@@ -42,7 +43,6 @@ private:
 
     void setUpTimers();
     void setUpAnimations();
-    bool isThereAPlantInWay();
     void activateAttackMode();
     void activateMovementMode();
     bool hasReachedTheEndOfTheGround();

@@ -26,17 +26,15 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QFrame{
-	background-image:url(:/resources/images/background/b9.png);
+    <string notr="true">	background-image:url(:/resources/images/background/b9.png);
 	background-repeat:no-repeat;
-	background-position:center;
-}</string>
+	background-position:center;</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
+    <enum>QFrame::Shape::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
+    <enum>QFrame::Shadow::Raised</enum>
    </property>
    <widget class="QTableWidget" name="table">
     <property name="geometry">
@@ -62,7 +60,7 @@ border-radius:10px;</string>
      <bool>true</bool>
     </property>
     <property name="gridStyle">
-     <enum>Qt::SolidLine</enum>
+     <enum>Qt::PenStyle::SolidLine</enum>
     </property>
     <property name="sortingEnabled">
      <bool>false</bool>
@@ -71,7 +69,7 @@ border-radius:10px;</string>
      <number>0</number>
     </property>
     <property name="columnCount">
-     <number>5</number>
+     <number>6</number>
     </property>
     <attribute name="horizontalHeaderVisible">
      <bool>true</bool>
@@ -83,7 +81,7 @@ border-radius:10px;</string>
      <number>38</number>
     </attribute>
     <attribute name="horizontalHeaderDefaultSectionSize">
-     <number>220</number>
+     <number>191</number>
     </attribute>
     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
      <bool>false</bool>
@@ -164,6 +162,17 @@ border-radius:10px;</string>
       </font>
      </property>
     </column>
+    <column>
+     <property name="text">
+      <string>Played On</string>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>13</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+    </column>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -181,7 +190,7 @@ border-radius:10px;</string>
      </font>
     </property>
     <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
+     <enum>Qt::LayoutDirection::LeftToRight</enum>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(0, 85, 0);
