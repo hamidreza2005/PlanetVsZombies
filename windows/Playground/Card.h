@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QGraphicsSceneMouseEvent>
 #include <functional>
-#include "entities/GameEntity.h"
+#include "../../entities/GameEntity.h"
 #include <QGraphicsTextItem>
 
 class Card : public QObject, public QGraphicsPixmapItem {

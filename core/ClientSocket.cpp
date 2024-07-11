@@ -2,7 +2,7 @@
 #include <QMessageBox>
 #include "ClientSocket.h"
 #include "exceptions/ConnectionIsLostException.h"
-#include "../playground.h"
+#include "../windows/Playground/playground.h"
 
 int ClientSocket::PORT;
 QString ClientSocket::HOST;

@@ -63,5 +63,6 @@
         <file>resources/images/cards/peashootercard.png</file>
         <file>resources/images/cards/plumminecard.png</file>
         <file>resources/images/backgrounds/background.png</file>
+        <file>resources/images/fireshooter.png</file>
     </qresource>
 </RCC>

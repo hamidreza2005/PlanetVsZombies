@@ -13,9 +13,9 @@
 #include "Card.h"
 #include "ground.h"
 #include "SunBrain.h"
-#include "windows/Window.h"
-#include "core/ClientSocket.h"
-#include "core/mediaplayer.h"
+#include "../Window.h"
+#include "../../core/ClientSocket.h"
+#include "../../core/mediaplayer.h"
 #include "Chat.h"
 
 class PlayGround : public Window {

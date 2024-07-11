@@ -17,12 +17,12 @@ find_package(Qt6 COMPONENTS
 
 add_executable(PlanetVsZombies WIN32 main.cpp
     resources.qrc
-    playground.h playground.cpp
-        Card.cpp
-        Card.h
+        windows/Playground/playground.h windows/Playground/playground.cpp
+        windows/Playground/Card.cpp
+        windows/Playground/Card.h
         entities/zombie/Zombie.cpp
         entities/zombie/Zombie.h
-        ground.h ground.cpp
+        windows/Playground/ground.h windows/Playground/ground.cpp
         entities/zombie/RegularZombie.cpp
         entities/zombie/RegularZombie.h
         entities/GameEntity.cpp
@@ -72,7 +72,7 @@ add_executable(PlanetVsZombies WIN32 main.cpp
         entities/plant/Jalapeno.h entities/plant/Jalapeno.cpp
         entities/plant/Boomrang.h entities/plant/Boomrang.cpp
         entities/plant/Bullet.h entities/plant/Bullet.cpp
-        SunBrain.h SunBrain.cpp
+        windows/Playground/SunBrain.h windows/Playground/SunBrain.cpp
         windows/History/history.cpp
         windows/History/history.h
         windows/History/history.ui
@@ -83,8 +83,9 @@ add_executable(PlanetVsZombies WIN32 main.cpp
         windows/HostConnector/hostconnector.h
         windows/HostConnector/hostconnector.ui
         core/mediaplayer.h core/mediaplayer.cpp
-        Chat.cpp
-        Chat.h
+        windows/Playground/Chat.cpp
+        windows/Playground/Chat.h
+        entities/plant/explosionutils.h entities/plant/explosionutils.cpp
 )
 
 target_link_libraries(PlanetVsZombies
