@@ -19,10 +19,12 @@ public slots:
     void on_submit_clicked();
     void on_registerLink_clicked();
     void on_resetPassword_clicked();
+    void on_changeServer_clicked();
 signals:
     void goToRegisterPage(Window* sender);
     void goToDashboardPage(Window* sender);
     void goToResetPasswordPage(Window* sender);
+    void goToHostConnectorPage(Window* sender);
 private:
     Ui::Login *ui;
     bool fieldsAreNotEmpty();

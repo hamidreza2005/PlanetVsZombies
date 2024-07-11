@@ -231,6 +231,36 @@ padding:10px;</string>
      <string/>
     </property>
    </widget>
+   <widget class="QPushButton" name="changeServer">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>634</y>
+      <width>151</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <italic>true</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(62, 124, 0);
+border: 1px solid rgb(0, 170, 0);
+border-radius: 10px;
+padding:10px;</string>
+    </property>
+    <property name="text">
+     <string>Change Server</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

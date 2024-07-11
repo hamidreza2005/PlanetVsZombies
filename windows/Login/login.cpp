@@ -65,3 +65,7 @@ void Login::connectDataListener() {
 void Login::on_resetPassword_clicked() {
     emit goToResetPasswordPage(this);
 }
+
+void Login::on_changeServer_clicked(){
+    emit this->goToHostConnectorPage(this);
+}
