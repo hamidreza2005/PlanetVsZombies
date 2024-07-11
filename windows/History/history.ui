@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
+    <width>1200</width>
     <height>700</height>
    </rect>
   </property>
@@ -21,15 +21,17 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1001</width>
+     <width>1201</width>
      <height>701</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-image:url(:/resources/images/background/b9.png);
-background-repeat:no-repeat;
-background-position:center;
-</string>
+    <string notr="true">QFrame{
+	background-image:url(:/resources/images/background/b9.png);
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size: cover;
+}</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>

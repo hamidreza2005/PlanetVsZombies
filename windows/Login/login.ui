@@ -231,34 +231,6 @@ padding:10px;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QFrame" name="frame">
-    <property name="geometry">
-     <rect>
-      <x>-20</x>
-      <y>-10</y>
-      <width>1031</width>
-      <height>711</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-image:url(:/resources/images/background/b7.png);
-</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-   </widget>
-   <zorder>frame</zorder>
-   <zorder>resetPassword</zorder>
-   <zorder>registerLink</zorder>
-   <zorder>submit</zorder>
-   <zorder>passwordLabel</zorder>
-   <zorder>usernameLabel</zorder>
-   <zorder>password</zorder>
-   <zorder>username</zorder>
   </widget>
  </widget>
  <resources/>
