@@ -4,7 +4,8 @@
 #include <QGraphicsPixmapItem>
 #include <QTimer>
 #include "../GameEntity.h"
-
+#include "../zombie/Zombie.h"
+#include <QList>
 class Bullet : public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
 
@@ -22,7 +23,7 @@ private:
     int size;
     bool canHitMultipleZombies;
     QTimer* movementTimer;
-
+    QList<Zombie*>* hitZombies;
 };
 
 #endif // PLANETVSZOMBIES_BULLET_H
