@@ -120,11 +120,13 @@ void Zombie::activateAttackMode() {
     this->attackTimer->start(this->firingRate * 1000);
     this->movementAnimation->stop();
     this->movementTimer->stop();
+    this->imageSwitchTimer->stop();
 }
 
 void Zombie::activateMovementMode() {
     this->movementTimer->start(this->movementDelay * 1000);
     this->attackTimer->stop();
+    this->imageSwitchTimer->start();
 }
 
 bool Zombie::hasReachedTheEndOfTheGround() {

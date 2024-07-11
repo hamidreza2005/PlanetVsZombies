@@ -16,7 +16,7 @@ QString PurpleHairZombie::getPicturePath() const {
 }
 
 QString PurpleHairZombie::getName() {
-    return "Purple Head Zombie";
+    return "Purple Hair Zombie";
 }
 
 QString PurpleHairZombie::getMovementPicturePath() const {

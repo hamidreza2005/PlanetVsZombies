@@ -58,3 +58,13 @@ void Card::addCostLabel() {
 int Card::getCost() const {
     return this->entity->getCost();
 }
+
+void Card::disable() {
+    this->setEnabled(false);
+    this->setOpacity(0.5);
+}
+
+void Card::enable() {
+    this->setEnabled(true);
+    this->setOpacity(1.0);
+}

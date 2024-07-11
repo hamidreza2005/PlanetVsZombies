@@ -1,6 +1,6 @@
 #ifndef PLAYGROUND_H
 #define PLAYGROUND_H
-
+#define INITIAL_POINTS 0
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QVBoxLayout>
@@ -34,8 +34,9 @@ protected:
 
 private slots:
     void updateTimer();
-    void updateBrainCount(int amount);
-    void updateSunCount(int amount);
+//    void updateBrainCount(int amount);
+//    void updateSunCount(int amount);
+    void updatePoint(int amount);
     void spawnSunBrain();
     void collectSunBrain(int value);
     void checkCardStates();
@@ -51,8 +52,7 @@ private:
     QLabel* playerName;
     QLabel* remainingTime;
     Ground* ground;
-    QProgressBar* brainBar;
-    QProgressBar* sunBar;
+    QProgressBar* pointsBar;
     QHBoxLayout* infoLayout;
     QVBoxLayout* mainLayout;
     QVBoxLayout* chatLayout;
@@ -62,16 +62,14 @@ private:
     QTimer* timer;
     QTimer* sunBrainTimer;
     int remainingSeconds;
-    int brainCount;
-    int sunCount;
+    int points;
     Card* selectedCard;
     QGraphicsPixmapItem* rotatingItem;
     Chat* chatHandler;
 
     void setUpChatBox();
     void createCards();
-    void setupPlayerZombieInfo();
-    void setupPlayerPlantInfo();
+    void setUpPointsBar();
     void setupGround();
     void setupLayout();
     void setupRemainingTimeInfo();
