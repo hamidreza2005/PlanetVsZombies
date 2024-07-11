@@ -68,7 +68,7 @@ border-radius:10px;</string>
      <bool>false</bool>
     </property>
     <property name="rowCount">
-     <number>5</number>
+     <number>0</number>
     </property>
     <property name="columnCount">
      <number>5</number>
@@ -109,11 +109,6 @@ border-radius:10px;</string>
     <attribute name="verticalHeaderStretchLastSection">
      <bool>false</bool>
     </attribute>
-    <row/>
-    <row/>
-    <row/>
-    <row/>
-    <row/>
     <column>
      <property name="text">
       <string>Player One</string>
