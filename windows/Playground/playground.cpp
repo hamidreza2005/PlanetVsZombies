@@ -287,7 +287,6 @@ void PlayGround::setupRotatingImage(const QString& imagePath) {
 }
 
 void PlayGround::collectSunBrain(int value) {
-    this->selectedCard = nullptr;
     this->updatePoint(value);
 }
 
