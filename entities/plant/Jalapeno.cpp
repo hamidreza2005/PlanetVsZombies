@@ -2,10 +2,10 @@
 #include <QGraphicsScene>
 #include "../zombie/Zombie.h"
 #include <QGraphicsScene>
+#include "explosionutils.h"
 
 Jalapeno::Jalapeno() :
-    Plant(INITIAL_HEALTH, SUN_NEEDED_TO_CREATE
-, INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER)
+    Plant(INITIAL_HEALTH, SUN_NEEDED_TO_CREATE, INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER)
 {
     this->setImage();
 }
@@ -37,6 +37,8 @@ void Jalapeno::fire() {
             }
         }
     }
+
+    showExplosionImage(scene(), this->pos());
 
     scene()->removeItem(this);
     delete this;

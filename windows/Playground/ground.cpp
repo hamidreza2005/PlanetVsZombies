@@ -13,15 +13,15 @@ Ground::Ground(QObject *parent)
 double Ground::getYForNewEntity(int y) {
     double finalY;
 
-    if (y > 0 && y <= 78) {
+    if (y > 0 && y <= 92) {
         finalY = 77.6;
-    } else if (y <= 156) {
+    } else if (y <= 170) {
         finalY = 155.2;
-    } else if (y <= 233) {
+    } else if (y <= 247) {
         finalY = 232.8;
-    } else if (y <= 311) {
+    } else if (y <= 325) {
         finalY = 310.4;
-    } else if (y <= 389) {
+    } else if (y <= 403) {
         finalY = 388;
     } else {
         finalY = 465;

@@ -1,10 +1,11 @@
 #include "PlumMine.h"
 #include <QGraphicsScene>
 #include "../zombie/Zombie.h"
+#include "explosionutils.h"
+
 
 PlumMine::PlumMine() :
-    Plant(INITIAL_HEALTH,SUN_NEEDED_TO_CREATE
-, INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER)
+    Plant(INITIAL_HEALTH, SUN_NEEDED_TO_CREATE, INITIAL_FIRING_RATE, INITIAL_ATTACK_POWER)
 {
     this->setImage();
 }
@@ -38,6 +39,8 @@ void PlumMine::fire() {
         }
     }
 
+    showExplosionImage(scene(), this->pos());
+
     scene()->removeItem(this);
     delete this;
 }
@@ -48,6 +51,8 @@ bool PlumMine::isThereAZombieInTheRow() {
     }
     return true;
 }
+
 QString PlumMine::getCardPicturePath() const {
     return ":/resources/images/cards/plumminecard.png";
 }
+
