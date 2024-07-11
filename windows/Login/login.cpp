@@ -2,7 +2,6 @@
 #include "login.h"
 #include "ui_Login.h"
 #include "../window.h"
-#include "../../playground.h"
 #include "../../core/Cookie.h"
 
 Login::Login(ClientSocket* clientSocket,QWidget *parent) :

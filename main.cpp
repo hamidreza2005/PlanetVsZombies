@@ -1,4 +1,4 @@
-#include "playground.h"
+#include "windows/Playground/playground.h"
 #include <QApplication>
 #include "windows/mainwindow.h"
 #include "core/ClientSocket.h"

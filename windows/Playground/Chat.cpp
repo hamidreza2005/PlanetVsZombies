@@ -1,5 +1,5 @@
 #include "Chat.h"
-#include "core/Cookie.h"
+#include "../../core/Cookie.h"
 
 QMap<QString,QString> Chat::allEmoji = {
         {"neutral",":/resources/images/emoji/NeutralFaceEmoji.png"},

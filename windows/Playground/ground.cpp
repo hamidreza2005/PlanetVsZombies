@@ -1,5 +1,5 @@
 #include "ground.h"
-#include "entities/plant/Plant.h"
+#include "../../entities/plant/Plant.h"
 #include <QPixmap>
 
 Ground::Ground(QObject *parent)

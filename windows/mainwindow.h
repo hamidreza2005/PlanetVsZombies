@@ -8,7 +8,7 @@
 #include "Dashboard/dashboard.h"
 #include "ResetPassword/resetpassword.h"
 #include "window.h"
-#include "../playground.h"
+#include "Playground/playground.h"
 #include "History/history.h"
 #include "UpdateCredentials/updatecredentials.h"
 #include "HostConnector/hostconnector.h"
